@@ -33,4 +33,15 @@ open class DYFStoreKeychainPersistence: NSObject {
         
     }
     
+    public func addTransaction(_ transaction: DYFStoreTransaction) {
+        
+    }
+    
+    public func removeTransaction(_ transaction: DYFStoreTransaction) {
+        
+    }
+    
+    public func removeTransactions(_ transaction: DYFStoreTransaction) {
+        
+    }
 }

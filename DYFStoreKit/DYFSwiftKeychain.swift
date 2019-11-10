@@ -61,11 +61,26 @@ open class DYFSwiftKeychain: NSObject {
     /// The lock prevents the code to be run simultaneously from multiple threads which may result in crashing.
     private var lock: NSLock { return NSLock() }
     
-    /// Builds an instance of DYFSwiftKeychain with the class method.
+    /// Creates an instance of DYFSwiftKeychain with the class method.
     ///
     /// - Returns: An instance of DYFSwiftKeychain.
-    @objc public class func buildKeychain() -> DYFSwiftKeychain {
+    @objc public class func createKeychain() -> DYFSwiftKeychain {
         return DYFSwiftKeychain()
+    }
+    
+    /// Returns a keychain that copies the current DYFSwiftKeychain instance.
+    ///
+    /// - Returns: A DYFSwiftKeychain object.
+    @objc open override func copy() -> Any {
+        
+        let keychain = DYFSwiftKeychain.self.createKeychain()
+        keychain.accessGroup       = self.accessGroup
+        keychain.synchronizable    = self.synchronizable
+        keychain.serviceIdentifier = self.serviceIdentifier
+        keychain.queryDictionary   = self.queryDictionary
+        keychain.osStatus          = self.osStatus
+        
+        return keychain
     }
     
     /// Stores or updates the text value in the keychain item by the given key.
@@ -325,7 +340,9 @@ open class DYFSwiftKeychain: NSObject {
         lock.lock()
         defer { lock.unlock() }
         
-        return deleteWithoutLock(key)
+        let ret = deleteWithoutLock(key)
+        
+        return ret
     }
     
     /// Same as `delete`, but it is not thread safe.
@@ -518,7 +535,7 @@ extension DYFSwiftKeychain {
         
         /// Converts a CFString object to a string.
         ///
-        /// - Parameter _value: A reference to a CFString object.
+        /// - Parameter value: A reference to a CFString object.
         /// - Returns: A string.
         static func toString(_ value: CFString) -> String {
             return value as String
@@ -581,7 +598,7 @@ extension DYFSwiftKeychain {
     ///
     /// After the first unlock, the data remains accessible until the next restart. This is recommended for items that need to be accessed by background applications. Items with this attribute migrate to a new device when using encrypted backups.
     case accessibleAfterFirstUnlock
-    ///  The data in the keychain item cannot be accessed after a restart until the device has been unlocked once by the user.
+    /// The data in the keychain item cannot be accessed after a restart until the device has been unlocked once by the user.
     ///
     /// After the first unlock, the data remains accessible until the next restart. This is recommended for items that need to be accessed by background applications. Items with this attribute do not migrate to a new device. Thus, after restoring from a backup of a different device, these items will not be present.
     case accessibleAfterFirstUnlockThisDeviceOnly

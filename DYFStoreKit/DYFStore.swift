@@ -33,18 +33,18 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// Whether to enable log. The default is false.
     public var enableLog: Bool = false
     
-    /// Keeps track of all valid products that were available for sale in the App Store.
+    /// The valid products that were available for sale in the App Store.
     public var availableProducts: NSMutableArray?
-    /// Keeps track of all invalid product identifiers.
+    /// The product identifiers were invalid.
     public var invalidIdentifiers: NSMutableArray?
     
-    /// Keeps track of all purchases.
+    /// Records those transcations that have been purchased.
     public var purchasedTranscations: NSMutableArray?
-    /// Keeps track of all restored purchases.
+    /// Records those transcations that have been restored.
     public var restoredTranscations: NSMutableArray?
     
     /// The delegate processes the purchase which was initiated by user from the App Store.
-    public var delegate: DYFStoreAppStorePaymentDelegate?
+    public weak var delegate: DYFStoreAppStorePaymentDelegate?
     
     /// A struct named "Inner".
     private struct Inner {
@@ -137,9 +137,9 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     }
     
     /// Accepts the response from the App Store that contains the requested product information.
-    private var productsRequestDidFinish: ((_ products: [SKProduct], _ invalidIdentifiers: [String]) -> Void)?
+    private var productsRequestDidFinish: (([SKProduct], [String]) -> Void)?
     /// Tells the user that the request failed to execute.
-    private var productsRequestDidFail: ((_ error: NSError) -> Void)?
+    private var productsRequestDidFail: ((NSError) -> Void)?
     
     /// An object that can retrieve localized information from the App Store about a specified list of products.
     private var productsRequest: SKProductsRequest?
@@ -328,6 +328,44 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         return self.restoredTranscations!.count > 0
     }
     
+    /// Extracts the transaction with a given transaction identifier.
+    ///
+    /// - Parameter transactionIdentifier: The unique server-provided identifier
+    /// - Returns: A SKPaymentTransaction object.
+    public func extractTransaction(_ transactionIdentifier: String?) -> SKPaymentTransaction? {
+        
+        var transaction: SKPaymentTransaction? = nil
+        
+        guard let transactionId = transactionIdentifier else {
+            return transaction
+        }
+        
+        self.purchasedTranscations!.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+            
+            let tempTransaction = obj as! SKPaymentTransaction
+            let id = tempTransaction.transactionIdentifier ?? ""
+            DYFStoreLog("|PurchasedTranscations.enumerateObjects| index: \(idx), transactionId: \(id)")
+            
+            if id == transactionId {
+                transaction = tempTransaction
+            }
+        }
+        
+        self.restoredTranscations!.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+            
+            let tempTransaction = obj as! SKPaymentTransaction
+            let originalId = tempTransaction.original?.transactionIdentifier ?? ""
+            let id = tempTransaction.transactionIdentifier ?? ""
+            DYFStoreLog("|RestoredTranscations.enumerateObjects| index: \(idx), original.transactionId: \(originalId), transactionId: \(id)")
+            
+            if (originalId == transactionId) || (id == transactionId) {
+                transaction = tempTransaction
+            }
+        }
+        
+        return transaction
+    }
+    
     /// The number of items the user wants to purchase. It must be greater than 0, the default value is 1.
     public private(set) var quantity: Int = 1
     
@@ -403,7 +441,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// The block to be called if the refresh receipt request is sucessful.
     private var refreshReceiptSuccessBlock: (() -> Void)?
     /// The block to be called if the refresh receipt request fails.
-    private var refreshReceiptFailureBlock: ((_ error: NSError) -> Void)?
+    private var refreshReceiptFailureBlock: ((NSError) -> Void)?
     
     /// A request to refresh the receipt, which represents the user's transactions with your app.
     private var refreshReceiptRequest: SKReceiptRefreshRequest?
@@ -464,7 +502,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             switch state {
                 
             case .waiting:
-                DYFStoreLog("The download is inactive, waiting to be downloaded")
+                DYFStoreLog("The download is inactive, waiting to be downloaded.")
                 queue.start([download])
                 break
             case .active:
@@ -532,7 +570,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         
         if #available(iOS 11.0, *) {
             self.delegate?.didReceiveAppStorePurchaseRequest(queue, payment: payment, forProduct: product)
-        } else { /* Fallback on earlier versions.  */ }
+        } else { /* Fallback on earlier versions. Never execute. */ }
         
         return false
     }
@@ -681,7 +719,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///
     /// - Parameter transaction: xx
     /// - Returns: xx
-    public class func hasPendingDownloads(inTransaction transaction: SKPaymentTransaction) -> Bool {
+    public class func hasPendingDownloadsInTransaction(_ transaction: SKPaymentTransaction) -> Bool {
         
         // A download is complete if its state is SKDownloadState.cancelled, SKDownloadState.failed, or SKDownloadState.finished
         // and pending, otherwise. We finish a transaction if and only if all its associated downloads are complete.
@@ -732,11 +770,11 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         info.downloadState = DYFStoreDownload.State.canceled
         self.postNotification(withName: DYFStore.downloadedNotification, info)
         
-        let hasPendingDownloads = DYFStore.self.hasPendingDownloads(inTransaction: transaction)
+        let hasPendingDownloads = DYFStore.hasPendingDownloadsInTransaction(transaction)
         if !hasPendingDownloads {
             
-            let errorDesc = NSLocalizedString("The download canceled", tableName: "DYFStore", comment: "Error description")
-            let userInfo = [NSLocalizedDescriptionKey: errorDesc]
+            let errDesc = NSLocalizedString("The download canceled", tableName: "DYFStore", comment: "Error description")
+            let userInfo = [NSLocalizedDescriptionKey: errDesc]
             let error = NSError(domain: DYFStoreError.domain,
                                 code: DYFStoreError.Code.downloadCanceled.rawValue,
                                 userInfo: userInfo)
@@ -764,38 +802,31 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         info.error = error
         self.postNotification(withName: DYFStore.downloadedNotification, info)
         
-        let hasPendingDownloads = DYFStore.hasPendingDownloads(inTransaction: transaction)
+        let hasPendingDownloads = DYFStore.hasPendingDownloadsInTransaction(transaction)
         if !hasPendingDownloads {
             self.didFailWithTransaction(transaction, queue: queue, error: error)
         }
     }
     
-    /// EWQRWTQ
-    ///
-    /// - Parameters:
-    ///   - download: <#download description#>
-    ///   - queue: <#queue description#>
     private func didFinishDownload(_ download: SKDownload, queue: SKPaymentQueue) {
         let transaction: SKPaymentTransaction = download.transaction
         
         // Download is complete. StoreKit saves the downloaded content in the Caches directory.
-        DYFStoreLog("The download(%@) for product(%@) finished. Location of downloaded file \(download.contentURL!)", download.contentIdentifier, transaction.payment.productIdentifier)
+        DYFStoreLog("The download(%@) for product(%@) finished. Location of downloaded file(%@)", download.contentIdentifier, transaction.payment.productIdentifier, download.contentURL!.absoluteString)
         
-        // AllAssetsDownloaded indicates whether all content associated with the transaction were downloaded.
+        // Post a DYFStoreDownload.State.succeeded notification if all downloads are complete.
+        var info = DYFStore.NotificationInfo()
+        info.downloadState = DYFStoreDownload.State.succeeded
+        self.postNotification(info)
+        
+        // It indicates whether all content associated with the transaction were downloaded.
         var allAssetsDownloaded: Bool = true
-        
-        if DYFStore.hasPendingDownloads(inTransaction: transaction) {
+        if DYFStore.hasPendingDownloadsInTransaction(transaction) {
             // We found an ongoing download. Therefore, there are still pending downloads.
             allAssetsDownloaded = false
         }
         
         if allAssetsDownloaded {
-            
-            // Post a DYFStoreDownload.State.succeeded notification if all downloads are complete.
-            var info = DYFStore.NotificationInfo()
-            info.downloadState = DYFStoreDownload.State.succeeded
-            self.postNotification(info)
-            
             self.didCompleteTransaction(transaction, queue: queue, forState: DYFStore.PurchaseState.succeeded)
         }
     }
@@ -911,7 +942,7 @@ public struct DYFStoreError {
     
 }
 
-// MARK: - Extension DYFStore: Notification Info
+// MARK: - DYFStore.NotificationInfo
 extension DYFStore {
     
     public struct NotificationInfo {
@@ -996,6 +1027,9 @@ extension DispatchQueue {
     }
     
 }
+
+/// The key UserDefaults and Keychain used.
+public let DYFStoreTransactionsKey = "DYFStoreTransactions"
 
 /// Outputs log to the console.
 ///
