@@ -90,8 +90,10 @@ open class DYFSwiftKeychain: NSObject {
     ///   - key: The key which the text is stored in the keychain.
     /// - Returns: True if the text was successfully written to the keychain, false otherwise.
     @discardableResult
-    @objc public func add(_ value: String, forKey key: String) -> Bool {
+    @objc public func add(_ value: String?, forKey key: String) -> Bool {
+        
         let opts = DYFSwiftKeychainAccessOptions.accessibleWhenUnlocked
+        
         return add(value, forKey: key, options: opts)
     }
     
@@ -103,12 +105,9 @@ open class DYFSwiftKeychain: NSObject {
     ///   - key: The key which the text is stored in the keychain.
     ///   - options: The options indicates when you app needs access to the text in the keychain. By the default DYFSwiftKeychainAccessOptions.accessibleWhenUnlocked option is used that permits the data to be accessed only while the device is unlocked by the user.
     /// - Returns: True if the text was successfully written to the keychain, false otherwise.
-    @objc public func add(_ value: String, forKey key: String, options: DYFSwiftKeychainAccessOptions) -> Bool {
+    @objc public func add(_ value: String?, forKey key: String, options: DYFSwiftKeychainAccessOptions) -> Bool {
         
-        guard let v = value.data(using: String.Encoding.utf8) else {
-            return false
-        }
-        
+        let v = value?.data(using: String.Encoding.utf8)
         let opts = toOpts(options)
         
         return set(v, forKey: key, withAccess: opts)
@@ -122,13 +121,11 @@ open class DYFSwiftKeychain: NSObject {
     ///   - key: The key which the text is stored in the keychain.
     ///   - access: The parameter indicates when you app needs access to the text in the keychain. By the default DYFSwiftKeychain.AccessOptions.accessibleWhenUnlocked option is used that permits the data to be accessed only while the device is unlocked by the user.
     /// - Returns: True if the text was successfully written to the keychain, false otherwise.
-    public func set(_ value: String, forKey key: String, withAccess access: DYFSwiftKeychain.AccessOptions? = nil) -> Bool {
+    public func set(_ value: String?, forKey key: String, withAccess access: DYFSwiftKeychain.AccessOptions? = nil) -> Bool {
         
-        if let v = value.data(using: String.Encoding.utf8) {
-            return set(v, forKey: key, withAccess: access)
-        }
+        let v = value?.data(using: String.Encoding.utf8)
         
-        return false
+        return set(v, forKey: key, withAccess: access)
     }
     
     /// Stores or updates the data in the keychain item by the given key.
@@ -138,8 +135,10 @@ open class DYFSwiftKeychain: NSObject {
     ///   - key: The key which the data is stored in the keychain.
     /// - Returns: True if the data was successfully written to the keychain, false otherwise.
     @discardableResult
-    @objc public func addData(_ value: Data, forKey key: String) -> Bool {
+    @objc public func addData(_ value: Data?, forKey key: String) -> Bool {
+        
         let opts = DYFSwiftKeychainAccessOptions.accessibleWhenUnlocked
+        
         return addData(value, forKey: key, options: opts)
     }
     
@@ -151,7 +150,7 @@ open class DYFSwiftKeychain: NSObject {
     ///   - options: The options indicates when you app needs access to the text in the keychain. By the default DYFSwiftKeychainAccessOptions.accessibleWhenUnlocked option is used that permits the data to be accessed only while the device is unlocked by the user.
     /// - Returns: True if the data was successfully written to the keychain, false otherwise.
     @discardableResult
-    @objc public func addData(_ value: Data, forKey key: String, options: DYFSwiftKeychainAccessOptions) -> Bool {
+    @objc public func addData(_ value: Data?, forKey key: String, options: DYFSwiftKeychainAccessOptions) -> Bool {
         
         let opts = toOpts(options)
         
@@ -166,7 +165,7 @@ open class DYFSwiftKeychain: NSObject {
     ///   - access: The parameter indicates when you app needs access to the text in the keychain. By the default DYFSwiftKeychain.AccessOptions.accessibleWhenUnlocked option is used that permits the data to be accessed only while the device is unlocked by the user.
     /// - Returns: True if the data was successfully written to the keychain, false otherwise.
     @discardableResult
-    public func set(_ value: Data, forKey key: String, withAccess access: DYFSwiftKeychain.AccessOptions? = nil) -> Bool {
+    public func set(_ value: Data?, forKey key: String, withAccess access: DYFSwiftKeychain.AccessOptions? = nil) -> Bool {
         
         // The lock prevents the code to be run simultaneously from multiple threads which may result in crashing.
         lock.lock()
@@ -180,20 +179,30 @@ open class DYFSwiftKeychain: NSObject {
         queryDictionary = query
         
         guard let data = getData(key) else {
-            query[DYFSwiftKeychain.Constants.valueData] = value
-            queryDictionary?[DYFSwiftKeychain.Constants.valueData] = value
             
-            osStatus = SecItemAdd(query as CFDictionary, nil)
+            if let v = value {
+                query[DYFSwiftKeychain.Constants.valueData] = v
+                queryDictionary?[DYFSwiftKeychain.Constants.valueData] = v
+                
+                osStatus = SecItemAdd(query as CFDictionary, nil)
+            } else {
+                osStatus = errSecInvalidPointer // -67675, An invalid pointer was encountered.
+            }
             
             return osStatus == errSecSuccess
         }
         
         let _ = data // ignores this data.
-        let updatedDictionary: [String: Any] = [
-            DYFSwiftKeychain.Constants.valueData: value
-        ]
-        
-        osStatus = SecItemUpdate(query as CFDictionary, updatedDictionary as CFDictionary)
+        if let v = value {
+            let updatedDictionary: [String: Any] = [
+                DYFSwiftKeychain.Constants.valueData: v
+            ]
+            
+            osStatus = SecItemUpdate(query as CFDictionary, updatedDictionary as CFDictionary)
+        } else {
+            deleteWithoutLock(key)
+            osStatus = errSecInvalidPointer // -67675, An invalid pointer was encountered.
+        }
         
         return osStatus == errSecSuccess
     }
@@ -206,7 +215,9 @@ open class DYFSwiftKeychain: NSObject {
     /// - Returns: True if the boolean value was successfully written to the keychain, false otherwise.
     @discardableResult
     @objc public func addBool(_ value: Bool, forKey key: String) -> Bool {
+        
         let opts = DYFSwiftKeychainAccessOptions.accessibleWhenUnlocked
+        
         return addBool(value, forKey: key, options: opts)
     }
     

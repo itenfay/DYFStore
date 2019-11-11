@@ -49,8 +49,8 @@ open class DYFStoreReceiptVerifier: NSObject {
     /// A URL session task that returns downloaded data directly to the app in memory.
     private var dataTask: URLSessionDataTask?
     
-    /// Whether all outstanding tasks were cancelled.
-    private var cancelled: Bool = false
+    /// Whether all outstanding tasks have been cancelled and the session has been invalidated.
+    private var canInvalidateSession: Bool = false
     
     /// Instantiates a DYFStoreReceiptVerifier object.
     public override init() {
@@ -77,7 +77,7 @@ open class DYFStoreReceiptVerifier: NSObject {
     /// Cancels all outstanding tasks and then invalidates the session.
     @objc public func invalidateAndCancel() {
         self.urlSession?.invalidateAndCancel()
-        self.cancelled = true
+        self.canInvalidateSession = true
     }
     
     /// Verifies the in-app purchase receipt, but it is not recommended to use. It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C).
@@ -132,9 +132,9 @@ open class DYFStoreReceiptVerifier: NSObject {
         request.httpMethod = "POST"
         request.httpBody = self.requestData
         
-        if self.cancelled {
+        if self.canInvalidateSession {
             self.instantiateUrlSession()
-            self.cancelled = false
+            self.canInvalidateSession = false
         }
         
         self.dataTask = self.urlSession?.dataTask(with: request) { (data, response, error) in
