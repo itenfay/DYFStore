@@ -77,3 +77,6 @@ open class DYFStoreTransaction: NSObject, NSCoding {
     /// Indicates that the transaction has been purchased.
     case purchased
 }
+
+/// The key UserDefaults and Keychain used.
+public let DYFStoreTransactionsKey = "DYFStoreTransactions"
