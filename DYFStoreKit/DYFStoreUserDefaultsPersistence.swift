@@ -28,11 +28,49 @@ import UIKit
 
 open class DYFStoreUserDefaultsPersistence: NSObject {
     
-    /// Returns the shared defaults object.
+    /// Returns the shared defaults `UserDefaults` object.
     private let userDefaults = UserDefaults.standard
     
-    public override init() {
+    /// Instantiates a DYFStoreUserDefaultsPersistence object.
+    public override init() {}
+    
+    private func loadTransactions() -> [Data]? {
+        userDefaults.object(forKey: DYFStoreTransactionsKey)
+        return nil
+    }
+    
+    public func storeTransaction(_ transaction: DYFStoreTransaction) {
         
+        let data = DYFStoreConverter.encodeObject(transaction)
+        guard let aData = data else {
+            return
+        }
+        
+        var transactions = loadTransactions() ?? [Data]()
+        transactions.append(aData)
+        
+        userDefaults.set(transactions, forKey: DYFStoreTransactionsKey);
+        userDefaults.synchronize()
+    }
+    
+    public func retrieveTransactions() -> [DYFStoreTransaction]?  {
+        
+        return nil
+        
+    }
+    
+    public func retrieveTransaction(_ transactionIdentifier: String) -> DYFStoreTransaction? {
+        
+        return nil
+    }
+    
+    public func removeTransaction(_ transactionIdentifier: String) {
+        
+    }
+    
+    public func removeTransactions() {
+        userDefaults.removeObject(forKey: DYFStoreTransactionsKey);
+        userDefaults.synchronize()
     }
     
 }

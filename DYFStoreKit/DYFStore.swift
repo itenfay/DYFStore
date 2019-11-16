@@ -700,7 +700,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         }
         
         info.error = error
-        info.transactionIdentifiers = transaction.transactionIdentifier
+        info.productIdentifier = transaction.payment.productIdentifier
         
         self.postNotification(info)
         self.finishTransaction(transaction)
@@ -754,8 +754,9 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         
         var info = DYFStore.NotificationInfo()
         info.state = state
+        info.productIdentifier = transaction.payment.productIdentifier
         info.transactionDate = transaction.transactionDate
-        info.transactionIdentifiers = transaction.transactionIdentifier
+        info.transactionIdentifier = transaction.transactionIdentifier
         
         self.postNotification(info)
     }
@@ -934,6 +935,7 @@ extension Date {
         
         return dateString
     }
+    
 }
 
 // MARK: - Extension DYFStore
@@ -979,6 +981,7 @@ extension DYFStore {
     
     /// Provides notification about the download.
     public static let downloadedNotification: NSNotification.Name = NSNotification.Name(rawValue: "DYFStoreDownloadedNotification")
+    
 }
 
 // MARK: - DYFStoreDownload
@@ -1054,11 +1057,14 @@ extension DYFStore {
         /// This indicates an error occurred.
         public var error: NSError?
         
+        /// A string used to identify a product that can be purchased from within your app.
+        public var productIdentifier: String? = nil
+        
         /// The date when the transaction was added to the server queue. Only valid if state is SKPaymentTransactionState.purchased or SKPaymentTransactionState.restored.
         public var transactionDate: Date? = nil
         
         /// The transaction identifier of purchase.
-        public var transactionIdentifiers: String? = nil
+        public var transactionIdentifier: String? = nil
     }
     
 }
@@ -1074,6 +1080,7 @@ extension DYFStore {
     ///   - product: The in-app purchase product.
     @available(iOS 11.0, *)
     @objc func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct)
+    
 }
 
 // MARK: - Extends the properties and method for the dispatch queue.
