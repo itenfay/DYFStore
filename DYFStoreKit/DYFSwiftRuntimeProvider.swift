@@ -276,7 +276,7 @@ public class DYFSwiftRuntimeProvider: NSObject {
         let obj = clsType.init()
         
         guard let dict = dictionary else {
-            return obj as AnyObject
+            return obj
         }
         
         let pList = propertyList(withClass: clsType)
@@ -299,7 +299,7 @@ public class DYFSwiftRuntimeProvider: NSObject {
     @objc public class func model(withDictionary dictionary: Dictionary<String, Any>?, usingModel model: NSObject?) -> AnyObject? {
         
         guard let dict = dictionary else {
-            return model as AnyObject
+            return model
         }
         
         guard let obj = model else { return nil }

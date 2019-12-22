@@ -102,6 +102,7 @@ open class DYFStoreReceiptVerifier: NSObject {
                                  userInfo: [NSLocalizedDescriptionKey : messae])
             
             self.delegate?.verifyReceipt(self, didFailWithError: error)
+            
             return
         }
         
@@ -149,7 +150,7 @@ open class DYFStoreReceiptVerifier: NSObject {
             
             let nsError = err as NSError
             
-            print("DYFStoreReceiptVerifier.didReceiveData error: (\(nsError.code), \(nsError.localizedDescription))")
+            //print("DYFStoreReceiptVerifier.didReceiveData error: (\(nsError.code), \(nsError.localizedDescription))")
             
             DispatchQueue.main.async {
                 self.delegate?.verifyReceipt(self, didFailWithError: nsError)
@@ -189,7 +190,7 @@ open class DYFStoreReceiptVerifier: NSObject {
             
             let nsError = error as NSError
             
-            print("DYFStoreReceiptVerifier.processResult error: (\(nsError.code), \(nsError.localizedDescription))")
+            //print("DYFStoreReceiptVerifier.processResult error: (\(nsError.code), \(nsError.localizedDescription))")
             
             DispatchQueue.main.async {
                 self.delegate?.verifyReceipt(self, didFailWithError: nsError)
@@ -251,6 +252,7 @@ open class DYFStoreReceiptVerifier: NSObject {
         let (_, msg) = matchMessage(withStatus: status)
         return msg
     }
+    
 }
 
 /// The delegate is used to callback the result of verifying the in-app purchase receipt.
@@ -269,4 +271,5 @@ open class DYFStoreReceiptVerifier: NSObject {
     ///   - verifier: A `DYFStoreReceiptVerifier` object.
     ///   - error: The error that caused the receipt validation to fail.
     @objc func verifyReceipt(_ verifier: DYFStoreReceiptVerifier, didFailWithError error: NSError)
+    
 }

@@ -6,17 +6,34 @@
 //
 
 import UIKit
+import StoreKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDelegate {
+    
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        // Enables able to
+        DYFStore.default.enableLog = true
+        
+        // Adds an observer that responds to updated transactions to the payment queue.
+        // If an application quits when transactions are still being processed, those transactions are not lost. The next time the application launches, the payment queue will resume processing the transactions. Your application should always expect to be notified of completed transactions.
+        // If more than one transaction observer is attached to the payment queue, no guarantees are made as to the order they will be called in. It is recommended that you use a single observer to process and finish the transaction.
         DYFStore.default.addPaymentTransactionObserver()
         
+        // Sets the delegate processes the purchase which was initiated by user from the App Store.
+        DYFStore.default.delegate = self
+        
+        DYFStore.default.keychainPersister = DYFStoreKeychainPersistence()
+        
         return true
+    }
+
+    // Processes the purchase which was initiated by user from the App Store.
+    func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
+        
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

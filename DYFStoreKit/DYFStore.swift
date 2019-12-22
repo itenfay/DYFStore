@@ -46,6 +46,9 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// The delegate processes the purchase which was initiated by user from the App Store.
     public weak var delegate: DYFStoreAppStorePaymentDelegate?
     
+    /// The keychain persister that supervises the `DYFStoreTransaction` transactions.
+    public var keychainPersister: DYFStoreKeychainPersistence?
+    
     /// A struct named "Inner".
     private struct Inner {
         static var instance: DYFStore? = nil
@@ -358,11 +361,11 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         return self.restoredTranscations!.count > 0
     }
     
-    /// Extracts the transaction with a given transaction identifier.
+    /// Extracts a purchased transaction with a given transaction identifier.
     ///
     /// - Parameter transactionIdentifier: The unique server-provided identifier.
-    /// - Returns: A SKPaymentTransaction object.
-    public func extractTransaction(_ transactionIdentifier: String?) -> SKPaymentTransaction? {
+    /// - Returns: A purchased `SKPaymentTransaction` object.
+    public func extractPurchasedTransaction(_ transactionIdentifier: String?) -> SKPaymentTransaction? {
         
         var transaction: SKPaymentTransaction? = nil
         
@@ -374,21 +377,36 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             
             let tempTransaction = obj as! SKPaymentTransaction
             let id = tempTransaction.transactionIdentifier ?? ""
-            DYFStoreLog("|purchasedTranscations!.enumerateObjects| index: \(idx), transactionId: \(id)")
+            DYFStoreLog("extractPurchasedTransaction: index: \(idx), transactionId: \(id)")
             
             if id == transactionId {
                 transaction = tempTransaction
             }
         }
         
+        return transaction
+    }
+    
+    /// Extracts a restored transaction with a given transaction identifier.
+    ///
+    /// - Parameter transactionIdentifier: The unique server-provided identifier.
+    /// - Returns: A restored `SKPaymentTransaction` object.
+    public func extractRestoredTransaction(_ transactionIdentifier: String?) -> SKPaymentTransaction? {
+        
+        var transaction: SKPaymentTransaction? = nil
+        
+        guard let transactionId = transactionIdentifier, !transactionId.isEmpty else {
+            return transaction
+        }
+        
         self.restoredTranscations!.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
             
             let tempTransaction = obj as! SKPaymentTransaction
-            let originalId = tempTransaction.original?.transactionIdentifier ?? ""
             let id = tempTransaction.transactionIdentifier ?? ""
-            DYFStoreLog("|restoredTranscations!.enumerateObjects| index: \(idx), original.transactionId: \(originalId), transactionId: \(id)")
+            let originalId = tempTransaction.original?.transactionIdentifier ?? ""
+            DYFStoreLog("extractRestoredTransaction: index: \(idx), transactionId: \(id), originalTransactionId: \(originalId)")
             
-            if (originalId == transactionId) || (id == transactionId) {
+            if id == transactionId {
                 transaction = tempTransaction
             }
         }
@@ -456,7 +474,11 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         }
     }
     
-    /// Requests to restore previously completed purchases.
+    /// Requests to restore previously completed purchases that refer to auto-renewable subscriptions, free subscriptions or non-expendable items.
+    ///
+    /// The usage scenes are as follows:
+    /// The apple users log in to other devices and install app.
+    /// The app corresponding to in-app purchase has been uninstalled and reinstalled.
     ///
     /// - Parameter userIdentifier: An opaque identifier for the user’s account on your system.
     public func restoreTransactions(userIdentifier: String? = nil) {
@@ -758,6 +780,11 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         info.transactionDate = transaction.transactionDate
         info.transactionIdentifier = transaction.transactionIdentifier
         
+        if state == DYFStore.PurchaseState.restored {
+            info.originalTransactionDate = transaction.original?.transactionDate
+            info.originalTransactionIdentifier = transaction.original?.transactionIdentifier
+        }
+        
         self.postNotification(info)
     }
     
@@ -936,19 +963,113 @@ extension Date {
         return dateString
     }
     
+    /// Returns a time interval between the date object and 00:00:00 UTC on 1 January 1970.
+    ///
+    /// - Returns: A time interval between the date object and 00:00:00 UTC on 1 January 1970.
+    public func timestamp() -> String {
+        let timeInterval = self.timeIntervalSince1970
+        return "\(timeInterval)"
+    }
+    
+}
+
+// MARK: - Data, Base64
+extension Data {
+    
+    /// Creates a Base64, UTF-8 encoded data object from the data object.
+    ///
+    /// - Returns: A Base64, UTF-8 encoded data object.
+    public func base64Encode() -> Data? {
+        return self.base64EncodedData(options: [])
+    }
+    
+    /// Creates a Base64 encoded string from the data object.
+    ///
+    /// - Returns: A Base64 encoded string.
+    public func base64EncodedString() -> String? {
+        return self.base64EncodedString(options: [])
+    }
+    
+    /// Creates a data object with the given Base64 encoded data.
+    ///
+    /// - Returns: A data object containing the Base64 decoded data. Returns nil if the data object could not be decoded.
+    public func base64Decode() -> Data? {
+        return NSData(base64Encoded: self) as Data?
+    }
+    
+    /// Creates a string object with the given Base64 encoded data.
+    ///
+    /// - Returns: A string object containing the Base64 decoded data. Returns nil if the data object could not be decoded.
+    public func base64DecodedString() -> String? {
+        
+        guard let data = base64Decode() else {
+            return nil
+        }
+        
+        return String(data: data, encoding: String.Encoding.utf8)
+    }
+    
+}
+
+// MARK: - String, Base64
+extension String {
+    
+    /// Creates and returns a date object set to the given number of seconds from 00:00:00 UTC on 1 January 1970.
+    ///
+    /// - Returns: A date object set to seconds seconds from the reference date.
+    public func timestampToDate() -> Date {
+        let s = NSString(string: self)
+        let t: TimeInterval = s.doubleValue
+        return Date(timeIntervalSince1970: t)
+    }
+    
+    /// Creates a Base64 encoded string from the string.
+    ///
+    /// - Returns: A Base64 encoded string.
+    public func base64Encode() -> String? {
+        
+        guard let data = self.data(using: String.Encoding.utf8) else {
+            return nil
+        }
+        
+        return data.base64EncodedString(options: [])
+    }
+    
+    /// Creates a Base64, UTF-8 encoded data object from the string.
+    ///
+    /// - Returns: A Base64, UTF-8 encoded data object.
+    public func base64EncodedData() -> Data? {
+        
+        guard let data = self.data(using: String.Encoding.utf8) else {
+            return nil
+        }
+        
+        return data.base64EncodedData(options: [])
+    }
+    
+    /// Creates a string object with the given Base64 encoded string.
+    ///
+    /// - Returns: A string object built by Base64 decoding the provided string. Returns nil if the string object could not be decoded.
+    public func base64Decode() -> String? {
+        
+        guard let data = base64EncodedData() else {
+            return nil
+        }
+        
+        return String(data: data, encoding: String.Encoding.utf8)
+    }
+    
+    /// Creates a data object with the given Base64 encoded string.
+    ///
+    /// - Returns: A data object built by Base64 decoding the provided string. Returns nil if the string object could not be decoded.
+    public func base64DecodedData() -> Data? {
+        return NSData(base64Encoded: self, options: []) as Data?
+    }
+    
 }
 
 // MARK: - Extension DYFStore
 extension DYFStore {
-    
-    /// Outputs log to the console.
-    ///
-    /// - Parameters:
-    ///   - format: The format string.
-    ///   - args: The arguments for outputting to the console.
-    public func log(_ format: String, _ args: CVarArg...) {
-        DYFStoreLog(format, args)
-    }
     
     /// Uses enumeration to inicate the state of purchase.
     public enum PurchaseState: UInt8 {
@@ -1058,13 +1179,19 @@ extension DYFStore {
         public var error: NSError?
         
         /// A string used to identify a product that can be purchased from within your app.
-        public var productIdentifier: String? = nil
+        public var productIdentifier: String?
+        
+        /// When a transaction is restored, the current transaction holds a new transaction date. Your app will read this property to retrieve the restored transaction date.
+        public var originalTransactionDate: Date?
+        
+        /// When a transaction is restored, the current transaction holds a new transaction identifier. Your app will read this property to retrieve the restored transaction identifier.
+        public var originalTransactionIdentifier: String?
         
         /// The date when the transaction was added to the server queue. Only valid if state is SKPaymentTransactionState.purchased or SKPaymentTransactionState.restored.
-        public var transactionDate: Date? = nil
+        public var transactionDate: Date?
         
         /// The transaction identifier of purchase.
-        public var transactionIdentifier: String? = nil
+        public var transactionIdentifier: String?
     }
     
 }
@@ -1135,9 +1262,16 @@ extension DispatchQueue {
 /// - Parameters:
 ///   - format: The format string.
 ///   - args: The arguments for outputting to the console.
-public func DYFStoreLog(_ format: String, _ args: CVarArg...) {
+///   - funcName: The function name.
+public func DYFStoreLog(_ format: String, _ args: CVarArg..., funcName: String = #function) {
+    
     if DYFStore.default.enableLog {
         let output = String(format: format, args)
-        print("[DYFStore]" + " " + output)
+        
+        let fileName = (#file as NSString).lastPathComponent
+        let lineNum = #line
+        
+        print("[DYFStore]" + " [\(fileName):\(funcName)] [line: \(lineNum)] " + output)
     }
 }
+

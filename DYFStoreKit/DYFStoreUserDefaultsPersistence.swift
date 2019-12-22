@@ -26,19 +26,50 @@
 import Foundation
 import UIKit
 
+/// Returns the shared defaults `UserDefaults` object.
+fileprivate let kUserDefaults = UserDefaults.standard
+
+/// The transaction persistence using the UserDefaults.
 open class DYFStoreUserDefaultsPersistence: NSObject {
     
-    /// Returns the shared defaults `UserDefaults` object.
-    private let userDefaults = UserDefaults.standard
-    
-    /// Instantiates a DYFStoreUserDefaultsPersistence object.
-    public override init() {}
-    
-    private func loadTransactions() -> [Data]? {
-        userDefaults.object(forKey: DYFStoreTransactionsKey)
-        return nil
+    /// Loads an array whose elements are the `Data` objects from the shared preferences search list.
+    ///
+    /// - Returns: An array whose elements are the `Data` objects.
+    private func loadDataFromUserDefaults() -> [Data]? {
+        let obj = kUserDefaults.object(forKey: DYFStoreTransactionsKey)
+        return obj as? [Data]
     }
     
+    /// Returns a Boolean value that indicates whether a transaction is present in shared preferences search list with a given transaction ientifier.
+    ///
+    /// - Parameter transactionIdentifier: The unique server-provided identifier.
+    /// - Returns: True if a transaction is present in shared preferences search list, otherwise false.
+    public func containsTransaction(_ transactionIdentifier: String) -> Bool {
+        
+        let array = loadDataFromUserDefaults()
+        guard let arr = array, arr.count > 0 else {
+            return false
+        }
+        
+        for data in arr {
+            
+            let obj = DYFStoreConverter.decodeObject(data)
+            let transaction = obj as? DYFStoreTransaction
+            print("\(#function) \(#line) transaction: \(String(describing: transaction))")
+            let identifier = transaction?.transactionIdentifier
+            print("\(#function) \(#line) identifier: \(identifier ?? "")")
+            
+            if let id = identifier, id == transactionIdentifier {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    /// Stores an `DYFStoreTransaction` object in the shared preferences search list.
+    ///
+    /// - Parameter transaction: An `DYFStoreTransaction` object.
     public func storeTransaction(_ transaction: DYFStoreTransaction) {
         
         let data = DYFStoreConverter.encodeObject(transaction)
@@ -46,31 +77,94 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
             return
         }
         
-        var transactions = loadTransactions() ?? [Data]()
+        var transactions = loadDataFromUserDefaults() ?? [Data]()
         transactions.append(aData)
+        print("\(#function) \(#line) transactions: \(transactions)")
         
-        userDefaults.set(transactions, forKey: DYFStoreTransactionsKey);
-        userDefaults.synchronize()
+        kUserDefaults.set(transactions, forKey: DYFStoreTransactionsKey)
+        kUserDefaults.synchronize()
     }
     
+    /// Retrieves an array whose elements are the `DYFStoreTransaction` objects from the shared preferences search list.
+    ///
+    /// - Returns: An array whose elements are the `DYFStoreTransaction` objects.
     public func retrieveTransactions() -> [DYFStoreTransaction]?  {
         
-        return nil
+        let array = loadDataFromUserDefaults()
+        guard let arr = array else {
+            return nil
+        }
         
+        var transactions = [DYFStoreTransaction]()
+        for item in arr {
+            
+            let obj = DYFStoreConverter.decodeObject(item)
+            if let transaction = obj as? DYFStoreTransaction {
+                transactions.append(transaction)
+            }
+        }
+        
+        return transactions
     }
     
+    /// Retrieves an `DYFStoreTransaction` object from the shared preferences search list with a given transaction ientifier.
+    ///
+    /// - Parameter transactionIdentifier: The unique server-provided identifier.
+    /// - Returns: An `DYFStoreTransaction` object from the shared preferences search list.
     public func retrieveTransaction(_ transactionIdentifier: String) -> DYFStoreTransaction? {
         
+        let array = retrieveTransactions()
+        guard let arr = array else {
+            return nil
+        }
+        
+        for transaction in arr {
+            
+            let identifier = transaction.transactionIdentifier
+            if identifier == transactionIdentifier {
+                return transaction
+            }
+        }
+        
         return nil
     }
     
+    /// Removes an `DYFStoreTransaction` object from the shared preferences search list with a given transaction ientifier.
+    ///
+    /// - Parameter transactionIdentifier: The unique server-provided identifier.
     public func removeTransaction(_ transactionIdentifier: String) {
         
+        let array = loadDataFromUserDefaults()
+        guard var arr = array else {
+            return
+        }
+        
+        var index = -1
+        for (idx, data) in arr.enumerated() {
+            
+            let obj = DYFStoreConverter.decodeObject(data)
+            let transaction = obj as? DYFStoreTransaction
+            print("\(#function) \(#line) transaction: \(String(describing: transaction))")
+            let identifier = transaction?.transactionIdentifier
+            print("\(#function) \(#line) identifier: \(identifier ?? "")")
+
+            if let id = identifier, id == transactionIdentifier {
+                index = idx
+                break
+            }
+        }
+        
+        guard index >= 0 else { return }
+        arr.remove(at: index)
+        
+        kUserDefaults.setValue(arr, forKey: DYFStoreTransactionsKey)
+        kUserDefaults.synchronize()
     }
     
+    /// Removes all transactions from the shared preferences search list.
     public func removeTransactions() {
-        userDefaults.removeObject(forKey: DYFStoreTransactionsKey);
-        userDefaults.synchronize()
+        kUserDefaults.removeObject(forKey: DYFStoreTransactionsKey);
+        kUserDefaults.synchronize()
     }
     
 }

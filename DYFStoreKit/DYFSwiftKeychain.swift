@@ -73,7 +73,7 @@ open class DYFSwiftKeychain: NSObject {
     /// - Returns: A DYFSwiftKeychain object.
     @objc open override func copy() -> Any {
         
-        let keychain = DYFSwiftKeychain.self.createKeychain()
+        let keychain = DYFSwiftKeychain.createKeychain()
         keychain.accessGroup       = self.accessGroup
         keychain.synchronizable    = self.synchronizable
         keychain.serviceIdentifier = self.serviceIdentifier
@@ -178,7 +178,10 @@ open class DYFSwiftKeychain: NSObject {
         query[DYFSwiftKeychain.Constants.accessible] = accessible
         queryDictionary = query
         
-        guard let data = getData(key) else {
+        var ignore: CFTypeRef? = nil
+        let status = SecItemCopyMatching(query as CFDictionary, &ignore)
+        
+        guard status == errSecSuccess else {
             
             if let v = value {
                 query[DYFSwiftKeychain.Constants.valueData] = v
@@ -192,7 +195,6 @@ open class DYFSwiftKeychain: NSObject {
             return osStatus == errSecSuccess
         }
         
-        let _ = data // ignores this data.
         if let v = value {
             let updatedDictionary: [String: Any] = [
                 DYFSwiftKeychain.Constants.valueData: v
@@ -246,8 +248,8 @@ open class DYFSwiftKeychain: NSObject {
     @discardableResult
     public func set(_ value: Bool, forKey key: String, withAccess access: DYFSwiftKeychain.AccessOptions? = nil) -> Bool {
         
-        let bytes: [UInt8] = value ? [1] : [0]
-        let data = Data(bytes: bytes, count: bytes.count)
+        let v = value ? "1" : "0"
+        let data = v.data(using: String.Encoding.utf8)
         
         return set(data, forKey: key, withAccess: access)
     }
@@ -322,6 +324,7 @@ open class DYFSwiftKeychain: NSObject {
     /// - Returns: The boolean value from the keychain. False if unable to read the item.
     @discardableResult
     @objc public func getBool(_ key: String) -> Bool {
+        
         guard let bool = getBool(key) else {
             return false
         }
@@ -335,10 +338,14 @@ open class DYFSwiftKeychain: NSObject {
     /// - Returns: The boolean value from the keychain. Nil if unable to read the item.
     @discardableResult
     public func getBool(_ key: String) -> Bool? {
-        guard let data  = getData(key) else { return nil }
-        guard let first = data.first   else { return nil }
         
-        return first == 1
+        guard let data  = getData(key) else { return nil }
+        
+        guard let s = String(data: data, encoding: String.Encoding.utf8) else {
+            return nil
+        }
+        
+        return Int(s)! == 1
     }
     
     /// Deletes the single keychain item by the specified key.
@@ -351,9 +358,9 @@ open class DYFSwiftKeychain: NSObject {
         lock.lock()
         defer { lock.unlock() }
         
-        let ret = deleteWithoutLock(key)
+        let result = deleteWithoutLock(key)
         
-        return ret
+        return result
     }
     
     /// Same as `delete`, but it is not thread safe.
@@ -417,6 +424,7 @@ open class DYFSwiftKeychain: NSObject {
     
 }
 
+// MARK: - Extension DYFSwiftKeychain
 extension DYFSwiftKeychain {
     
     /// These options are used to determine when a keychain item should be readable.
@@ -627,4 +635,5 @@ extension DYFSwiftKeychain {
     ///
     /// This is not recommended for application use. Items with this attribute do not migrate to a new device. Thus, after restoring from a backup of a different device, these items will not be present.
     case accessibleAlwaysThisDeviceOnly
+    
 }

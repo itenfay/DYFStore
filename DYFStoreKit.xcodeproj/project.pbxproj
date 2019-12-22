@@ -12,6 +12,14 @@
 		1418390322F879CF0086386E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1418390122F879CF0086386E /* Main.storyboard */; };
 		1418390522F879E10086386E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1418390422F879E10086386E /* Assets.xcassets */; };
 		1418390822F879E10086386E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1418390622F879E10086386E /* LaunchScreen.storyboard */; };
+		1437FFAA23ACAB6400CD9BE7 /* DYFLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1437FFA423ACAB6200CD9BE7 /* DYFLoadingView.swift */; };
+		1437FFAB23ACAB6400CD9BE7 /* DYFStoreProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1437FFA523ACAB6300CD9BE7 /* DYFStoreProduct.swift */; };
+		1437FFAC23ACAB6400CD9BE7 /* DYFStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1437FFA623ACAB6300CD9BE7 /* DYFStoreManager.swift */; };
+		1437FFAD23ACAB6400CD9BE7 /* DYFStoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1437FFA723ACAB6300CD9BE7 /* DYFStoreTableViewCell.swift */; };
+		1437FFAE23ACAB6400CD9BE7 /* DYFStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1437FFA823ACAB6300CD9BE7 /* DYFStoreViewController.swift */; };
+		1437FFAF23ACAB6400CD9BE7 /* DYFExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1437FFA923ACAB6300CD9BE7 /* DYFExtensions.swift */; };
+		1437FFB323AFCA5500CD9BE7 /* DYFStoreViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1437FFB123AFCA5500CD9BE7 /* DYFStoreViewController.xib */; };
+		1437FFB723AFCAC700CD9BE7 /* DYFStoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1437FFB523AFCAC700CD9BE7 /* DYFStoreTableViewCell.xib */; };
 		148DF49F236F3BCA0026DBB3 /* DYFSwiftKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF497236F3BC90026DBB3 /* DYFSwiftKeychain.swift */; };
 		148DF4A0236F3BCA0026DBB3 /* DYFSwiftRuntimeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF498236F3BC90026DBB3 /* DYFSwiftRuntimeProvider.swift */; };
 		148DF4A1236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */; };
@@ -35,6 +43,14 @@
 		1418390422F879E10086386E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1418390722F879E10086386E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1418390922F879E10086386E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1437FFA423ACAB6200CD9BE7 /* DYFLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFLoadingView.swift; sourceTree = "<group>"; };
+		1437FFA523ACAB6300CD9BE7 /* DYFStoreProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreProduct.swift; sourceTree = "<group>"; };
+		1437FFA623ACAB6300CD9BE7 /* DYFStoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreManager.swift; sourceTree = "<group>"; };
+		1437FFA723ACAB6300CD9BE7 /* DYFStoreTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreTableViewCell.swift; sourceTree = "<group>"; };
+		1437FFA823ACAB6300CD9BE7 /* DYFStoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreViewController.swift; sourceTree = "<group>"; };
+		1437FFA923ACAB6300CD9BE7 /* DYFExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFExtensions.swift; sourceTree = "<group>"; };
+		1437FFB123AFCA5500CD9BE7 /* DYFStoreViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DYFStoreViewController.xib; sourceTree = "<group>"; };
+		1437FFB523AFCAC700CD9BE7 /* DYFStoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DYFStoreTableViewCell.xib; sourceTree = "<group>"; };
 		148DF497236F3BC90026DBB3 /* DYFSwiftKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFSwiftKeychain.swift; sourceTree = "<group>"; };
 		148DF498236F3BC90026DBB3 /* DYFSwiftRuntimeProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFSwiftRuntimeProvider.swift; sourceTree = "<group>"; };
 		148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreReceiptVerifier.swift; sourceTree = "<group>"; };
@@ -88,6 +104,14 @@
 			isa = PBXGroup;
 			children = (
 				141838FD22F879CF0086386E /* AppDelegate.swift */,
+				1437FFA923ACAB6300CD9BE7 /* DYFExtensions.swift */,
+				1437FFA423ACAB6200CD9BE7 /* DYFLoadingView.swift */,
+				1437FFA623ACAB6300CD9BE7 /* DYFStoreManager.swift */,
+				1437FFA523ACAB6300CD9BE7 /* DYFStoreProduct.swift */,
+				1437FFA723ACAB6300CD9BE7 /* DYFStoreTableViewCell.swift */,
+				1437FFB523AFCAC700CD9BE7 /* DYFStoreTableViewCell.xib */,
+				1437FFA823ACAB6300CD9BE7 /* DYFStoreViewController.swift */,
+				1437FFB123AFCA5500CD9BE7 /* DYFStoreViewController.xib */,
 				141838FF22F879CF0086386E /* ViewController.swift */,
 				1418390122F879CF0086386E /* Main.storyboard */,
 				1418390422F879E10086386E /* Assets.xcassets */,
@@ -185,7 +209,9 @@
 			files = (
 				1418390822F879E10086386E /* LaunchScreen.storyboard in Resources */,
 				1418390522F879E10086386E /* Assets.xcassets in Resources */,
+				1437FFB323AFCA5500CD9BE7 /* DYFStoreViewController.xib in Resources */,
 				1418390322F879CF0086386E /* Main.storyboard in Resources */,
+				1437FFB723AFCAC700CD9BE7 /* DYFStoreTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,14 +223,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				148DF49F236F3BCA0026DBB3 /* DYFSwiftKeychain.swift in Sources */,
+				1437FFAF23ACAB6400CD9BE7 /* DYFExtensions.swift in Sources */,
 				148DF4A6236F3BCA0026DBB3 /* DYFStore.swift in Sources */,
 				148DF4A5236F3BCA0026DBB3 /* DYFStoreUserDefaultsPersistence.swift in Sources */,
+				1437FFAD23ACAB6400CD9BE7 /* DYFStoreTableViewCell.swift in Sources */,
 				1418390022F879CF0086386E /* ViewController.swift in Sources */,
 				148DF4A4236F3BCA0026DBB3 /* DYFStoreConverter.swift in Sources */,
 				148DF4A2236F3BCA0026DBB3 /* DYFStoreTransaction.swift in Sources */,
 				148DF4A3236F3BCA0026DBB3 /* DYFStoreKeychainPersistence.swift in Sources */,
 				141838FE22F879CF0086386E /* AppDelegate.swift in Sources */,
+				1437FFAC23ACAB6400CD9BE7 /* DYFStoreManager.swift in Sources */,
 				148DF4A1236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift in Sources */,
+				1437FFAB23ACAB6400CD9BE7 /* DYFStoreProduct.swift in Sources */,
+				1437FFAE23ACAB6400CD9BE7 /* DYFStoreViewController.swift in Sources */,
+				1437FFAA23ACAB6400CD9BE7 /* DYFLoadingView.swift in Sources */,
 				148DF4A0236F3BCA0026DBB3 /* DYFSwiftRuntimeProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -41,15 +41,15 @@ public class DYFStoreConverter: NSObject {
     /// - Returns: The data object into which the archive is written.
     @objc public static func encodeObject(_ object: Any?) -> Data? {
         
-        if #available(iOS 11.0, *) {
-            
-            let archiver = NSKeyedArchiver(requiringSecureCoding: true)
-            archiver.encode(object)
-            return archiver.encodedData // archiver.finishEncoding() and return the data.
-        }
-        
         guard let obj = object else {
             return nil
+        }
+        
+        if #available(iOS 11.0, *) {
+            
+            let archiver = NSKeyedArchiver(requiringSecureCoding: false)
+            archiver.encode(obj)
+            return archiver.encodedData // archiver.finishEncoding() and return the data.
         }
         
         return NSKeyedArchiver.archivedData(withRootObject: obj);
@@ -69,13 +69,16 @@ public class DYFStoreConverter: NSObject {
             
             do {
                 let unarchiver = try NSKeyedUnarchiver(forReadingFrom: tData)
+                unarchiver.requiresSecureCoding = false
                 let object = unarchiver.decodeObject()
                 unarchiver.finishDecoding()
                 
                 return object
             } catch let error {
                 
+                #if DEBUG
                 print("DYFStoreConverter.decodeObject error: \(error.localizedDescription)")
+                #endif
                 
                 return nil
             }
@@ -111,7 +114,9 @@ public class DYFStoreConverter: NSObject {
             return data
         } catch let error {
             
+            #if DEBUG
             print("JSONSerialization.data error: \(error.localizedDescription)")
+            #endif
             
             return nil
         }
@@ -144,7 +149,9 @@ public class DYFStoreConverter: NSObject {
             return String(data: data, encoding: String.Encoding.utf8)
         } catch let error {
             
+            #if DEBUG
             print("JSONSerialization.data error: \(error.localizedDescription)")
+            #endif
             
             return nil
         }
@@ -166,9 +173,7 @@ public class DYFStoreConverter: NSObject {
     /// - Returns: A Foundation object from the JSON data in data, or nil if an error occurs.
     @objc public static func jsonObject(withData data: Data?, options: JSONSerialization.ReadingOptions = []) -> Any? {
         
-        guard let aData = data else {
-            return nil
-        }
+        guard let aData = data else { return nil }
         
         do {
             // struct GroceryProduct: Codable {
@@ -192,7 +197,9 @@ public class DYFStoreConverter: NSObject {
             return obj
         } catch let error {
             
+            #if DEBUG
             print("JSONSerialization.jsonObject error: \(error.localizedDescription)")
+            #endif
             
             return nil
         }
@@ -224,9 +231,12 @@ public class DYFStoreConverter: NSObject {
             return obj
         } catch let error {
             
+            #if DEBUG
             print("JSONSerialization.jsonObject error: \(error)")
+            #endif
             
             return nil
         }
     }
+    
 }

@@ -29,41 +29,64 @@ import UIKit
 /// The transaction persistence using the keychain.
 open class DYFStoreKeychainPersistence: NSObject {
     
-    /// Instantiates a DYFStoreKeychainPersistence object.
-    public override init() {}
-    
-    /// Loads an array whose elements are the `Data` objects from the keychain.
-    ///
-    /// - Returns: An array whose elements are the `Data` objects.
-    private func loadTransactions() -> [Data]? {
-        
+    /// Instantiates a DYFSwiftKeychain object.
+    private lazy var keychain: DYFSwiftKeychain = {
         let keychain = DYFSwiftKeychain()
-        let data = keychain.getData(DYFStoreTransactionsKey)
+        return keychain
+    }()
+    
+    /// Loads an array whose elements are the `Dictionary` objects from the keychain.
+    ///
+    /// - Returns: An array whose elements are the `Dictionary` objects.
+    private func loadDataFromKeychain() -> [[String : Any]]? {
         
-        let array = DYFStoreConverter.jsonObject(withData: data) as? [Data]
-        guard let arr = array else {
-            return nil
+        let data = self.keychain.getData(DYFStoreTransactionsKey)
+        
+        let array = DYFStoreConverter.jsonObject(withData: data) as? [[String : Any]]
+        
+        return array
+    }
+    
+    /// Returns a Boolean value that indicates whether a transaction is present in the keychain with a given transaction ientifier.
+    ///
+    /// - Parameter transactionIdentifier: The unique server-provided identifier.
+    /// - Returns: True if a transaction is present in the keychain, otherwise false.
+    public func containsTransaction(_ transactionIdentifier: String) -> Bool {
+        
+        let array = loadDataFromKeychain()
+        guard let arr = array, arr.count > 0 else {
+            return false
         }
         
-        return arr
+        for item in arr {
+            
+            let transaction = DYFSwiftRuntimeProvider.model(withDictionary: item, forClass: DYFStoreTransaction.self)
+            let identifier = transaction?.transactionIdentifier
+            print("\(#function) \(#line) identifier: \(identifier ?? "")")
+            
+            if let id = identifier, id == transactionIdentifier {
+                return true
+            }
+        }
+        
+        return false
     }
     
     /// Stores an `DYFStoreTransaction` object in the keychain item.
     ///
     /// - Parameter transaction: An `DYFStoreTransaction` object.
-    public func storeTransaction(_ transaction: DYFStoreTransaction) {
+    public func storeTransaction(_ transaction: DYFStoreTransaction?) {
         
-        let data = DYFStoreConverter.encodeObject(transaction)
-        guard let aData = data else {
+        let obj = DYFSwiftRuntimeProvider.dictionary(withModel: transaction)
+        guard let dict = obj else {
             return
         }
         
-        var transactions = loadTransactions() ?? [Data]()
-        transactions.append(aData)
+        var transactions = loadDataFromKeychain() ?? [[String : Any]]()
+        transactions.append(dict)
         
         let tData = DYFStoreConverter.json(withObject: transactions)
-        let keychain = DYFSwiftKeychain()
-        keychain.set(tData, forKey: DYFStoreTransactionsKey)
+        self.keychain.set(tData, forKey: DYFStoreTransactionsKey)
     }
     
     /// Retrieves an array whose elements are the `DYFStoreTransaction` objects from the keychain.
@@ -71,7 +94,7 @@ open class DYFStoreKeychainPersistence: NSObject {
     /// - Returns: An array whose elements are the `DYFStoreTransaction` objects.
     public func retrieveTransactions() -> [DYFStoreTransaction]? {
         
-        let array = loadTransactions()
+        let array = loadDataFromKeychain()
         guard let arr = array else {
             return nil
         }
@@ -79,11 +102,12 @@ open class DYFStoreKeychainPersistence: NSObject {
         var transactions = [DYFStoreTransaction]()
         for item in arr {
             
-            let obj = DYFStoreConverter.decodeObject(item)
-            if let transaction = obj as? DYFStoreTransaction {
-                transactions.append(transaction)
+            let transaction = DYFSwiftRuntimeProvider.model(withDictionary: item, forClass: DYFStoreTransaction.self)
+            if let t = transaction {
+                transactions.append(t)
             }
         }
+        print("\(#function) \(#line) transactions: \(transactions)")
         
         return transactions
     }
@@ -102,6 +126,7 @@ open class DYFStoreKeychainPersistence: NSObject {
         for transaction in arr {
             
             let identifier = transaction.transactionIdentifier
+            print("\(#function) \(#line) identifier: \(identifier ?? "")")
             if identifier == transactionIdentifier {
                 return transaction
             }
@@ -115,17 +140,18 @@ open class DYFStoreKeychainPersistence: NSObject {
     /// - Parameter transactionIdentifier: The unique server-provided identifier.
     public func removeTransaction(_ transactionIdentifier: String) {
         
-        let array = loadTransactions()
+        let array = loadDataFromKeychain()
         guard var arr = array else {
             return
         }
+        print("\(#function) \(#line) arr: \(arr)")
         
         var index: Int = -1
-        for (idx, data) in arr.enumerated() {
+        for (idx, item) in arr.enumerated() {
             
-            let obj = DYFStoreConverter.decodeObject(data)
-            let transaction = obj as? DYFStoreTransaction
+            let transaction = DYFSwiftRuntimeProvider.model(withDictionary: item, forClass: DYFStoreTransaction.self)
             let identifier = transaction?.transactionIdentifier
+            print("\(#function) \(#line) identifier: \(identifier ?? "")")
             
             if let id = identifier, id == transactionIdentifier {
                 index = idx
@@ -134,18 +160,15 @@ open class DYFStoreKeychainPersistence: NSObject {
         }
         
         guard index >= 0 else { return }
-        
-        let keychain = DYFSwiftKeychain()
         arr.remove(at: index)
         
         let tData = DYFStoreConverter.json(withObject: arr)
-        keychain.set(tData, forKey: DYFStoreTransactionsKey)
+        self.keychain.set(tData, forKey: DYFStoreTransactionsKey)
     }
     
     /// Removes all transactions from the keychain.
     public func removeTransactions() {
-        let keychain = DYFSwiftKeychain()
-        keychain.delete(DYFStoreTransactionsKey)
+        self.keychain.delete(DYFStoreTransactionsKey)
     }
     
 }
