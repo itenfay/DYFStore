@@ -55,9 +55,7 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
             
             let obj = DYFStoreConverter.decodeObject(data)
             let transaction = obj as? DYFStoreTransaction
-            print("\(#function) \(#line) transaction: \(String(describing: transaction))")
             let identifier = transaction?.transactionIdentifier
-            print("\(#function) \(#line) identifier: \(identifier ?? "")")
             
             if let id = identifier, id == transactionIdentifier {
                 return true
@@ -70,7 +68,7 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     /// Stores an `DYFStoreTransaction` object in the shared preferences search list.
     ///
     /// - Parameter transaction: An `DYFStoreTransaction` object.
-    public func storeTransaction(_ transaction: DYFStoreTransaction) {
+    public func storeTransaction(_ transaction: DYFStoreTransaction?) {
         
         let data = DYFStoreConverter.encodeObject(transaction)
         guard let aData = data else {
@@ -79,7 +77,6 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
         
         var transactions = loadDataFromUserDefaults() ?? [Data]()
         transactions.append(aData)
-        print("\(#function) \(#line) transactions: \(transactions)")
         
         kUserDefaults.set(transactions, forKey: DYFStoreTransactionsKey)
         kUserDefaults.synchronize()
@@ -144,10 +141,8 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
             
             let obj = DYFStoreConverter.decodeObject(data)
             let transaction = obj as? DYFStoreTransaction
-            print("\(#function) \(#line) transaction: \(String(describing: transaction))")
             let identifier = transaction?.transactionIdentifier
-            print("\(#function) \(#line) identifier: \(identifier ?? "")")
-
+            
             if let id = identifier, id == transactionIdentifier {
                 index = idx
                 break

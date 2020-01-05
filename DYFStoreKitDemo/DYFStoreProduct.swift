@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 
 open class DYFStoreProduct: NSObject {
    

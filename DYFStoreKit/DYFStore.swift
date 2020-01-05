@@ -95,7 +95,6 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     
     /// deinit
     deinit {
-        DYFStoreLog("deinit")
         removePaymentTransactionObserver()
     }
     
@@ -278,7 +277,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         let invalidProductIdentifiers = response.invalidProductIdentifiers
         
         for product in products {
-            DYFStoreLog("received product with id: %@", product.productIdentifier)
+            DYFStoreLog("received product with id: \(product.productIdentifier)")
             
             if !self.containsProduct(product) {
                 self.availableProducts?.add(product)
@@ -286,7 +285,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         }
         
         for (idx, value) in invalidProductIdentifiers.enumerated() {
-            DYFStoreLog("invalid product with id: %@, index: \(idx)", value)
+            DYFStoreLog("invalid product with id: \(value), index: \(idx)")
             
             if !self.invalidIdentifiers!.contains(value) {
                 self.invalidIdentifiers?.add(value)
@@ -320,14 +319,14 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         
         if let req = self.productsRequest, req === request {
             // Prints the cause of the product request failure.
-            DYFStoreLog("products request failed with error: \(err)")
+            DYFStoreLog("products request failed with error: \(err.code), \(err.localizedDescription)")
             
             self.productsRequestDidFail?(err)
             self.productsRequest = nil
         }
         
         if let req = self.refreshReceiptRequest, req === request {
-            DYFStoreLog("refresh receipt failed with error: \(err)")
+            DYFStoreLog("refresh receipt failed with error: \(err.code), \(err.localizedDescription)")
             
             self.refreshReceiptFailureBlock?(err)
             self.refreshReceiptRequest = nil
@@ -377,7 +376,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             
             let tempTransaction = obj as! SKPaymentTransaction
             let id = tempTransaction.transactionIdentifier ?? ""
-            DYFStoreLog("extractPurchasedTransaction: index: \(idx), transactionId: \(id)")
+            DYFStoreLog("index: \(idx), transactionId: \(id)")
             
             if id == transactionId {
                 transaction = tempTransaction
@@ -404,7 +403,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             let tempTransaction = obj as! SKPaymentTransaction
             let id = tempTransaction.transactionIdentifier ?? ""
             let originalId = tempTransaction.original?.transactionIdentifier ?? ""
-            DYFStoreLog("extractRestoredTransaction: index: \(idx), transactionId: \(id), originalTransactionId: \(originalId)")
+            DYFStoreLog("index: \(idx), transactionId: \(id), originalTransactionId: \(originalId)")
             
             if id == transactionId {
                 transaction = tempTransaction
@@ -427,7 +426,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         
         guard let identifier = productIdentifier, !identifier.isEmpty else {
             
-            DYFStoreLog("purchaseProduct: The inputted product identifier is null or empty")
+            DYFStoreLog("The inputted product identifier is null or empty")
             
             let errDesc = NSLocalizedString("The inputted product identifier is null or empty", tableName: "DYFStore", comment: "Error description")
             let userInfo = [NSLocalizedDescriptionKey: errDesc]
@@ -446,7 +445,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         let product = self.product(forIdentifier: identifier)
         if product != nil {
             
-            DYFStoreLog("purchaseProduct: \(identifier), quantity: \(quantity)")
+            DYFStoreLog("productIdentifier: \(identifier), quantity: \(quantity)")
             
             self.quantity = quantity
             
@@ -459,7 +458,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             
         } else {
             
-            DYFStoreLog("purchaseProduct: unknown product identifier: \(identifier)")
+            DYFStoreLog("Unknown product identifier: \(identifier)")
             
             let errDesc = NSLocalizedString("Unknown product identifier", tableName: "DYFStore", comment: "Error description")
             let userInfo = [NSLocalizedDescriptionKey: errDesc]
@@ -506,9 +505,11 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// Calling finishTransaction(_:) on a transaction that is in the SKPaymentTransactionState.purchasing state throws an exception.
     ///
     /// - Parameter transaction: The transaction to finish.
-    public func finishTransaction(_ transaction: SKPaymentTransaction) {
-        DYFStoreLog("finishTransaction: \(transaction.transactionIdentifier ?? "")")
-        SKPaymentQueue.default().finishTransaction(transaction)
+    public func finishTransaction(_ transaction: SKPaymentTransaction?) {
+        if let tx = transaction {
+            DYFStoreLog("transactionIdentifier: \(tx.transactionIdentifier ?? "")")
+            SKPaymentQueue.default().finishTransaction(tx)
+        }
     }
     
     // MARK: - Receipt
@@ -589,7 +590,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             switch state {
                 
             case .waiting:
-                DYFStoreLog("The download is inactive, waiting to be downloaded.")
+                DYFStoreLog("The download is inactive, waiting to be downloaded")
                 //queue.start([download])
                 break
             case .active:
@@ -621,7 +622,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
         let err = error as NSError
         
-        DYFStoreLog("The restored transactions failed with error(%@)", err)
+        DYFStoreLog("The restored transactions failed with error: \(err.code), \(err.localizedDescription)")
         
         var info = DYFStore.NotificationInfo()
         
@@ -643,7 +644,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         for transaction in transactions {
             // Logs all transactions that have been removed from the payment queue.
             let productId = transaction.payment.productIdentifier
-            DYFStoreLog("%@ has been removed from the payment queue", productId)
+            DYFStoreLog("\(productId) has been removed from the payment queue")
         }
     }
     
@@ -683,7 +684,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///   - transaction: An `SKPaymentTransaction` object in the payment queue.
     ///   - queue: The payment queue that updated the transactions.
     private func didPurchaseTransaction(_ transaction: SKPaymentTransaction, queue: SKPaymentQueue) {
-        DYFStoreLog("The transaction purchased. Deliver the content for %@", transaction.payment.productIdentifier)
+        DYFStoreLog("The transaction purchased. Deliver the content for \(transaction.payment.productIdentifier)")
         
         self.purchasedTranscations?.add(transaction)
         // Checks whether the purchased product has content hosted with Apple.
@@ -710,7 +711,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///   - error: An object describing the error that occurred while processing the transaction.
     private func didFailWithTransaction(_ transaction: SKPaymentTransaction, queue: SKPaymentQueue, error: NSError) {
         
-        DYFStoreLog("The transaction failed with product(%@) and error(%@)", transaction.payment.productIdentifier, error.debugDescription)
+        DYFStoreLog("The transaction failed with product(\(transaction.payment.productIdentifier)) and error(\(error.debugDescription))")
         
         var info = DYFStore.NotificationInfo()
         
@@ -734,7 +735,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///   - transaction: An `SKPaymentTransaction` object in the payment queue.
     ///   - queue: The payment queue that updated the transactions.
     private func didRestoreTransaction(_ transaction: SKPaymentTransaction, queue: SKPaymentQueue) {
-        DYFStoreLog("The transaction restored. Restore the content for %@", transaction.payment.productIdentifier)
+        DYFStoreLog("The transaction restored. Restore the content for \(transaction.payment.productIdentifier)")
         
         self.restoredTranscations?.add(transaction)
         // Sends a DYFStoreDownload.State.started notification if it has.
@@ -791,7 +792,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     // MARK: - Download Transaction
     
     private func didUpdateDownload(_ download: SKDownload, queue: SKPaymentQueue) {
-        DYFStoreLog("The download(%@) for product(%@) updated", download.contentIdentifier, download.transaction.payment.productIdentifier)
+        DYFStoreLog("The download(\(download.contentIdentifier)) for product(\(download.transaction.payment.productIdentifier)) updated")
         
         // The content is being downloaded. Let's provide a download progress to the user.
         var info = DYFStore.NotificationInfo()
@@ -802,19 +803,19 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     }
     
     private func didPauseDownload(_ download: SKDownload, queue: SKPaymentQueue) {
-        DYFStoreLog("The download(%@) for product(%@) paused", download.contentIdentifier, download.transaction.payment.productIdentifier)
+        DYFStoreLog("The download(\(download.contentIdentifier)) for product(\(download.transaction.payment.productIdentifier)) paused")
     }
     
     private func didCancelDownload(_ download: SKDownload, queue: SKPaymentQueue) {
         let transaction: SKPaymentTransaction = download.transaction
         
-        DYFStoreLog("The download(%@) for product(%@) canceled", download.contentIdentifier, transaction.payment.productIdentifier)
+        DYFStoreLog("The download(\(download.contentIdentifier)) for product(\(transaction.payment.productIdentifier)) canceled")
         
         // StoreKit saves your downloaded content in the Caches directory. Let's remove it.
         do {
             try FileManager.default.removeItem(at: download.contentURL ?? URL(string: "")!)
         } catch let error {
-            DYFStoreLog("FileManager.default.removeItem(at:) (%@)", error.localizedDescription)
+            DYFStoreLog("FileManager.default.removeItem(at:): \(error.localizedDescription)")
         }
         
         var info = DYFStore.NotificationInfo()
@@ -838,14 +839,14 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         let transaction: SKPaymentTransaction = download.transaction
         let error = download.error! as NSError
         
-        DYFStoreLog("The download(%@) for product(%@) failed with error(%@)", download.contentIdentifier, transaction.payment.productIdentifier, error.localizedDescription)
+        DYFStoreLog("The download(\(download.contentIdentifier)) for product(\(transaction.payment.productIdentifier)) failed with error(\(error.localizedDescription))")
         
         // If a download fails, remove it from the Caches, then finish the transaction.
         // It is recommended to retry downloading the content in this case.
         do {
             try FileManager.default.removeItem(at: download.contentURL ?? URL(string: "")!)
         } catch let error {
-            DYFStoreLog("FileManager.default.removeItem(at:) (%@)", error.localizedDescription)
+            DYFStoreLog("FileManager.default.removeItem(at:): \(error.localizedDescription)")
         }
         
         var info = DYFStore.NotificationInfo()
@@ -863,7 +864,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         let transaction: SKPaymentTransaction = download.transaction
         
         // The download is complete. StoreKit saves the downloaded content in the Caches directory.
-        DYFStoreLog("The download(%@) for product(%@) finished. Location of downloaded file(%@)", download.contentIdentifier, transaction.payment.productIdentifier, download.contentURL!.absoluteString)
+        DYFStoreLog("The download(\(download.contentIdentifier)) for product(\(transaction.payment.productIdentifier)) finished. Location of downloaded file(\(download.contentURL!.absoluteString))")
         
         // Post a DYFStoreDownload.State.succeeded notification if the download is completed.
         var info = DYFStore.NotificationInfo()
@@ -1274,4 +1275,3 @@ public func DYFStoreLog(_ format: String, _ args: CVarArg..., funcName: String =
         print("[DYFStore]" + " [\(fileName):\(funcName)] [line: \(lineNum)] " + output)
     }
 }
-

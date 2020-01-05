@@ -77,7 +77,7 @@ public class DYFStoreConverter: NSObject {
             } catch let error {
                 
                 #if DEBUG
-                print("DYFStoreConverter.decodeObject error: \(error.localizedDescription)")
+                print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
                 #endif
                 
                 return nil
@@ -115,7 +115,7 @@ public class DYFStoreConverter: NSObject {
         } catch let error {
             
             #if DEBUG
-            print("JSONSerialization.data error: \(error.localizedDescription)")
+            print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
             #endif
             
             return nil
@@ -150,7 +150,7 @@ public class DYFStoreConverter: NSObject {
         } catch let error {
             
             #if DEBUG
-            print("JSONSerialization.data error: \(error.localizedDescription)")
+            print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
             #endif
             
             return nil
@@ -198,7 +198,7 @@ public class DYFStoreConverter: NSObject {
         } catch let error {
             
             #if DEBUG
-            print("JSONSerialization.jsonObject error: \(error.localizedDescription)")
+            print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
             #endif
             
             return nil
@@ -232,7 +232,7 @@ public class DYFStoreConverter: NSObject {
         } catch let error {
             
             #if DEBUG
-            print("JSONSerialization.jsonObject error: \(error)")
+            print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error)")
             #endif
             
             return nil

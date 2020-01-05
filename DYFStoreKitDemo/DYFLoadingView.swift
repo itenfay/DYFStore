@@ -23,7 +23,6 @@
 // THE SOFTWARE.
 //
 
-import Foundation
 import UIKit
 
 /// Creates and returns a color object using the specified opacity and RGB component values.
@@ -167,7 +166,7 @@ open class DYFLoadingView: UIView {
         
         let cw = 260.0
         let ch = 130.0
-        self.contentView.center = CGPoint(x: cw/2, y: ch/2)
+        self.contentView.center = CGPoint(x: sw/2, y: sh/2)
         self.contentView.bounds = CGRect(x: 0, y: 0, width: cw, height: ch)
         self.contentView.setCorner(radius: 10.0)
         
@@ -177,7 +176,7 @@ open class DYFLoadingView: UIView {
     
     deinit {
         #if DEBUG
-        print("\(#function)")
+        print("[\((#file as NSString).lastPathComponent):\(#function)]")
         #endif
     }
 }

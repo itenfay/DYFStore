@@ -150,8 +150,6 @@ open class DYFStoreReceiptVerifier: NSObject {
             
             let nsError = err as NSError
             
-            //print("DYFStoreReceiptVerifier.didReceiveData error: (\(nsError.code), \(nsError.localizedDescription))")
-            
             DispatchQueue.main.async {
                 self.delegate?.verifyReceipt(self, didFailWithError: nsError)
             }
@@ -189,8 +187,6 @@ open class DYFStoreReceiptVerifier: NSObject {
         } catch let error {
             
             let nsError = error as NSError
-            
-            //print("DYFStoreReceiptVerifier.processResult error: (\(nsError.code), \(nsError.localizedDescription))")
             
             DispatchQueue.main.async {
                 self.delegate?.verifyReceipt(self, didFailWithError: nsError)

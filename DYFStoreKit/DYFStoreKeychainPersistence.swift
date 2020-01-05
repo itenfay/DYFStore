@@ -62,7 +62,6 @@ open class DYFStoreKeychainPersistence: NSObject {
             
             let transaction = DYFSwiftRuntimeProvider.model(withDictionary: item, forClass: DYFStoreTransaction.self)
             let identifier = transaction?.transactionIdentifier
-            print("\(#function) \(#line) identifier: \(identifier ?? "")")
             
             if let id = identifier, id == transactionIdentifier {
                 return true
@@ -107,7 +106,6 @@ open class DYFStoreKeychainPersistence: NSObject {
                 transactions.append(t)
             }
         }
-        print("\(#function) \(#line) transactions: \(transactions)")
         
         return transactions
     }
@@ -126,7 +124,6 @@ open class DYFStoreKeychainPersistence: NSObject {
         for transaction in arr {
             
             let identifier = transaction.transactionIdentifier
-            print("\(#function) \(#line) identifier: \(identifier ?? "")")
             if identifier == transactionIdentifier {
                 return transaction
             }
@@ -144,14 +141,12 @@ open class DYFStoreKeychainPersistence: NSObject {
         guard var arr = array else {
             return
         }
-        print("\(#function) \(#line) arr: \(arr)")
         
         var index: Int = -1
         for (idx, item) in arr.enumerated() {
             
             let transaction = DYFSwiftRuntimeProvider.model(withDictionary: item, forClass: DYFStoreTransaction.self)
             let identifier = transaction?.transactionIdentifier
-            print("\(#function) \(#line) identifier: \(identifier ?? "")")
             
             if let id = identifier, id == transactionIdentifier {
                 index = idx

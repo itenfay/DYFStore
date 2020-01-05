@@ -50,7 +50,7 @@ open class DYFStoreTransaction: NSObject, NSCoding {
     ///
     /// The contents of this property are undefined except when transactionState is set to purchased.
     /// The receipt is a signed chunk of data that can be sent to the App Store to verify that the payment was successfully processed. This is most useful when designing a store that uses a server separate from the iPhone to verify that payment was processed. For more information on verifying receipts, see [Receipt Validation Programming Guide](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Introduction.html#//apple_ref/doc/uid/TP40010573).
-    @objc open var transactionReceipt: NSString?
+    @objc open var transactionReceipt: String?
     
     /// Instantiates a DYFStoreTransaction object.
     public override init() {

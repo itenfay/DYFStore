@@ -23,10 +23,13 @@
 // THE SOFTWARE.
 //
 
-import Foundation
 import UIKit
 
 class DYFStoreTableViewCell: UITableViewCell {
+    
+    @IBOutlet weak var nameLabel: UILabel!
+    
+    @IBOutlet weak var localePriceLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
