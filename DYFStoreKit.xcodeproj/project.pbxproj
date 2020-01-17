@@ -85,7 +85,7 @@
 		141838F122F879CF0086386E = {
 			isa = PBXGroup;
 			children = (
-				149E56A0235EEE300011F030 /* DYFStoreKit */,
+				149E56A0235EEE300011F030 /* DYFStore */,
 				141838FC22F879CF0086386E /* DYFStoreKitDemo */,
 				141838FB22F879CF0086386E /* Products */,
 				149E56AB235EF7290011F030 /* Frameworks */,
@@ -121,7 +121,7 @@
 			path = DYFStoreKitDemo;
 			sourceTree = "<group>";
 		};
-		149E56A0235EEE300011F030 /* DYFStoreKit */ = {
+		149E56A0235EEE300011F030 /* DYFStore */ = {
 			isa = PBXGroup;
 			children = (
 				148DF49E236F3BCA0026DBB3 /* DYFStore.swift */,
@@ -133,7 +133,7 @@
 				148DF497236F3BC90026DBB3 /* DYFSwiftKeychain.swift */,
 				148DF498236F3BC90026DBB3 /* DYFSwiftRuntimeProvider.swift */,
 			);
-			path = DYFStoreKit;
+			path = DYFStore;
 			sourceTree = "<group>";
 		};
 		149E56AB235EF7290011F030 /* Frameworks */ = {
