@@ -5,7 +5,7 @@
 
 &emsp; A lightweight and easy-to-use iOS library for In-App Purchases.
 
-&emsp; `DYFStore` uses blocks and notifications to wrap StoreKit, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). `DYFStore` doesn't require any external dependencies. 
+&emsp; `DYFStore` uses blocks and [notifications](#Notifications) to wrap StoreKit, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). `DYFStore` doesn't require any external dependencies. 
 
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](LICENSE)&nbsp;
 [![CocoaPods](http://img.shields.io/cocoapods/v/DYFStore.svg?style=flat)](http://cocoapods.org/pods/DYFStore)&nbsp;
@@ -29,19 +29,21 @@
 
 ## Installation
 
-Using [CocoaPods](https://cocoapods.org):
+&emsp; Using [CocoaPods](https://cocoapods.org):
 
 ``` 
 pod 'DYFStore', '~> 1.0.0'
+```
 
-Or
+&emsp; Or
 
+```
 pod 'DYFStore'
 ```
 
-Or add the files from the [DYFStore](https://github.com/dgynfi/DYFStoreKit_Swift/tree/master/DYFStore)  directory if you're doing it manually.
+&emsp; Or add the files from the [DYFStore](https://github.com/dgynfi/DYFStoreKit_Swift/tree/master/DYFStore) directory if you're doing it manually.
 
-Check out the [wiki](https://github.com/dgynfi/DYFStoreKit_Swift/wiki/Installation) for more options.
+&emsp; Check out the [wiki](https://github.com/dgynfi/DYFStoreKit_Swift/wiki/Installation) for more options.
 
 
 ## Sample Code
@@ -186,7 +188,7 @@ DYFStore.default.purchaseProduct("com.hncs.szj.coin210", userIdentifier: "A43512
 DYFStore.default.restoreTransactions()
 ```
 
-Or
+&emsp; Or
 
 ```
 DYFStore.default.restoreTransactions(userIdentifier: "A43512564ACBEF687924646CAFEFBDCAEDF4155125657")
@@ -326,7 +328,7 @@ self.receiptVerifier.verifyReceipt(data)
 
 &emsp; If security is a concern you might want to avoid using an open source verification logic, and provide your own custom verifier instead.
 
-&emsp; It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C) (C: client, S: server).
+&emsp; It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C, C: client, S: server).
 
 
 ### Finish transactions
