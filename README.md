@@ -32,7 +32,7 @@
 &emsp; Using [CocoaPods](https://cocoapods.org):
 
 ``` 
-pod 'DYFStore', '~> 1.0.0'
+pod 'DYFStore', '~> 1.0.1'
 ```
 
 &emsp; Or
