@@ -29,12 +29,14 @@ Pod::Spec.new do |spec|
   # spec.watchos.deployment_target = "3.0"
   # spec.tvos.deployment_target = "9.0"
 
+  spec.swift_version = "5.0"
+
   spec.source       = { :git => "https://github.com/dgynfi/DYFStore.git", :tag => spec.version }
 
   spec.source_files  = "DYFStore/*.swift"
   # spec.exclude_files = "DYFStore/Exclude"
 
-  # spec.public_header_files = "DYFStore/**/*.h"
+  spec.public_header_files = "DYFStore/*.h"
 
   # spec.resource  = "icon.png"
   # spec.resources = "Resources/*.png"
