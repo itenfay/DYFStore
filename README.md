@@ -1,11 +1,11 @@
-[If you think it can help you, please give it a star. Thanks!](https://github.com/dgynfi/DYFStoreKit_Swift)
+[If you think it can help you, please give it a star. Thanks!](https://github.com/dgynfi/DYFStore)
 
 
-## DYFStoreKit_Swift
+## DYFStore
 
 &emsp; A lightweight and easy-to-use iOS library for In-App Purchases.
 
-&emsp; `DYFStore` uses blocks and [notifications](#Notifications) to wrap StoreKit, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). `DYFStore` doesn't require any external dependencies. 
+&emsp; `DYFStore` uses blocks and [notifications](#Notifications) to wrap `StoreKit`, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). `DYFStore` doesn't require any external dependencies. 
 
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](LICENSE)&nbsp;
 [![CocoaPods](http://img.shields.io/cocoapods/v/DYFStore.svg?style=flat)](http://cocoapods.org/pods/DYFStore)&nbsp;
@@ -23,7 +23,7 @@
 ## Group (ID:15535338)
 
 <div align=left>
-&emsp; <img src="https://github.com/dgynfi/DYFStoreKit_Swift/raw/master/images/qq155353383.jpg" width="30%" />
+&emsp; <img src="https://github.com/dgynfi/DYFStore/raw/master/images/qq155353383.jpg" width="30%" />
 </div>
 
 
@@ -41,9 +41,9 @@ pod 'DYFStore', '~> 1.0.0'
 pod 'DYFStore'
 ```
 
-&emsp; Or add the files from the [DYFStore](https://github.com/dgynfi/DYFStoreKit_Swift/tree/master/DYFStore) directory if you're doing it manually.
+&emsp; Or add the files from the [DYFStore](https://github.com/dgynfi/DYFStore/tree/master/DYFStore) directory if you're doing it manually.
 
-&emsp; Check out the [wiki](https://github.com/dgynfi/DYFStoreKit_Swift/wiki/Installation) for more options.
+&emsp; Check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Installation) for more options.
 
 
 ## Sample Code
@@ -292,7 +292,7 @@ func removeStoreObserver() {
 
 &emsp; `DYFStore` doesn't perform receipt verification by default, but provides reference implementations. You can implement your own custom verification or use the reference verifier provided by the library.
 
-&emsp; The reference verifier is outlined below. For more info, check out the [wiki](https://github.com/dgynfi/DYFStoreKit_Swift/wiki/Receipt-verification).
+&emsp; The reference verifier is outlined below. For more info, check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Receipt-verification).
 
 #### Reference verifier
 
@@ -420,4 +420,3 @@ DispatchQueue.main.asyncAfter(delay: 1.5) {
 ## Requirements
 
 &emsp; `DYFStore` requires `iOS 8.0` or above and `ARC`.
-

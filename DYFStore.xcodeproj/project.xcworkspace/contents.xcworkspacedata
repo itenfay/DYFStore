@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:DYFStoreKit.xcodeproj">
+      location = "self:/Users/dyf/Documents/GitHub/DYFStore/DYFStore.xcodeproj">
    </FileRef>
 </Workspace>

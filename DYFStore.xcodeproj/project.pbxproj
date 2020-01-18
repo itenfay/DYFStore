@@ -36,7 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		141838FA22F879CF0086386E /* DYFStoreKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DYFStoreKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		141838FA22F879CF0086386E /* DYFStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DYFStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1418390222F879CF0086386E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1418390422F879E10086386E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1418390722F879E10086386E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -86,7 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				149E56A0235EEE300011F030 /* DYFStore */,
-				141838FC22F879CF0086386E /* DYFStoreKitDemo */,
+				141838FC22F879CF0086386E /* DYFStoreDemo */,
 				141838FB22F879CF0086386E /* Products */,
 				149E56AB235EF7290011F030 /* Frameworks */,
 			);
@@ -95,12 +95,12 @@
 		141838FB22F879CF0086386E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				141838FA22F879CF0086386E /* DYFStoreKit.app */,
+				141838FA22F879CF0086386E /* DYFStore.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		141838FC22F879CF0086386E /* DYFStoreKitDemo */ = {
+		141838FC22F879CF0086386E /* DYFStoreDemo */ = {
 			isa = PBXGroup;
 			children = (
 				149DE09523BE0CE800DFC0A1 /* AppDelegate.swift */,
@@ -118,7 +118,7 @@
 				1418390622F879E10086386E /* LaunchScreen.storyboard */,
 				1418390922F879E10086386E /* Info.plist */,
 			);
-			path = DYFStoreKitDemo;
+			path = DYFStoreDemo;
 			sourceTree = "<group>";
 		};
 		149E56A0235EEE300011F030 /* DYFStore */ = {
@@ -151,9 +151,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		141838F922F879CF0086386E /* DYFStoreKit */ = {
+		141838F922F879CF0086386E /* DYFStore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1418390C22F879E10086386E /* Build configuration list for PBXNativeTarget "DYFStoreKit" */;
+			buildConfigurationList = 1418390C22F879E10086386E /* Build configuration list for PBXNativeTarget "DYFStore" */;
 			buildPhases = (
 				141838F622F879CF0086386E /* Sources */,
 				141838F722F879CF0086386E /* Frameworks */,
@@ -163,9 +163,9 @@
 			);
 			dependencies = (
 			);
-			name = DYFStoreKit;
+			name = DYFStore;
 			productName = DYFStoreKit;
-			productReference = 141838FA22F879CF0086386E /* DYFStoreKit.app */;
+			productReference = 141838FA22F879CF0086386E /* DYFStore.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -184,7 +184,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 141838F522F879CF0086386E /* Build configuration list for PBXProject "DYFStoreKit" */;
+			buildConfigurationList = 141838F522F879CF0086386E /* Build configuration list for PBXProject "DYFStore" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -197,7 +197,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				141838F922F879CF0086386E /* DYFStoreKit */,
+				141838F922F879CF0086386E /* DYFStore */,
 			);
 		};
 /* End PBXProject section */
@@ -383,16 +383,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = KCBQ48PTUV;
-				INFOPLIST_FILE = "$(SRCROOT)/DYFStoreKitDemo/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/DYFStoreDemo/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.asd.storekit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.asd.store;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -402,16 +404,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = KCBQ48PTUV;
-				INFOPLIST_FILE = "$(SRCROOT)/DYFStoreKitDemo/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/DYFStoreDemo/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.asd.storekit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.asd.store;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -420,7 +424,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		141838F522F879CF0086386E /* Build configuration list for PBXProject "DYFStoreKit" */ = {
+		141838F522F879CF0086386E /* Build configuration list for PBXProject "DYFStore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1418390A22F879E10086386E /* Debug */,
@@ -429,7 +433,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1418390C22F879E10086386E /* Build configuration list for PBXNativeTarget "DYFStoreKit" */ = {
+		1418390C22F879E10086386E /* Build configuration list for PBXNativeTarget "DYFStore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1418390D22F879E10086386E /* Debug */,
