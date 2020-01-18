@@ -2,7 +2,7 @@
 //  DYFStoreManager.swift
 //
 //  Created by dyf on 2016/11/28.
-//  Copyright © 2016 dyf. ( https://github.com/dgynfi/DYFStoreKit_Swift )
+//  Copyright © 2016 dyf. ( https://github.com/dgynfi/DYFStore )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
