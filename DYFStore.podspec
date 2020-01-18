@@ -2,7 +2,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "DYFStore"
-  spec.version      = "1.0.1"
+  spec.version      = "1.0.2"
   spec.summary      = "A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)"
 
   spec.description  = <<-DESC
@@ -13,7 +13,7 @@ Pod::Spec.new do |spec|
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
   # spec.license      = "MIT (example)"
-  # spec.license      = { :type => "MIT", :file => "LICENSE" }
+  spec.license      = { :type => "MIT", :file => "LICENSE" }
 
   spec.author             = { "dyf" => "vinphy.teng@foxmail.com" }
   # Or just: spec.author    = "dyf"
@@ -36,7 +36,7 @@ Pod::Spec.new do |spec|
   spec.source_files  = "DYFStore/*.swift"
   # spec.exclude_files = "DYFStore/Exclude"
 
-  spec.public_header_files = "DYFStore/*.h"
+  # spec.public_header_files = "DYFStore/*.h"
 
   # spec.resource  = "icon.png"
   # spec.resources = "Resources/*.png"
