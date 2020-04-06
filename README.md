@@ -1,11 +1,11 @@
-[If you think it can help you, please give it a star. Thanks!](https://github.com/dgynfi/DYFStore)
+[If this project can help you, please give it a star. Thanks!](https://github.com/dgynfi/DYFStore)
 
 
 ## DYFStore
 
-&emsp; A lightweight and easy-to-use iOS library for In-App Purchases.
+A lightweight and easy-to-use iOS library for In-App Purchases.
 
-&emsp; `DYFStore` uses blocks and [notifications](#Notifications) to wrap `StoreKit`, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). `DYFStore` doesn't require any external dependencies. 
+`DYFStore` uses blocks and [notifications](#Notifications) to wrap `StoreKit`, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). `DYFStore` doesn't require any external dependencies. 
 
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](LICENSE)&nbsp;
 [![CocoaPods](http://img.shields.io/cocoapods/v/DYFStore.svg?style=flat)](http://cocoapods.org/pods/DYFStore)&nbsp;
@@ -20,39 +20,39 @@
 - Built-in hosted content downloads and notifications.
 
 
-## Group (ID:15535338)
+## Group (ID:614799921)
 
 <div align=left>
-&emsp; <img src="https://github.com/dgynfi/DYFStore/raw/master/images/qq155353383.jpg" width="30%" />
+&emsp; <img src="https://github.com/dgynfi/DYFStore/raw/master/images/g614799921.jpg" width="30%" />
 </div>
 
 
 ## Installation
 
-&emsp; Using [CocoaPods](https://cocoapods.org):
+Using [CocoaPods](https://cocoapods.org):
 
 ``` 
 pod 'DYFStore', '~> 1.0.2'
 ```
 
-&emsp; Or
+Or
 
 ```
 pod 'DYFStore'
 ```
 
-&emsp; Or add the files from the [DYFStore](https://github.com/dgynfi/DYFStore/tree/master/DYFStore) directory if you're doing it manually.
+Or add the files from the [DYFStore](https://github.com/dgynfi/DYFStore/tree/master/DYFStore) directory if you're doing it manually.
 
-&emsp; Check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Installation) for more options.
+Check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Installation) for more options.
 
 
-## Sample Code
+## Code Sample
 
-&emsp; The Sample Code shows how to use `DYFStore`.
+The Code Sample shows how to use `DYFStore`.
 
 ### Initialization
 
-&emsp; Initialization is as simple as the below.
+Initialization is as simple as the below.
 
 ```
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -74,7 +74,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 }
 ```
 
-&emsp; You can process the purchase which was initiated by user from the App Store and provide your own implementation using the `DYFStoreAppStorePaymentDelegate` protocol:
+You can process the purchase which was initiated by user from the App Store and provide your own implementation using the `DYFStoreAppStorePaymentDelegate` protocol:
 
 ```
 func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
@@ -122,7 +122,7 @@ DYFStore.default.requestProduct(withIdentifiers: productIds, success: { (product
 
 ### Add payment
 
-&emsp; Whether the user is allowed to make payments.
+Whether the user is allowed to make payments.
 
 ```
 if !DYFStore.canMakePayments() {
@@ -131,7 +131,7 @@ if !DYFStore.canMakePayments() {
 }
 ```
 
-&emsp; If you need an opaque identifier for the user’s account on your system to add payment, you can use a one-way hash of the user’s account name to calculate the value for this property.
+If you need an opaque identifier for the user’s account on your system to add payment, you can use a one-way hash of the user’s account name to calculate the value for this property.
 
 ```
 public func DYF_SHA256_HashValue(_ s: String) -> String? {
@@ -169,13 +169,13 @@ public func DYF_SHA256_HashValue(_ s: String) -> String? {
 }
 ```
 
-&emsp; Requests payment of the product with the given product identifier.
+Requests payment of the product with the given product identifier.
 
 ```
 DYFStore.default.purchaseProduct("com.hncs.szj.coin210")
 ```
 
-&emsp; Requests payment of the product with the given product identifier, an opaque identifier for the user’s account on your system.
+Requests payment of the product with the given product identifier, an opaque identifier for the user’s account on your system.
 
 ```
 DYFStore.default.purchaseProduct("com.hncs.szj.coin210", userIdentifier: "A43512564ACBEF687924646CAFEFBDCAEDF4155125657")
@@ -188,7 +188,7 @@ DYFStore.default.purchaseProduct("com.hncs.szj.coin210", userIdentifier: "A43512
 DYFStore.default.restoreTransactions()
 ```
 
-&emsp; Or
+Or
 
 ```
 DYFStore.default.restoreTransactions(userIdentifier: "A43512564ACBEF687924646CAFEFBDCAEDF4155125657")
@@ -208,7 +208,7 @@ DYFStore.default.refreshReceipt(onSuccess: {
 
 ### Notifications
 
-&emsp; `DYFStore` sends notifications of `StoreKit` related events and extends `NSNotification` to provide relevant information. To receive them, add the observer to `DYFStore`.
+`DYFStore` sends notifications of `StoreKit` related events and extends `NSNotification` to provide relevant information. To receive them, add the observer to `DYFStore`.
 
 #### Add and remove the observer
 
@@ -226,7 +226,7 @@ func removeStoreObserver() {
 
 #### Payment transaction notifications
 
-&emsp; Payment transaction notifications are sent after a payment has been requested or for each restored transaction.
+Payment transaction notifications are sent after a payment has been requested or for each restored transaction.
 
 ```
 @objc private func processPurchaseNotification(_ notification: Notification) {
@@ -290,13 +290,13 @@ func removeStoreObserver() {
 
 ### Receipt verification
 
-&emsp; `DYFStore` doesn't perform receipt verification by default, but provides reference implementations. You can implement your own custom verification or use the reference verifier provided by the library.
+`DYFStore` doesn't perform receipt verification by default, but provides reference implementations. You can implement your own custom verification or use the reference verifier provided by the library.
 
-&emsp; The reference verifier is outlined below. For more info, check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Receipt-verification).
+The reference verifier is outlined below. For more info, check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Receipt-verification).
 
 #### Reference verifier
 
-&emsp; You create and return a receipt verifier(`DYFStoreReceiptVerifier`) by using lazy loading.
+You create and return a receipt verifier(`DYFStoreReceiptVerifier`) by using lazy loading.
 
 ```
 lazy var receiptVerifier: DYFStoreReceiptVerifier = {
@@ -306,7 +306,7 @@ lazy var receiptVerifier: DYFStoreReceiptVerifier = {
 }()
 ```
 
-&emsp; The receipt verifier delegates receipt verification, enabling you to provide your own implementation using the `DYFStoreReceiptVerifierDelegate` protocol:
+The receipt verifier delegates receipt verification, enabling you to provide your own implementation using the `DYFStoreReceiptVerifierDelegate` protocol:
 
 ```
 @objc func verifyReceiptDidFinish(_ verifier: DYFStoreReceiptVerifier, didReceiveData data: [String : Any])
@@ -314,7 +314,7 @@ lazy var receiptVerifier: DYFStoreReceiptVerifier = {
 @objc func verifyReceipt(_ verifier: DYFStoreReceiptVerifier, didFailWithError error: NSError)
 ```
 
-&emsp; You can start verifying the in-app purchase receipt. 
+You can start verifying the in-app purchase receipt. 
 
 ```
 // Fetches the data of the bundle’s App Store receipt. 
@@ -326,14 +326,14 @@ self.receiptVerifier.verifyReceipt(data)
 //self.receiptVerifier.verifyReceipt(data, sharedSecret: "A43512564ACBEF687924646CAFEFBDCAEDF4155125657")
 ```
 
-&emsp; If security is a concern you might want to avoid using an open source verification logic, and provide your own custom verifier instead.
+If security is a concern you might want to avoid using an open source verification logic, and provide your own custom verifier instead.
 
-&emsp; It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C, C: client, S: server).
+It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C, C: client, S: server).
 
 
 ### Finish transactions
 
-&emsp; The transaction can be finished only after the receipt verification passed under the client and the server can adopt the communication of security and data encryption. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification we want StoreKit to keep reminding us of the transaction.
+The transaction can be finished only after the receipt verification passed under the client and the server can adopt the communication of security and data encryption. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification we want StoreKit to keep reminding us of the transaction.
 
 ```
 DYFStore.default.finishTransaction(transaction)
@@ -342,9 +342,9 @@ DYFStore.default.finishTransaction(transaction)
 
 ## Transaction persistence
 
-&emsp; `DYFStore` provides two optional reference implementations for storing transactions in the Keychain(`DYFStoreKeychainPersistence`) or in `NSUserDefaults`(`DYFStoreUserDefaultsPersistence`). 
+`DYFStore` provides two optional reference implementations for storing transactions in the Keychain(`DYFStoreKeychainPersistence`) or in `NSUserDefaults`(`DYFStoreUserDefaultsPersistence`). 
 
-&emsp; For example:
+For example:
 
 ### Store transaction
 
@@ -419,4 +419,4 @@ DispatchQueue.main.asyncAfter(delay: 1.5) {
 
 ## Requirements
 
-&emsp; `DYFStore` requires `iOS 8.0` or above and `ARC`.
+`DYFStore` requires `iOS 8.0` or above and `ARC`.
