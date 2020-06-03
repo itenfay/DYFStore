@@ -1,8 +1,8 @@
 //
 //  DYFStore.swift
 //
-//  Created by dyf on 2016/11/28.
-//  Copyright © 2016 dyf. ( https://github.com/dgynfi/DYFStore )
+//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
+//  Copyright © 2016 dyf. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,8 +68,9 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         defer { objc_sync_exit(self) }
         
         guard let instance = Inner.instance else {
-            Inner.instance = DYFStore()
-            return Inner.instance!
+            let store = DYFStore()
+            Inner.instance = store
+            return store
         }
         
         return instance
@@ -144,10 +145,9 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public func requestProduct(withIdentifier id: String?, success: @escaping ([SKProduct], [String]) -> Void, failure: @escaping (NSError) -> Void) {
         
         guard let identifier = id, !identifier.isEmpty else {
+            self.productsRequestDidFail = failure
             
             DYFStoreLog("requestProduct withIdentifier: This product identifier is null or empty")
-            
-            self.productsRequestDidFail = failure
             
             let errDesc = NSLocalizedString("This product identifier is null or empty", tableName: "DYFStore", comment: "Error description")
             let userInfo = [NSLocalizedDescriptionKey: errDesc]
@@ -1246,14 +1246,10 @@ extension DispatchQueue {
     /// Submits a task to a dispatch queue for asynchronous execution after a specified time.
     ///
     /// - Parameters:
-    ///   - seconds: The block should be executed after a few seconds delay.
+    ///   - time: The block should be executed after a few time delay.
     ///   - block: The block to be invoked on the queue.
-    public func asyncAfter(delay seconds: Float, block: @escaping () -> Void) {
-        
-        let nanoseconds = UInt64(seconds * 1000_000_000)
-        let time = DispatchTime(uptimeNanoseconds: nanoseconds)
-        
-        self.asyncAfter(deadline: time, execute: block)
+    public func asyncAfter(delay time: Double, block: @escaping () -> Void) {
+        self.asyncAfter(deadline: .now() + time, execute: block)
     }
     
 }
@@ -1272,6 +1268,6 @@ public func DYFStoreLog(_ format: String, _ args: CVarArg..., funcName: String =
         let fileName = (#file as NSString).lastPathComponent
         let lineNum = #line
         
-        print("[DYFStore]" + " [\(fileName):\(funcName)] [line: \(lineNum)] " + output)
+        print("[\(fileName):\(funcName)] [line: \(lineNum)]" + " [DYFStore] " + output)
     }
 }

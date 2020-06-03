@@ -10,6 +10,7 @@
 		1418390322F879CF0086386E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1418390122F879CF0086386E /* Main.storyboard */; };
 		1418390522F879E10086386E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1418390422F879E10086386E /* Assets.xcassets */; };
 		1418390822F879E10086386E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1418390622F879E10086386E /* LaunchScreen.storyboard */; };
+		143A19B124868DA7005A22D5 /* DYFIndefiniteAnimatedSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143A19B024868DA6005A22D5 /* DYFIndefiniteAnimatedSpinner.swift */; };
 		148DF49F236F3BCA0026DBB3 /* DYFSwiftKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF497236F3BC90026DBB3 /* DYFSwiftKeychain.swift */; };
 		148DF4A0236F3BCA0026DBB3 /* DYFSwiftRuntimeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF498236F3BC90026DBB3 /* DYFSwiftRuntimeProvider.swift */; };
 		148DF4A1236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */; };
@@ -41,6 +42,7 @@
 		1418390422F879E10086386E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1418390722F879E10086386E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1418390922F879E10086386E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		143A19B024868DA6005A22D5 /* DYFIndefiniteAnimatedSpinner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFIndefiniteAnimatedSpinner.swift; sourceTree = "<group>"; };
 		148DF497236F3BC90026DBB3 /* DYFSwiftKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFSwiftKeychain.swift; sourceTree = "<group>"; };
 		148DF498236F3BC90026DBB3 /* DYFSwiftRuntimeProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFSwiftRuntimeProvider.swift; sourceTree = "<group>"; };
 		148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreReceiptVerifier.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 			children = (
 				149DE09523BE0CE800DFC0A1 /* AppDelegate.swift */,
 				149DE09023BE0CE800DFC0A1 /* DYFExtensions.swift */,
+				143A19B024868DA6005A22D5 /* DYFIndefiniteAnimatedSpinner.swift */,
 				149DE09823BE0CE900DFC0A1 /* DYFLoadingView.swift */,
 				149DE09323BE0CE800DFC0A1 /* DYFStoreManager.swift */,
 				149DE09123BE0CE800DFC0A1 /* DYFStoreProduct.swift */,
@@ -139,8 +142,8 @@
 		149E56AB235EF7290011F030 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				14D39690236B003E006C2666 /* Security.framework */,
 				149E56AC235EF72A0011F030 /* StoreKit.framework */,
+				14D39690236B003E006C2666 /* Security.framework */,
 				149E56B2235EF75A0011F030 /* CoreGraphics.framework */,
 				149E56AE235EF73B0011F030 /* UIKit.framework */,
 				149E56B0235EF74D0011F030 /* Foundation.framework */,
@@ -234,6 +237,7 @@
 				149DE09D23BE0CEA00DFC0A1 /* DYFStoreManager.swift in Sources */,
 				149DE09A23BE0CEA00DFC0A1 /* DYFExtensions.swift in Sources */,
 				149DE0A223BE0CEA00DFC0A1 /* DYFLoadingView.swift in Sources */,
+				143A19B124868DA7005A22D5 /* DYFIndefiniteAnimatedSpinner.swift in Sources */,
 				148DF4A1236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift in Sources */,
 				149DE09E23BE0CEA00DFC0A1 /* DYFStoreViewController.swift in Sources */,
 				148DF4A0236F3BCA0026DBB3 /* DYFSwiftRuntimeProvider.swift in Sources */,
@@ -385,6 +389,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = KCBQ48PTUV;
 				INFOPLIST_FILE = "$(SRCROOT)/DYFStoreDemo/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -392,7 +397,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.asd.store;
+				MARKETING_VERSION = 1.0.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hncs.szj;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -406,6 +412,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = KCBQ48PTUV;
 				INFOPLIST_FILE = "$(SRCROOT)/DYFStoreDemo/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -413,7 +420,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.asd.store;
+				MARKETING_VERSION = 1.0.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hncs.szj;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

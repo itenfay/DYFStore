@@ -1,7 +1,7 @@
 //
 //  AppDelegate.swift
 //
-//  Created by dyf on 2016/11/28.
+//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
 //  Copyright © 2016 dyf. All rights reserved.
 //
 
@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDe
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        self.displayStartupPage()
         
         // Wether to allow the logs output to console.
         DYFStore.default.enableLog = true
@@ -31,19 +33,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDe
         return true
     }
     
+    func displayStartupPage() {
+        Thread.sleep(forTimeInterval: 2.0)
+    }
+    
     // Processes the purchase which was initiated by user from the App Store.
     func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
         
         if !DYFStore.canMakePayments() {
-            DYFStoreManager.shared.showTipsMessage("Your device is not able or allowed to make payments!")
+            self.showTipsMessage("Your device is not able or allowed to make payments!")
             return
         }
         
+        // Get account name from your own user system.
         let accountName = "Handsome Jon"
-        let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
-        print("[\(#function)] [line:\(#line)] userIdentifier: \(userIdentifier)")
         
-        DYFStoreManager.shared.buyProduct(product.productIdentifier, userIdentifier: userIdentifier)
+        // This algorithm is negotiated with server developer.
+        let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
+        DYFStoreLog("userIdentifier: \(userIdentifier)")
+        
+        DYFStoreManager.shared.addPayment(product.productIdentifier, userIdentifier: userIdentifier)
     }
     
     func applicationWillResignActive(_ application: UIApplication) {

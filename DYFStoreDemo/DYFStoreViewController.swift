@@ -1,26 +1,8 @@
 //
 //  DDYFStoreViewController.swift
 //
-//  Created by dyf on 2016/11/28.
-//  Copyright © 2016 dyf. ( https://github.com/dgynfi/DYFStore )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
+//  Copyright © 2016 dyf. All rights reserved.
 //
 
 import UIKit
@@ -43,13 +25,14 @@ class DYFStoreViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @objc func restore() {
-        
+        // Get account name from your own user system.
         let accountName = "Handsome Jon"
         
+        // This algorithm is negotiated with server developer.
         let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
-        print("[\(#function)] [line:\(#line)] userIdentifier: \(userIdentifier)")
+        DYFStoreLog("userIdentifier: \(userIdentifier)")
         
-        DYFStore.default.restoreTransactions(userIdentifier: userIdentifier)
+        DYFStoreManager.shared.restorePurchases(userIdentifier)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -85,14 +68,16 @@ class DYFStoreViewController: UIViewController, UITableViewDelegate, UITableView
         
         let product = self.dataArray![indexPath.row]
         let productIdentifier = product.identifier!
-        print("[\(#function)] [line:\(#line)] productIdentifier: \(productIdentifier)")
+        DYFStoreLog("productIdentifier: \(productIdentifier)")
         
+        // Get account name from your own user system.
         let accountName = "Handsome Jon"
         
+        // This algorithm is negotiated with server developer.
         let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
-        print("[\(#function)] [line:\(#line)] userIdentifier: \(userIdentifier)")
+        DYFStoreLog("userIdentifier: \(userIdentifier)")
         
-        DYFStoreManager.shared.buyProduct(productIdentifier, userIdentifier: userIdentifier)
+        DYFStoreManager.shared.addPayment(productIdentifier, userIdentifier: userIdentifier)
     }
     
 }

@@ -1,8 +1,8 @@
 //
 //  DYFExtensions.swift
 //
-//  Created by dyf on 2016/11/28.
-//  Copyright © 2016 dyf. ( https://github.com/dgynfi/DYFStore )
+//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
+//  Copyright © 2016 dyf. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@ extension NSObject {
     /// - Returns: The view controller associated with the currently visible view.
     public func currentViewController() -> UIViewController? {
         let sharedApp = UIApplication.shared
+        
         let window = sharedApp.keyWindow ?? sharedApp.windows[0]
         let viewController = window.rootViewController
         
@@ -84,7 +85,7 @@ extension NSObject {
         
         vc.present(alertController, animated: true, completion: nil)
         
-        DispatchQueue.main.asyncAfter(delay: 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             alertController.dismiss(animated: true, completion: nil)
         }
     }
@@ -119,8 +120,16 @@ extension NSObject {
     /// Shows a loading panel.
     public func showLoading(_ text: String) {
         
+        let value = objc_getAssociatedObject(self, &LoadingViewKey)
+        if value != nil {
+            return
+        }
+        
         let loadingView = DYFLoadingView()
         loadingView.show(text)
+        loadingView.color = COLOR_RGBA(10, 10, 10, 0.75)
+        loadingView.indicatorColor = COLOR_RGB(54, 205, 64)
+        loadingView.textColor = COLOR_RGB(248, 248, 248)
         
         objc_setAssociatedObject(self, &LoadingViewKey, loadingView, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
@@ -128,13 +137,14 @@ extension NSObject {
     /// Hides a loading panel.
     public func hideLoading() {
         
-        let object = objc_getAssociatedObject(self, &LoadingViewKey)
-        
-        if let loadingView = object as? DYFLoadingView {
-            loadingView.hide()
-            
-            objc_setAssociatedObject(self, &LoadingViewKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        let value = objc_getAssociatedObject(self, &LoadingViewKey)
+        guard let loadingView = value as? DYFLoadingView else {
+            return
         }
+        
+        loadingView.hide()
+        
+        objc_setAssociatedObject(self, &LoadingViewKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
 }

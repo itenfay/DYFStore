@@ -1,8 +1,8 @@
 //
 //  DYFStoreManager.swift
 //
-//  Created by dyf on 2016/11/28.
-//  Copyright © 2016 dyf. ( https://github.com/dgynfi/DYFStore )
+//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
+//  Copyright © 2016 dyf. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -91,8 +91,9 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
         defer { objc_sync_exit(self) }
         
         guard let instance = Static.instance else {
-            Static.instance = DYFStoreManager()
-            return Static.instance!
+            let storeManager = DYFStoreManager()
+            Static.instance = storeManager
+            return storeManager
         }
         
         return instance
@@ -124,8 +125,8 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     /// - Parameters:
     ///   - productIdentifier: A given product identifier.
     ///   - userIdentifier: An opaque identifier for the user’s account on your system.
-    public func buyProduct(_ productIdentifier: String?, userIdentifier: String? = nil) {
-        self.showLoading("Initiate purchase request...")
+    public func addPayment(_ productIdentifier: String?, userIdentifier: String? = nil) {
+        self.showLoading("Waiting...") // Initiate purchase request.
         DYFStore.default.purchaseProduct(productIdentifier, userIdentifier: userIdentifier)
     }
     
