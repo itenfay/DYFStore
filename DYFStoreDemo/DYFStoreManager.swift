@@ -219,6 +219,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             DYFStoreLog("transaction.productIdentifier: \(tx.productIdentifier!)")
             DYFStoreLog("transaction.transactionIdentifier: \(tx.transactionIdentifier!)")
             DYFStoreLog("transaction.transactionTimestamp: \(tx.transactionTimestamp!)")
+            
             if let receiptData = tx.transactionReceipt!.base64DecodedData() {
                 DYFStoreLog("transaction.transactionReceipt: \(receiptData)")
                 self.verifyReceipt(receiptData)
@@ -228,22 +229,23 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
         // Reads the backup data.
         let uPersister = DYFStoreUserDefaultsPersistence()
         if uPersister.containsTransaction(identifier) {
+            
             let transaction = uPersister.retrieveTransaction(identifier)
             if let tx = transaction {
                 DYFStoreLog("[BAK] transaction.state: \(tx.state)")
                 DYFStoreLog("[BAK] transaction.productIdentifier: \(tx.productIdentifier!)")
                 DYFStoreLog("[BAK] transaction.transactionIdentifier: \(tx.transactionIdentifier!)")
-                DYFStoreLog("[BAK]transaction.transactionTimestamp: \(tx.transactionTimestamp!)")
+                DYFStoreLog("[BAK] transaction.transactionTimestamp: \(tx.transactionTimestamp!)")
+                
                 if let receiptData = tx.transactionReceipt!.base64DecodedData() {
                     DYFStoreLog("[BAK] transaction.transactionReceipt: \(receiptData)")
-                    self.verifyReceipt(receiptData)
                 }
             }
         }
     }
     
     private func storeReceipt() {
-        DYFStoreLog("")
+        DYFStoreLog()
         
         guard let url = DYFStore.receiptURL() else {
             self.refreshReceipt()
@@ -289,7 +291,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     }
     
     private func refreshReceipt() {
-        DYFStoreLog("")
+        DYFStoreLog()
         self.showLoading("Refresh receipt...")
         
         DYFStore.default.refreshReceipt(onSuccess: {
@@ -300,7 +302,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     }
     
     private func failToRefreshReceipt() {
-        DYFStoreLog("")
+        DYFStoreLog()
         self.hideLoading()
         
         self.showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
@@ -315,7 +317,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
     // It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C).
     private func verifyReceipt(_ receiptData: Data?) {
-        DYFStoreLog("")
+        DYFStoreLog()
         
         self.hideLoading()
         self.showLoading("Verify receipt...")

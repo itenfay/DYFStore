@@ -34,14 +34,14 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public var enableLog: Bool = false
     
     /// The valid products that were available for sale in the App Store.
-    public var availableProducts: NSMutableArray?
+    public var availableProducts: NSMutableArray!
     /// The product identifiers were invalid.
-    public var invalidIdentifiers: NSMutableArray?
+    public var invalidIdentifiers: NSMutableArray!
     
     /// Records those transcations that have been purchased.
-    public var purchasedTranscations: NSMutableArray?
+    public var purchasedTranscations: NSMutableArray!
     /// Records those transcations that have been restored.
-    public var restoredTranscations: NSMutableArray?
+    public var restoredTranscations: NSMutableArray!
     
     /// The delegate processes the purchase which was initiated by user from the App Store.
     public weak var delegate: DYFStoreAppStorePaymentDelegate?
@@ -136,7 +136,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// An object that can retrieve localized information from the App Store about a specified list of products.
     private var productsRequest: SKProductsRequest?
     
-    /// Requests localized information about a product identifier from the Apple App Store. `success` will be called if the products request is successful, `failure` if it isn't.
+    /// Requests localized information about a product from the Apple App Store. `success` will be called if the products request is successful, `failure` if it isn't.
     ///
     /// - Parameters:
     ///   - id: The product identifier for the product you wish to retrieve information of.
@@ -145,9 +145,10 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public func requestProduct(withIdentifier id: String?, success: @escaping ([SKProduct], [String]) -> Void, failure: @escaping (NSError) -> Void) {
         
         guard let identifier = id, !identifier.isEmpty else {
+            
             self.productsRequestDidFail = failure
             
-            DYFStoreLog("requestProduct withIdentifier: This product identifier is null or empty")
+            DYFStoreLog("This product identifier is null or empty")
             
             let errDesc = NSLocalizedString("This product identifier is null or empty", tableName: "DYFStore", comment: "Error description")
             let userInfo = [NSLocalizedDescriptionKey: errDesc]
@@ -160,7 +161,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             return
         }
         
-        DYFStoreLog("requestProduct withIdentifier: \(identifier)")
+        DYFStoreLog()
         
         self.requestProduct(withIdentifiers: [identifier], success: success, failure: failure)
     }
@@ -174,11 +175,12 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public func requestProduct(withIdentifiers ids: Array<String>?, success: @escaping ([SKProduct], [String]) -> Void, failure: @escaping (NSError) -> Void) {
         
         guard let identifiers = ids, !identifiers.isEmpty else {
+            
             self.productsRequestDidFail = failure
             
-            DYFStoreLog("requestProduct withIdentifiers: A string array of product identifiers is null or empty")
+            DYFStoreLog("An array of product identifiers is null or empty")
             
-            let errorDesc = NSLocalizedString("A string array of product identifiers is null or empty", tableName: "DYFStore", comment: "Error description")
+            let errorDesc = NSLocalizedString("An array of product identifiers is null or empty", tableName: "DYFStore", comment: "Error description")
             let userInfo = [NSLocalizedDescriptionKey: errorDesc]
             let error = NSError(domain: DYFStoreError.domain,
                                 code: DYFStoreError.invalidParameter.rawValue,
@@ -189,16 +191,16 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             return
         }
         
-        DYFStoreLog("requestProduct withIdentifiers: \(identifiers)")
+        DYFStoreLog("product identifiers: \(identifiers)")
         
         if self.productsRequest == nil {
             
             self.productsRequestDidFinish = success
             self.productsRequestDidFail = failure
             
-            let aSet = Set<String>(identifiers)
+            let setOfProductId = Set<String>(identifiers)
             // Creates a product request object and initialize it with our product identifiers.
-            self.productsRequest = SKProductsRequest(productIdentifiers: aSet)
+            self.productsRequest = SKProductsRequest(productIdentifiers: setOfProductId)
             self.productsRequest?.delegate = self;
             // Sends the request to the App Store.
             self.productsRequest?.start()
@@ -214,7 +216,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public func containsProduct(_ product: SKProduct) -> Bool {
         var shouldContain: Bool = false
         
-        for e in self.availableProducts! {
+        for e in self.availableProducts {
             let aProduct = e as! SKProduct
             let id = aProduct.productIdentifier
             
@@ -234,7 +236,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public func product(forIdentifier productIdentifier: String) -> SKProduct? {
         var product: SKProduct? = nil
         
-        for e in self.availableProducts! {
+        for e in self.availableProducts {
             let aProduct = e as! SKProduct
             let id = aProduct.productIdentifier
             
@@ -252,13 +254,16 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// - Parameter product: A given product.
     /// - Returns: The localized price of a given product.
     public func localizedPrice(ofProduct product: SKProduct?) -> String? {
-        if product != nil {
+        
+        if let p = product {
+            
             let numberFormatter = NumberFormatter()
             numberFormatter.formatterBehavior = NumberFormatter.Behavior.behavior10_4
             numberFormatter.numberStyle = NumberFormatter.Style.currency
             numberFormatter.locale = product!.priceLocale
             
-            let formattedString = numberFormatter.string(from: product!.price)
+            let formattedString = numberFormatter.string(from: p.price)
+            
             return formattedString
         }
         
@@ -280,55 +285,70 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             DYFStoreLog("received product with id: \(product.productIdentifier)")
             
             if !self.containsProduct(product) {
-                self.availableProducts?.add(product)
+                self.availableProducts.add(product)
             }
         }
         
         for (idx, value) in invalidProductIdentifiers.enumerated() {
             DYFStoreLog("invalid product with id: \(value), index: \(idx)")
             
-            if !self.invalidIdentifiers!.contains(value) {
-                self.invalidIdentifiers?.add(value)
+            if !self.invalidIdentifiers.contains(value) {
+                self.invalidIdentifiers.add(value)
             }
         }
         
-        self.productsRequestDidFinish?(products, invalidProductIdentifiers)
+        DispatchQueue.main.async {
+            self.productsRequestDidFinish?(products, invalidProductIdentifiers)
+        }
     }
     
     // MARK: - SKRequestDelegate
     
     // Tells the delegate that the request has completed. When this method is called, your delegate receives no further communication from the request and can release it.
     public func requestDidFinish(_ request: SKRequest) {
+        
         if let req = self.productsRequest, req === request {
+            
             DYFStoreLog("products request finished")
             
             self.productsRequest = nil
-        }
-        
-        if let req = self.refreshReceiptRequest, req === request {
+            
+        } else if let req = self.refreshReceiptRequest, req === request {
+            
             DYFStoreLog("refresh receipt finished")
             
-            self.refreshReceiptSuccessBlock?()
+            DispatchQueue.main.async {
+                self.refreshReceiptSuccessBlock?()
+            }
+            
             self.refreshReceiptRequest = nil
         }
     }
     
     // Tells the delegate that the request failed to execute. The requestDidFinish(_:) method is not called after this method is called.
     public func request(_ request: SKRequest, didFailWithError error: Error) {
+        
         let err = error as NSError
         
         if let req = self.productsRequest, req === request {
+            
             // Prints the cause of the product request failure.
             DYFStoreLog("products request failed with error: \(err.code), \(err.localizedDescription)")
             
-            self.productsRequestDidFail?(err)
+            DispatchQueue.main.async {
+                self.productsRequestDidFail?(err)
+            }
+            
             self.productsRequest = nil
-        }
-        
-        if let req = self.refreshReceiptRequest, req === request {
+            
+        } else if let req = self.refreshReceiptRequest, req === request {
+            
             DYFStoreLog("refresh receipt failed with error: \(err.code), \(err.localizedDescription)")
             
-            self.refreshReceiptFailureBlock?(err)
+            DispatchQueue.main.async {
+                self.refreshReceiptFailureBlock?(err)
+            }
+            
             self.refreshReceiptRequest = nil
         }
     }
@@ -350,14 +370,14 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///
     /// - Returns: YES if it contains some items and NO, otherwise.
     public func hasPurchasedTransactions() -> Bool {
-        return self.purchasedTranscations!.count > 0
+        return self.purchasedTranscations.count > 0
     }
     
     /// Whether there are restored purchases.
     ///
     /// - Returns: YES if it contains some items and NO, otherwise.
     public func hasRestoredTransactions() -> Bool {
-        return self.restoredTranscations!.count > 0
+        return self.restoredTranscations.count > 0
     }
     
     /// Extracts a purchased transaction with a given transaction identifier.
@@ -372,10 +392,12 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             return transaction
         }
         
-        self.purchasedTranscations!.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+        self.purchasedTranscations.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
             
             let tempTransaction = obj as! SKPaymentTransaction
+            
             let id = tempTransaction.transactionIdentifier ?? ""
+            
             DYFStoreLog("index: \(idx), transactionId: \(id)")
             
             if id == transactionId {
@@ -398,11 +420,13 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             return transaction
         }
         
-        self.restoredTranscations!.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+        self.restoredTranscations.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
             
             let tempTransaction = obj as! SKPaymentTransaction
+            
             let id = tempTransaction.transactionIdentifier ?? ""
             let originalId = tempTransaction.original?.transactionIdentifier ?? ""
+            
             DYFStoreLog("index: \(idx), transactionId: \(id), originalTransactionId: \(originalId)")
             
             if id == transactionId {
@@ -426,9 +450,9 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         
         guard let identifier = productIdentifier, !identifier.isEmpty else {
             
-            DYFStoreLog("The inputted product identifier is null or empty")
+            DYFStoreLog("The given product identifier is null or empty")
             
-            let errDesc = NSLocalizedString("The inputted product identifier is null or empty", tableName: "DYFStore", comment: "Error description")
+            let errDesc = NSLocalizedString("The given product identifier is null or empty", tableName: "DYFStore", comment: "Error description")
             let userInfo = [NSLocalizedDescriptionKey: errDesc]
             let error = NSError(domain: DYFStoreError.domain,
                                 code: DYFStoreError.invalidParameter.rawValue,
@@ -442,14 +466,13 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             return
         }
         
-        let product = self.product(forIdentifier: identifier)
-        if product != nil {
+        if let product = self.product(forIdentifier: identifier) {
             
             DYFStoreLog("productIdentifier: \(identifier), quantity: \(quantity)")
             
             self.quantity = quantity
             
-            let payment = SKMutablePayment(product: product!)
+            let payment = SKMutablePayment(product: product)
             payment.quantity = quantity
             if #available(iOS 7.0, *) {
                 payment.applicationUsername = userIdentifier
@@ -468,6 +491,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
             
             var info = DYFStore.NotificationInfo()
             info.state = DYFStore.PurchaseState.failed
+            info.productIdentifier = identifier
             info.error = error
             self.postNotification(withName: DYFStore.purchasedNotification, info)
         }
@@ -539,6 +563,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///   - successBlock: The block to be called if the refresh receipt request is sucessful. Can be `nil`.
     ///   - failureBlock: The block to be called if the refresh receipt request fails. Can be `nil`.
     public func refreshReceipt(onSuccess successBlock: @escaping () -> Void, failure failureBlock: @escaping (NSError) -> Void) {
+        
         if self.refreshReceiptRequest == nil {
             
             self.refreshReceiptSuccessBlock = successBlock
@@ -654,10 +679,11 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         if #available(iOS 11.0, *) {
             
             if !containsProduct(product) {
-                self.availableProducts?.add(product)
+                self.availableProducts.add(product)
             }
             
             self.delegate?.didReceiveAppStorePurchaseRequest(queue, payment: payment, forProduct: product)
+            
         } else { /* Fallback on earlier versions. Never execute. */ }
         
         return false
@@ -686,7 +712,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     private func didPurchaseTransaction(_ transaction: SKPaymentTransaction, queue: SKPaymentQueue) {
         DYFStoreLog("The transaction purchased. Deliver the content for \(transaction.payment.productIdentifier)")
         
-        self.purchasedTranscations?.add(transaction)
+        self.purchasedTranscations.add(transaction)
         // Checks whether the purchased product has content hosted with Apple.
         if transaction.downloads.count > 0 {
             
@@ -735,9 +761,10 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///   - transaction: An `SKPaymentTransaction` object in the payment queue.
     ///   - queue: The payment queue that updated the transactions.
     private func didRestoreTransaction(_ transaction: SKPaymentTransaction, queue: SKPaymentQueue) {
+        
         DYFStoreLog("The transaction restored. Restore the content for \(transaction.payment.productIdentifier)")
         
-        self.restoredTranscations?.add(transaction)
+        self.restoredTranscations.add(transaction)
         // Sends a DYFStoreDownload.State.started notification if it has.
         if transaction.downloads.count > 0 {
             
@@ -946,6 +973,7 @@ extension Date {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = NSLocale.current
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
         let dateString = dateFormatter.string(from: self)
         
         return dateString
@@ -959,6 +987,7 @@ extension Date {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = NSLocale.current
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+        
         let dateString = dateFormatter.string(from: self)
         
         return dateString
@@ -1019,8 +1048,10 @@ extension String {
     ///
     /// - Returns: A date object set to seconds seconds from the reference date.
     public func timestampToDate() -> Date {
+        
         let s = NSString(string: self)
         let t: TimeInterval = s.doubleValue
+        
         return Date(timeIntervalSince1970: t)
     }
     
@@ -1254,19 +1285,20 @@ extension DispatchQueue {
     
 }
 
-/// Outputs log to the console.
+/// // Outputs log to the console in the process of purchasing the `SKProduct` product.
 ///
 /// - Parameters:
 ///   - format: The format string.
 ///   - args: The arguments for outputting to the console.
-///   - funcName: The function name.
-public func DYFStoreLog(_ format: String, _ args: CVarArg..., funcName: String = #function) {
+///   - funcName: The name of a function.
+///   - lineNum: The number of a code line.
+public func DYFStoreLog(_ format: String = "", _ args: CVarArg..., funcName: String = #function, lineNum: Int = #line) {
     
     if DYFStore.default.enableLog {
-        let output = String(format: format, args)
         
         let fileName = (#file as NSString).lastPathComponent
-        let lineNum = #line
+        
+        let output = String(format: format, args)
         
         print("[\(fileName):\(funcName)] [line: \(lineNum)]" + " [DYFStore] " + output)
     }

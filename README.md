@@ -32,7 +32,7 @@ A lightweight and easy-to-use iOS library for In-App Purchases.
 Using [CocoaPods](https://cocoapods.org):
 
 ``` 
-pod 'DYFStore', '~> 1.0.2'
+pod 'DYFStore', '~> 1.1.0'
 ```
 
 Or
@@ -77,17 +77,21 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 You can process the purchase which was initiated by user from the App Store and provide your own implementation using the `DYFStoreAppStorePaymentDelegate` protocol:
 
 ```
+// Processes the purchase which was initiated by user from the App Store.
 func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
-
+    
     if !DYFStore.canMakePayments() {
-        DYFStoreManager.shared.showTipsMessage("Your device is not able or allowed to make payments!")
+        self.showTipsMessage("Your device is not able or allowed to make payments!")
         return
     }
-
+    
+    // Get account name from your own user system.
     let accountName = "Handsome Jon"
+    
+    // This algorithm is negotiated with server developer.
     let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
-    print("[\(#function)] [line:\(#line)] userIdentifier: \(userIdentifier)")
-
+    DYFStoreLog("userIdentifier: \(userIdentifier)")
+    
     DYFStore.default.purchaseProduct(product.productIdentifier, userIdentifier: userIdentifier)
 }
 ```
@@ -95,27 +99,131 @@ func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayme
 
 ### Request products
 
+There are two strategies for retrieving information about the products from the App Store.
+
+**Strategy 1:** To begin the purchase process, your app must know its product identifiers. Your app can uses a product identifier to fetch information about product available for sale in the App Store and to submit payment request directly.
+
 ```
-let productIds = ["com.hncs.szj.coin48", "com.hncs.szj.coin210"]
-DYFStore.default.requestProduct(withIdentifiers: productIds, success: { (products, invalidIdentifiers) in
-
-    for product in products {
-        if self.hasProduct(product.productIdentifier) {
-            let p = DYFStoreProduct()
-            p.identifier = product.productIdentifier
-            p.name = product.localizedTitle
-            p.price = product.price.stringValue
-            p.localePrice = DYFStore.default.localizedPrice(ofProduct: product)
-            p.localizedDescription = product.localizedDescription
-            self.availableProducts.append(p)
+@IBAction func fetchesProductAndSubmitsPayment(_ sender: Any) {
+    self.showLoading("Loading...")
+    
+    let productId = "com.hncs.szj.coin42"
+    
+    DYFStore.default.requestProduct(withIdentifier: productId, success: { (products, invalidIdentifiers) in
+        
+        self.hideLoading()
+        
+        if products.count == 1 {
+            
+            let productId = products[0].productIdentifier
+            self.addPayment(productId)
+            
+        } else {
+            
+            self.showTipsMessage("There is no this product for sale!")
         }
+        
+    }) { (error) in
+        
+        self.hideLoading()
+        
+        let value = error.userInfo[NSLocalizedDescriptionKey] as? String
+        let msg = value ?? "\(error.localizedDescription)"
+        self.sendNotice("An error occurs, \(error.code), " + msg)
     }
+}
 
-    DYFStoreLog("invalidIdentifiers: \(invalidIdentifiers)")
+private func addPayment(_ productId: String) {
+    
+    // Get account name from your own user system.
+    let accountName = "Handsome Jon"
+    
+    // This algorithm is negotiated with server developer.
+    let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
+    DYFStoreLog("userIdentifier: \(userIdentifier)")
+    
+    DYFStore.default.purchaseProduct(productId, userIdentifier: userIdentifier)
+}
+```
 
-}) { (error) in
+**Strategy 2:** To begin the purchase process, your app must know its product identifiers so it can retrieve information about the products from the App Store and present its store UI to the user. Every product sold in your app has a unique product identifier. Your app uses these product identifiers to fetch information about products available for sale in the App Store, such as pricing, and to submit payment requests when users purchase those products.
 
-    self.sendNotice("An error occurs, \(error.code), \(error.localizedDescription).")
+```
+func fetchProductIdentifiersFromServer() -> [String] {
+    
+    let productIds = [
+        "com.hncs.szj.coin42",   // 42 gold coins for ￥6.
+        "com.hncs.szj.coin210",  // 210 gold coins for ￥30.
+        "com.hncs.szj.coin686",  // 686 gold coins for ￥98.
+        "com.hncs.szj.coin1386", // 1386 gold coins for ￥198.
+        "com.hncs.szj.coin2086", // 2086 gold coins for ￥298.
+        "com.hncs.szj.coin4886", // 4886 gold coins for ￥698.
+        "com.hncs.szj.vip1",     // non-renewable vip subscription for a month.
+        "com.hncs.szj.vip2"      // Auto-renewable vip subscription for three months.
+    ]
+    
+    return productIds
+}
+
+@IBAction func fetchesProductsFromAppStore(_ sender: Any) {
+    self.showLoading("Loading...")
+    
+    let productIds = fetchProductIdentifiersFromServer()
+    
+    DYFStore.default.requestProduct(withIdentifiers: productIds, success: { (products, invalidIdentifiers) in
+        
+        self.hideLoading()
+        
+        if products.count > 0 {
+            
+            self.processData(products)
+            
+        } else if products.count == 0 &&
+            invalidIdentifiers.count > 0 {
+            
+            // Please check the product information you set up.
+            self.showTipsMessage("There are no products for sale!")
+        }
+        
+    }) { (error) in
+        
+        self.hideLoading()
+        
+        let value = error.userInfo[NSLocalizedDescriptionKey] as? String
+        let msg = value ?? "\(error.localizedDescription)"
+        self.sendNotice("An error occurs, \(error.code), " + msg)
+    }
+}
+
+private func processData(_ products: [SKProduct]) {
+    
+    var modelArray = [DYFStoreProduct]()
+    
+    for product in products {
+        
+        let p = DYFStoreProduct()
+        p.identifier = product.productIdentifier
+        p.name = product.localizedTitle
+        p.price = product.price.stringValue
+        p.localePrice = DYFStore.default.localizedPrice(ofProduct: product)
+        p.localizedDescription = product.localizedDescription
+        
+        modelArray.append(p)
+    }
+    
+    self.displayStoreUI(modelArray)
+}
+
+private func displayStoreUI(_ dataArray: [DYFStoreProduct]) {
+    
+    if !DYFStore.canMakePayments() {
+        self.showTipsMessage("Your device is not able or allowed to make payments!")
+        return
+    }
+    
+    let storeVC = DYFStoreViewController()
+    storeVC.dataArray = dataArray
+    self.navigationController?.pushViewController(storeVC, animated: true)
 }
 ```
 
@@ -126,7 +234,7 @@ Whether the user is allowed to make payments.
 
 ```
 if !DYFStore.canMakePayments() {
-    DYFStoreManager.shared.showTipsMessage("Your device is not able or allowed to make payments!")
+    self.showTipsMessage("Your device is not able or allowed to make payments!")
     return
 }
 ```
