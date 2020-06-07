@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 
 /// The class for runtime wrapper that provides some common practical applications.
 public class DYFSwiftRuntimeProvider: NSObject {

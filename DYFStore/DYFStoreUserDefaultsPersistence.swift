@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 
 /// Returns the shared defaults `UserDefaults` object.
 fileprivate let kUserDefaults = UserDefaults.standard

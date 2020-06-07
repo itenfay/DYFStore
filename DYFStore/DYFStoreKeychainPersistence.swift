@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 
 /// The transaction persistence using the keychain.
 open class DYFStoreKeychainPersistence: NSObject {

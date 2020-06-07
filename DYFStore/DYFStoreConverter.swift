@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 
 /// The converter is used to convert json and json object to each other,
 /// convert an object and a data object to each other.

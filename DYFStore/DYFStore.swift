@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 import StoreKit
 
 /// A StoreKit wrapper for in-app purchase.

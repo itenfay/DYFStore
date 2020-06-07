@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 import Security
 
 /// The class for swift keychain wrapper.

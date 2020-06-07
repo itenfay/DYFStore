@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 
 /// The class is used to verify in-app purchase receipts.
 open class DYFStoreReceiptVerifier: NSObject {

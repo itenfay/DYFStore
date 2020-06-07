@@ -24,7 +24,6 @@
 //
 
 import Foundation
-import UIKit
 import CommonCrypto
 
 /// Custom method to calculate the SHA-256 hash using Common Crypto.
