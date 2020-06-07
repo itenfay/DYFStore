@@ -33,7 +33,7 @@ A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 Using [CocoaPods](https://cocoapods.org):
 
 ``` 
-pod 'DYFStore', '~> 1.1.1'
+pod 'DYFStore', '~> 1.1.2'
 ```
 
 Or
