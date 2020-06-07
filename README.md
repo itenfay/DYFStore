@@ -1,9 +1,10 @@
+
 [If this project can help you, please give it a star. Thanks!](https://github.com/dgynfi/DYFStore)
 
 
 ## DYFStore
 
-A lightweight and easy-to-use iOS library for In-App Purchases.
+A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 
 `DYFStore` uses blocks and [notifications](#Notifications) to wrap `StoreKit`, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). `DYFStore` doesn't require any external dependencies. 
 
@@ -32,7 +33,7 @@ A lightweight and easy-to-use iOS library for In-App Purchases.
 Using [CocoaPods](https://cocoapods.org):
 
 ``` 
-pod 'DYFStore', '~> 1.1.0'
+pod 'DYFStore', '~> 1.1.1'
 ```
 
 Or
@@ -46,9 +47,9 @@ Or add the files from the [DYFStore](https://github.com/dgynfi/DYFStore/tree/mas
 Check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Installation) for more options.
 
 
-## Code Sample
+## Usage
 
-The Code Sample shows how to use `DYFStore`.
+Next I'll show you how to use `DYFStore`.
 
 ### Initialization
 
