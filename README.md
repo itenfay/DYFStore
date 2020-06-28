@@ -44,7 +44,7 @@ Or
 pod 'DYFStore'
 ```
 
-或者如果你是手动操作，就从 [DYFStore](https://github.com/dgynfi/DYFStore/tree/master/DYFStore) 目录中添加文件。
+或者从 [DYFStore](https://github.com/dgynfi/DYFStore/tree/master/DYFStore) 目录中添加文件 (如果你是手动操作) 。
 
 查看 [wiki](https://github.com/dgynfi/DYFStore/wiki/Installation) 以获取更多选项。
 
@@ -563,7 +563,7 @@ DispatchQueue.main.asyncAfter(delay: 1.5) {
 
 ## 演示
 
-如需了解更多，请克隆（`git clone https://github.com/dgynfi/DYFStore.git`）此项目到本地目录。
+如需了解更多，请克隆此项目（`git clone https://github.com/dgynfi/DYFStore.git`）到本地目录。
 
 
 ## 欢迎反馈

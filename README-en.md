@@ -562,7 +562,7 @@ DispatchQueue.main.asyncAfter(delay: 1.5) {
 
 ## Demo
 
-To learn more, please clone (` git clone https://github.com/dgynfi/DYFStore.git `) this project to the local directory.
+To learn more, please clone this project (`git clone https://github.com/dgynfi/DYFStore.git`) to the local directory.
 
 
 ## Feedback is welcome
