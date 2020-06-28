@@ -1,5 +1,6 @@
 ## [英文文档（English Document）](README-en.md)
 
+
 如果此项目能帮助到你，就请你给[一颗星](https://github.com/dgynfi/DYFStore)。谢谢！
 
 
@@ -7,7 +8,7 @@
 
 一个用于应用内购买的轻量级易用 iOS 库。(Swift) 
 
-`DYFStore`使用代码块和[通知](#通知)包装“StoreKit”，提供[收据验证](#收据验证)和[交易持久化](#交易持久化)。`DYFStore`不需要任何外部依赖项。
+`DYFStore`使用代码块和[通知](#通知)包装`StoreKit`，提供[收据验证](#收据验证)和[交易持久化](#交易持久化)。`DYFStore`不需要任何外部依赖项。
 
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](LICENSE)&nbsp;
 [![CocoaPods](http://img.shields.io/cocoapods/v/DYFStore.svg?style=flat)](http://cocoapods.org/pods/DYFStore)&nbsp;
@@ -419,7 +420,7 @@ func removeStoreObserver() {
 
 `DYFStore`默认情况下不执行收据验证，但提供引用实现。您可以实现自己的自定义验证或使用库提供的引用验证程序。
 
-参考验证程序概述如下。有关更多信息，请查看 [wiki](https://github.com/dgynfi/DYFStore/wiki/Receipt-verification)。
+引用验证程序概述如下。有关更多信息，请查看 [wiki](https://github.com/dgynfi/DYFStore/wiki/Receipt-verification)。
 
 #### 引用验证器
 
@@ -558,3 +559,13 @@ DispatchQueue.main.asyncAfter(delay: 1.5) {
 ## 要求
 
 `DYFStore`需要`iOS 8.0`或更高版本和ARC。
+
+
+## 演示
+
+如需了解更多，请克隆（`git clone https://github.com/dgynfi/DYFStore.git`）此项目到本地目录。
+
+
+## 欢迎反馈
+
+如果你注意到任何问题，被卡住或只是想聊天，请随意创建一个问题。我很乐意帮助你。

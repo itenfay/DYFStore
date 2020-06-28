@@ -1,6 +1,7 @@
 ## [Chinese Document](https://github.com/dgynfi/DYFStore)
 
-[If this project can help you, please give it a star. Thanks!](https://github.com/dgynfi/DYFStore)
+
+If this project can help you, please give it [a star](https://github.com/dgynfi/DYFStore). Thanks!
 
 
 ## DYFStore
@@ -34,7 +35,7 @@ A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 Using [CocoaPods](https://cocoapods.org):
 
 ``` 
-pod 'DYFStore', '~> 1.1.2'
+pod 'DYFStore', '~> 1.1.3'
 ```
 
 Or
@@ -455,7 +456,7 @@ self.receiptVerifier.verifyReceipt(data)
 
 If security is a concern you might want to avoid using an open source verification logic, and provide your own custom verifier instead.
 
-It is better to use your own server to obtain the parameters uploaded from the client to verify the receipt from the app store server (C -> Uploaded Parameters -> S -> App Store S -> S -> Receive Data -> C, C: client, S: server).
+It is better to use your own server to obtain the parameters uploaded from the client to verify the receipt from the app store server (C -> Uploaded Parameters -> S -> App Store S -> S -> Receive And Parse Data -> C, C: client, S: server).
 
 
 ### Finish transactions
@@ -542,7 +543,7 @@ DispatchQueue.main.asyncAfter(delay: 1.5) {
     } else {
         
         let transaction = store.extractPurchasedTransaction(identifier)
-        // The transaction can be finished only after the receipt verification passed under the client and the server can adopt the communication of security and data encryption. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification we want StoreKit to keep reminding us of the transaction.
+        // The transaction can be finished only after the client and server adopt secure communication and data encryption and the receipt verification is passed. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification, we want `StoreKit` to keep reminding us that there are still outstanding transactions.
         store.finishTransaction(transaction)
     }
     
@@ -557,3 +558,14 @@ DispatchQueue.main.asyncAfter(delay: 1.5) {
 ## Requirements
 
 `DYFStore` requires `iOS 8.0` or above and `ARC`.
+
+
+## Demo
+
+To learn more, please clone (` git clone https://github.com/dgynfi/DYFStore.git `) this project to the local directory.
+
+
+## Feedback is welcome
+
+If you notice any issue, got stuck or just want to chat feel free to create an issue. I will be happy to help you.
+

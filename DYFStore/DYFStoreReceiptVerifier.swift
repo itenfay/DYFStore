@@ -79,14 +79,16 @@ open class DYFStoreReceiptVerifier: NSObject {
         self.canInvalidateSession = true
     }
     
-    /// Verifies the in-app purchase receipt, but it is not recommended to use. It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C).
+    /// Verifies the in-app purchase receipt, but it is not recommended to use. It is better to use your own server to obtain the parameters uploaded from the client to verify the receipt from the app store server (C -> Uploaded Parameters -> S -> App Store S -> S -> Receive And Parse Data -> C).
+    /// If the receipts are verified by your own server, the client needs to upload these parameters, such as: "transaction identifier, bundle identifier, product identifier, user identifier, shared sceret(Subscription), receipt(Safe URL Base64), original transaction identifier(Optional), original transaction time(Optional) and the device information, etc.".
     ///
     /// - Parameter receiptData: A signed receipt that records all information about a successful payment transaction.
     @objc public func verifyReceipt(_ receiptData: Data?) {
         verifyReceipt(receiptData, sharedSecret: nil)
     }
     
-    /// Verifies the in-app purchase receipt, but it is not recommended to use. It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C).
+    /// Verifies the in-app purchase receipt, but it is not recommended to use. It is better to use your own server to obtain the parameters uploaded from the client to verify the receipt from the app store server (C -> Uploaded Parameters -> S -> App Store S -> S -> Receive And Parse Data -> C).
+    /// If the receipts are verified by your own server, the client needs to upload these parameters, such as: "transaction identifier, bundle identifier, product identifier, user identifier, shared sceret(Subscription), receipt(Safe URL Base64), original transaction identifier(Optional), original transaction time(Optional) and the device information, etc.".
     ///
     /// - Parameters:
     ///   - receiptData: A signed receipt that records all information about a successful payment transaction.
