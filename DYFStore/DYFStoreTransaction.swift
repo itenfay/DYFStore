@@ -33,6 +33,9 @@ open class DYFStoreTransaction: NSObject, NSCoding {
     /// A string used to identify a product that can be purchased from within your app.
     @objc open var productIdentifier: String?
     
+    /// An opaque identifier for the user’s account on your system.
+    @objc open var userIdentifier: String?
+    
     /// When a transaction is restored, the current transaction holds a new transaction timestamp. Your app will read this property to retrieve the restored transaction timestamp.
     @objc open var originalTransactionTimestamp: String?
     

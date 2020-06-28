@@ -216,8 +216,11 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
         if let tx = transaction {
             DYFStoreLog("transaction.state: \(tx.state)")
             DYFStoreLog("transaction.productIdentifier: \(tx.productIdentifier!)")
+            DYFStoreLog("transaction.userIdentifier: \(tx.userIdentifier ?? "null")")
             DYFStoreLog("transaction.transactionIdentifier: \(tx.transactionIdentifier!)")
             DYFStoreLog("transaction.transactionTimestamp: \(tx.transactionTimestamp!)")
+            DYFStoreLog("transaction.originalTransactionIdentifier: \(tx.originalTransactionIdentifier ?? "null")")
+            DYFStoreLog("transaction.originalTransactionTimestamp: \(tx.originalTransactionTimestamp ?? "null")")
             
             if let receiptData = tx.transactionReceipt!.base64DecodedData() {
                 DYFStoreLog("transaction.transactionReceipt: \(receiptData)")
@@ -233,8 +236,11 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             if let tx = transaction {
                 DYFStoreLog("[BAK] transaction.state: \(tx.state)")
                 DYFStoreLog("[BAK] transaction.productIdentifier: \(tx.productIdentifier!)")
+                DYFStoreLog("[BAK] transaction.userIdentifier: \(tx.userIdentifier ?? "null")")
                 DYFStoreLog("[BAK] transaction.transactionIdentifier: \(tx.transactionIdentifier!)")
                 DYFStoreLog("[BAK] transaction.transactionTimestamp: \(tx.transactionTimestamp!)")
+                DYFStoreLog("[BAK] transaction.originalTransactionIdentifier: \(tx.originalTransactionIdentifier ?? "null")")
+                DYFStoreLog("[BAK] transaction.originalTransactionTimestamp: \(tx.originalTransactionTimestamp ?? "null")")
                 
                 if let receiptData = tx.transactionReceipt!.base64DecodedData() {
                     DYFStoreLog("[BAK] transaction.transactionReceipt: \(receiptData)")
@@ -259,17 +265,20 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let persister = store.keychainPersister!
             
             let transaction = DYFStoreTransaction()
-            transaction.productIdentifier = info.productIdentifier
+            
             if info.state! == .succeeded {
                 transaction.state = DYFStoreTransactionState.purchased.rawValue
             } else if info.state! == .restored {
                 transaction.state = DYFStoreTransactionState.restored.rawValue
-                transaction.originalTransactionTimestamp = info.originalTransactionDate?.timestamp()
-                transaction.originalTransactionIdentifier = info.originalTransactionIdentifier
             }
             
+            transaction.productIdentifier = info.productIdentifier
+            transaction.userIdentifier = info.userIdentifier
             transaction.transactionTimestamp = info.transactionDate?.timestamp()
             transaction.transactionIdentifier = info.transactionIdentifier
+            transaction.originalTransactionTimestamp = info.originalTransactionDate?.timestamp()
+            transaction.originalTransactionIdentifier = info.originalTransactionIdentifier
+            
             transaction.transactionReceipt = data.base64EncodedString()
             persister.storeTransaction(transaction)
             
@@ -314,7 +323,8 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
         }
     }
     
-    // It is better to use your own server with the parameters that was uploaded from the client to verify the receipt from the apple itunes store server (C -> Uploaded Parameters -> S -> Apple iTunes Store S -> S -> Receive Data -> C).
+    // It is better to use your own server to obtain the parameters uploaded from the client to verify the receipt from the app store server (C -> Uploaded Parameters -> S -> App Store S -> S -> Receive Data -> C).
+    // If the receipts are verified by your own server, the client needs to upload these parameters, such as: "transaction identifier, bundle identifier, product identifier, user identifier, shared sceret(Subscription), receipt(Safe URL Base64), original transaction identifier(Optional) and original transaction time(Optional)".
     private func verifyReceipt(_ receiptData: Data?) {
         DYFStoreLog()
         
@@ -381,18 +391,21 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let identifier = info.transactionIdentifier!
             
             if info.state! == .restored {
+                
                 let transaction = store.extractRestoredTransaction(identifier)
                 store.finishTransaction(transaction)
                 
-                persister.removeTransaction(info.originalTransactionIdentifier!)
             } else {
                 
                 let transaction = store.extractPurchasedTransaction(identifier)
-                // The transaction can be finished only after the receipt verification passed under the client and the server can adopt the communication of security and data encryption. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification we want StoreKit to keep reminding us of the transaction.
+                // The transaction can be finished only after the client and server adopt secure communication and data encryption and the receipt verification is passed. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification, we want `StoreKit` to keep reminding us that there are still outstanding transactions.
                 store.finishTransaction(transaction)
             }
             
             persister.removeTransaction(identifier)
+            if let id = info.originalTransactionIdentifier {
+                persister.removeTransaction(id)
+            }
         }
         
     }
@@ -429,18 +442,21 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let identifier = info.transactionIdentifier!
             
             if info.state! == .restored {
+                
                 let transaction = store.extractRestoredTransaction(identifier)
                 store.finishTransaction(transaction)
                 
-                persister.removeTransaction(info.originalTransactionIdentifier!)
             } else {
                 
                 let transaction = store.extractPurchasedTransaction(identifier)
-                // The transaction can be finished only after the receipt verification passed under the client and the server can adopt the communication of security and data encryption. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification we want StoreKit to keep reminding us of the transaction.
+                // The transaction can be finished only after the client and server adopt secure communication and data encryption and the receipt verification is passed. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification, we want `StoreKit` to keep reminding us that there are still outstanding transactions.
                 store.finishTransaction(transaction)
             }
             
             persister.removeTransaction(identifier)
+            if let id = info.originalTransactionIdentifier {
+                persister.removeTransaction(id)
+            }
         }
     }
     

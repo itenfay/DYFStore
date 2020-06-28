@@ -804,12 +804,15 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         var info = DYFStore.NotificationInfo()
         info.state = state
         info.productIdentifier = transaction.payment.productIdentifier
+        if #available(iOS 7.0, *) {
+            info.userIdentifier = transaction.payment.applicationUsername
+        }
         info.transactionDate = transaction.transactionDate
         info.transactionIdentifier = transaction.transactionIdentifier
         
-        if state == DYFStore.PurchaseState.restored {
-            info.originalTransactionDate = transaction.original?.transactionDate
-            info.originalTransactionIdentifier = transaction.original?.transactionIdentifier
+        if let originalTx = transaction.original {
+            info.originalTransactionDate = originalTx.transactionDate
+            info.originalTransactionIdentifier = originalTx.transactionIdentifier
         }
         
         self.postNotification(info)
@@ -1211,6 +1214,9 @@ extension DYFStore {
         
         /// A string used to identify a product that can be purchased from within your app.
         public var productIdentifier: String?
+        
+        /// An opaque identifier for the user’s account on your system.
+        public var userIdentifier: String?
         
         /// When a transaction is restored, the current transaction holds a new transaction date. Your app will read this property to retrieve the restored transaction date.
         public var originalTransactionDate: Date?
