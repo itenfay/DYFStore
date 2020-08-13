@@ -48,10 +48,20 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// The keychain persister that supervises the `DYFStoreTransaction` transactions.
     public var keychainPersister: DYFStoreKeychainPersistence?
     
-    /// A struct named "Inner".
-    private struct Inner {
-        static var instance: DYFStore? = nil
+    /// Returns a store singleton.
+    public static let `default` = DYFStore()
+    
+    /// Constructs a store singleton with class method.
+    ///
+    /// - Returns: A store singleton.
+    public class func defaultStore() -> DYFStore {
+        return DYFStore.self.default
     }
+    
+    /// A struct named "Inner".
+    // private struct Inner {
+    //    static var instance: DYFStore? = nil
+    // }
     
     /// Returns a store singleton.
     ///
@@ -61,26 +71,20 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///    }
     /// }
     /// return instance
-    public class var `default`: DYFStore {
-        
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
-        guard let instance = Inner.instance else {
-            let store = DYFStore()
-            Inner.instance = store
-            return store
-        }
-        
-        return instance
-    }
-    
-    /// Constructs a store singleton with class method.
     ///
-    /// - Returns: A store singleton.
-    public class func defaultStore() -> DYFStore {
-        return DYFStore.self.default
-    }
+    // public class var `default`: DYFStore {
+    //
+    //    objc_sync_enter(self)
+    //    defer { objc_sync_exit(self) }
+    //
+    //    guard let instance = Inner.instance else {
+    //        let store = DYFStore()
+    //        Inner.instance = store
+    //        return store
+    //    }
+    //
+    //    return instance
+    // }
     
     /// Overrides default constructor.
     private override init() {
