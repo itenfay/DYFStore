@@ -78,25 +78,28 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
         return verifier
     }()
     
+    /// Returns a store manager singleton.
+    public static let shared = DYFStoreManager()
+    
     /// A struct named "Static".
-    private struct Static {
-        static var instance: DYFStoreManager? = nil
-    }
+    // private struct Static {
+    //    static var instance: DYFStoreManager? = nil
+    // }
     
     /// Returns a store manager singleton.
-    public class var shared: DYFStoreManager {
-        
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
-        guard let instance = Static.instance else {
-            let storeManager = DYFStoreManager()
-            Static.instance = storeManager
-            return storeManager
-        }
-        
-        return instance
-    }
+    // public class var shared: DYFStoreManager {
+    //
+    //    objc_sync_enter(self)
+    //    defer { objc_sync_exit(self) }
+    //
+    //    guard let instance = Static.instance else {
+    //        let storeManager = DYFStoreManager()
+    //        Static.instance = storeManager
+    //        return storeManager
+    //    }
+    //
+    //    return instance
+    // }
     
     /// Overrides default constructor.
     public override init() {
