@@ -35,7 +35,7 @@
 使用 [CocoaPods](https://cocoapods.org):
 
 ``` 
-pod 'DYFStore', '~> 1.1.3'
+pod 'DYFStore', '~> 1.1.4'
 ```
 
 Or
@@ -44,7 +44,7 @@ Or
 pod 'DYFStore'
 ```
 
-或者从 [DYFStore](https://github.com/dgynfi/DYFStore/tree/master/DYFStore) 目录中添加文件 (如果你是手动操作) 。
+或者从 [DYFStore](https://github.com/dgynfi/DYFStore/tree/master/DYFStore) 目录手动添加文件。
 
 查看 [wiki](https://github.com/dgynfi/DYFStore/wiki/Installation) 以获取更多选项。
 
