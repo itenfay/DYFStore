@@ -24,6 +24,7 @@
 //
 
 import Foundation
+import DYFSwiftRuntimeProvider
 
 open class DYFStoreTransaction: NSObject, NSCoding {
     

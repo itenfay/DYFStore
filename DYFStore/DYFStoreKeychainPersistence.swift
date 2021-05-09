@@ -25,6 +25,8 @@
 
 import Foundation
 
+/** Deprecated.
+
 /// The transaction persistence using the keychain.
 open class DYFStoreKeychainPersistence: NSObject {
     
@@ -166,3 +168,5 @@ open class DYFStoreKeychainPersistence: NSObject {
     }
     
 }
+ 
+*/

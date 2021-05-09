@@ -206,8 +206,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     private func completePayment() {
         
         let info = self.purchaseInfo!
-        let store = DYFStore.default
-        let persister = store.keychainPersister!
+        let persister = DYFStoreUserDefaultsPersistence()
         
         let identifier = info.transactionIdentifier!
         if !persister.containsTransaction(identifier) {
@@ -231,25 +230,6 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             }
         }
         
-        // Reads the backup data.
-        let uPersister = DYFStoreUserDefaultsPersistence()
-        if uPersister.containsTransaction(identifier) {
-            
-            let transaction = uPersister.retrieveTransaction(identifier)
-            if let tx = transaction {
-                DYFStoreLog("[BAK] transaction.state: \(tx.state)")
-                DYFStoreLog("[BAK] transaction.productIdentifier: \(tx.productIdentifier!)")
-                DYFStoreLog("[BAK] transaction.userIdentifier: \(tx.userIdentifier ?? "null")")
-                DYFStoreLog("[BAK] transaction.transactionIdentifier: \(tx.transactionIdentifier!)")
-                DYFStoreLog("[BAK] transaction.transactionTimestamp: \(tx.transactionTimestamp!)")
-                DYFStoreLog("[BAK] transaction.originalTransactionIdentifier: \(tx.originalTransactionIdentifier ?? "null")")
-                DYFStoreLog("[BAK] transaction.originalTransactionTimestamp: \(tx.originalTransactionTimestamp ?? "null")")
-                
-                if let receiptData = tx.transactionReceipt!.base64DecodedData() {
-                    DYFStoreLog("[BAK] transaction.transactionReceipt: \(receiptData)")
-                }
-            }
-        }
     }
     
     private func storeReceipt() {
@@ -264,11 +244,9 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let data = try Data(contentsOf: url)
             
             let info = self.purchaseInfo!
-            let store = DYFStore.default
-            let persister = store.keychainPersister!
+            let persister = DYFStoreUserDefaultsPersistence()
             
             let transaction = DYFStoreTransaction()
-            
             if info.state! == .succeeded {
                 transaction.state = DYFStoreTransactionState.purchased.rawValue
             } else if info.state! == .restored {
@@ -284,12 +262,6 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             
             transaction.transactionReceipt = data.base64EncodedString()
             persister.storeTransaction(transaction)
-            
-            // Makes the backup data.
-            let uPersister = DYFStoreUserDefaultsPersistence()
-            if !uPersister.containsTransaction(info.transactionIdentifier!) {
-                uPersister.storeTransaction(transaction)
-            }
             
             self.verifyReceipt(data)
         } catch let error {
@@ -358,8 +330,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
     private func retryToVerifyReceipt() {
         let info = self.purchaseInfo!
-        let store = DYFStore.default
-        let persister = store.keychainPersister!
+        let persister = DYFStoreUserDefaultsPersistence()
         
         let identifier = info.transactionIdentifier!
         let transaction = persister.retrieveTransaction(identifier)
@@ -390,7 +361,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
         DispatchQueue.main.asyncAfter(delay: 1.5) {
             let info = self.purchaseInfo!
             let store = DYFStore.default
-            let persister = store.keychainPersister!
+            let persister = DYFStoreUserDefaultsPersistence()
             let identifier = info.transactionIdentifier!
             
             if info.state! == .restored {
@@ -441,7 +412,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
         DispatchQueue.main.asyncAfter(delay: 1.5) {
             let info = self.purchaseInfo!
             let store = DYFStore.default
-            let persister = store.keychainPersister!
+            let persister = DYFStoreUserDefaultsPersistence()
             let identifier = info.transactionIdentifier!
             
             if info.state! == .restored {

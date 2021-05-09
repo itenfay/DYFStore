@@ -46,7 +46,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public weak var delegate: DYFStoreAppStorePaymentDelegate?
     
     /// The keychain persister that supervises the `DYFStoreTransaction` transactions.
-    public var keychainPersister: DYFStoreKeychainPersistence?
+    ///public var keychainPersister: DYFStoreKeychainPersistence?
     
     /// Returns a store singleton.
     public static let `default` = DYFStore()

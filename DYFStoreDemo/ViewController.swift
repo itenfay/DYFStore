@@ -28,6 +28,13 @@ class ViewController: UIViewController {
     ///  - Step 1: Requests localized information about a product from the Apple App Store.
     ///  - Step 2: Adds payment of a product with its product identifier.
     @IBAction func fetchesProductAndSubmitsPayment(_ sender: Any) {
+        
+        // You need to check whether the device is not able or allowed to make payments before requesting product.
+        if !DYFStore.canMakePayments() {
+            self.showTipsMessage("Your device is not able or allowed to make payments!")
+            return
+        }
+        
         self.showLoading("Loading...")
         
         let productId = "com.hncs.szj.coin42"
@@ -89,6 +96,13 @@ class ViewController: UIViewController {
     ///  - Step 2: After retrieving the localized product list, then display store UI.
     ///  - Step 3: Adds payment of a product with its product identifier.
     @IBAction func fetchesProductsFromAppStore(_ sender: Any) {
+        
+        // You need to check whether the device is not able or allowed to make payments before requesting products.
+        if !DYFStore.canMakePayments() {
+            self.showTipsMessage("Your device is not able or allowed to make payments!")
+            return
+        }
+        
         self.showLoading("Loading...")
         
         let productIds = fetchProductIdentifiersFromServer()
@@ -138,11 +152,6 @@ class ViewController: UIViewController {
     }
     
     private func displayStoreUI(_ dataArray: [DYFStoreProduct]) {
-        
-        if !DYFStore.canMakePayments() {
-            self.showTipsMessage("Your device is not able or allowed to make payments!")
-            return
-        }
         
         let storeVC = DYFStoreViewController()
         storeVC.dataArray = dataArray

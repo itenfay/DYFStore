@@ -28,8 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDe
         // Sets the delegate processes the purchase which was initiated by user from the App Store.
         DYFStore.default.delegate = self
         
-        DYFStore.default.keychainPersister = DYFStoreKeychainPersistence()
-        
         return true
     }
     
