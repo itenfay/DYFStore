@@ -2,11 +2,11 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "DYFStore"
-  spec.version      = "1.1.5"
+  spec.version      = "1.2.0"
   spec.summary      = "A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)"
 
   spec.description  = <<-DESC
-	A lightweight and easy-to-use iOS library for In-App Purchases. DYFStore uses blocks and notifications to wrap StoreKit, provides receipt verification and transaction persistence and doesn't require any external dependencies.
+	    A lightweight and easy-to-use iOS library for In-App Purchases. DYFStore uses blocks and notifications to wrap StoreKit, provides receipt verification and transaction persistence and doesn't require any external dependencies.
                    DESC
 
   spec.homepage      = "https://github.com/dgynfi/DYFStore"
@@ -50,5 +50,6 @@ Pod::Spec.new do |spec|
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # spec.dependency "JSONKit", "~> 1.4"
-
+  spec.dependency 'DYFSwiftRuntimeProvider'
+  
 end
