@@ -1,0 +1,16 @@
+PODS:
+  - DYFSwiftRuntimeProvider (1.0.3)
+
+DEPENDENCIES:
+  - DYFSwiftRuntimeProvider
+
+SPEC REPOS:
+  trunk:
+    - DYFSwiftRuntimeProvider
+
+SPEC CHECKSUMS:
+  DYFSwiftRuntimeProvider: 40fd8c208b1c5f660363ef021f9271da04b2f423
+
+PODFILE CHECKSUM: 37530ebfa3e814cbcd00c58bd8521147dedd8f28
+
+COCOAPODS: 1.9.1

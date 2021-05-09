@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,8 +11,6 @@
 		1418390522F879E10086386E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1418390422F879E10086386E /* Assets.xcassets */; };
 		1418390822F879E10086386E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1418390622F879E10086386E /* LaunchScreen.storyboard */; };
 		143A19B124868DA7005A22D5 /* DYFIndefiniteAnimatedSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143A19B024868DA6005A22D5 /* DYFIndefiniteAnimatedSpinner.swift */; };
-		148DF49F236F3BCA0026DBB3 /* DYFSwiftKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF497236F3BC90026DBB3 /* DYFSwiftKeychain.swift */; };
-		148DF4A0236F3BCA0026DBB3 /* DYFSwiftRuntimeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF498236F3BC90026DBB3 /* DYFSwiftRuntimeProvider.swift */; };
 		148DF4A1236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */; };
 		148DF4A2236F3BCA0026DBB3 /* DYFStoreTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF49A236F3BCA0026DBB3 /* DYFStoreTransaction.swift */; };
 		148DF4A3236F3BCA0026DBB3 /* DYFStoreKeychainPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF49B236F3BCA0026DBB3 /* DYFStoreKeychainPersistence.swift */; };
@@ -34,17 +32,17 @@
 		149E56B1235EF74D0011F030 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149E56B0235EF74D0011F030 /* Foundation.framework */; };
 		149E56B3235EF75A0011F030 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149E56B2235EF75A0011F030 /* CoreGraphics.framework */; };
 		14D39691236B003F006C2666 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14D39690236B003E006C2666 /* Security.framework */; };
+		1F30644F9B4000F6CF9C6759 /* Pods_DYFStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2381EE5D31812C8BFC40A09 /* Pods_DYFStore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0399749C37C46D6A7F641FF2 /* Pods-DYFStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DYFStore.release.xcconfig"; path = "Target Support Files/Pods-DYFStore/Pods-DYFStore.release.xcconfig"; sourceTree = "<group>"; };
 		141838FA22F879CF0086386E /* DYFStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DYFStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1418390222F879CF0086386E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1418390422F879E10086386E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1418390722F879E10086386E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1418390922F879E10086386E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		143A19B024868DA6005A22D5 /* DYFIndefiniteAnimatedSpinner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFIndefiniteAnimatedSpinner.swift; sourceTree = "<group>"; };
-		148DF497236F3BC90026DBB3 /* DYFSwiftKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFSwiftKeychain.swift; sourceTree = "<group>"; };
-		148DF498236F3BC90026DBB3 /* DYFSwiftRuntimeProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFSwiftRuntimeProvider.swift; sourceTree = "<group>"; };
 		148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreReceiptVerifier.swift; sourceTree = "<group>"; };
 		148DF49A236F3BCA0026DBB3 /* DYFStoreTransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreTransaction.swift; sourceTree = "<group>"; };
 		148DF49B236F3BCA0026DBB3 /* DYFStoreKeychainPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreKeychainPersistence.swift; sourceTree = "<group>"; };
@@ -66,6 +64,8 @@
 		149E56B0235EF74D0011F030 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		149E56B2235EF75A0011F030 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		14D39690236B003E006C2666 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		35E710337D1F354156C45AC4 /* Pods-DYFStore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DYFStore.debug.xcconfig"; path = "Target Support Files/Pods-DYFStore/Pods-DYFStore.debug.xcconfig"; sourceTree = "<group>"; };
+		A2381EE5D31812C8BFC40A09 /* Pods_DYFStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DYFStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +78,7 @@
 				149E56B3235EF75A0011F030 /* CoreGraphics.framework in Frameworks */,
 				149E56AF235EF73B0011F030 /* UIKit.framework in Frameworks */,
 				149E56B1235EF74D0011F030 /* Foundation.framework in Frameworks */,
+				1F30644F9B4000F6CF9C6759 /* Pods_DYFStore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +92,7 @@
 				141838FC22F879CF0086386E /* DYFStoreDemo */,
 				141838FB22F879CF0086386E /* Products */,
 				149E56AB235EF7290011F030 /* Frameworks */,
+				82B49D43EF28E950CB62B18F /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -133,8 +135,6 @@
 				148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */,
 				148DF49D236F3BCA0026DBB3 /* DYFStoreUserDefaultsPersistence.swift */,
 				148DF49A236F3BCA0026DBB3 /* DYFStoreTransaction.swift */,
-				148DF497236F3BC90026DBB3 /* DYFSwiftKeychain.swift */,
-				148DF498236F3BC90026DBB3 /* DYFSwiftRuntimeProvider.swift */,
 			);
 			path = DYFStore;
 			sourceTree = "<group>";
@@ -147,8 +147,18 @@
 				149E56B2235EF75A0011F030 /* CoreGraphics.framework */,
 				149E56AE235EF73B0011F030 /* UIKit.framework */,
 				149E56B0235EF74D0011F030 /* Foundation.framework */,
+				A2381EE5D31812C8BFC40A09 /* Pods_DYFStore.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		82B49D43EF28E950CB62B18F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				35E710337D1F354156C45AC4 /* Pods-DYFStore.debug.xcconfig */,
+				0399749C37C46D6A7F641FF2 /* Pods-DYFStore.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,9 +168,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1418390C22F879E10086386E /* Build configuration list for PBXNativeTarget "DYFStore" */;
 			buildPhases = (
+				8E7B81F8F35EBE4117EA25E2 /* [CP] Check Pods Manifest.lock */,
 				141838F622F879CF0086386E /* Sources */,
 				141838F722F879CF0086386E /* Frameworks */,
 				141838F822F879CF0086386E /* Resources */,
+				30697A7C273C548BAA43D71D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -220,13 +232,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		30697A7C273C548BAA43D71D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DYFStore/Pods-DYFStore-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DYFStore/Pods-DYFStore-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DYFStore/Pods-DYFStore-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8E7B81F8F35EBE4117EA25E2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DYFStore-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		141838F622F879CF0086386E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				149DE0A123BE0CEA00DFC0A1 /* ViewController.swift in Sources */,
-				148DF49F236F3BCA0026DBB3 /* DYFSwiftKeychain.swift in Sources */,
 				148DF4A6236F3BCA0026DBB3 /* DYFStore.swift in Sources */,
 				148DF4A5236F3BCA0026DBB3 /* DYFStoreUserDefaultsPersistence.swift in Sources */,
 				148DF4A4236F3BCA0026DBB3 /* DYFStoreConverter.swift in Sources */,
@@ -240,7 +293,6 @@
 				143A19B124868DA7005A22D5 /* DYFIndefiniteAnimatedSpinner.swift in Sources */,
 				148DF4A1236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift in Sources */,
 				149DE09E23BE0CEA00DFC0A1 /* DYFStoreViewController.swift in Sources */,
-				148DF4A0236F3BCA0026DBB3 /* DYFSwiftRuntimeProvider.swift in Sources */,
 				149DE09B23BE0CEA00DFC0A1 /* DYFStoreProduct.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -385,6 +437,7 @@
 		};
 		1418390D22F879E10086386E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 35E710337D1F354156C45AC4 /* Pods-DYFStore.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -409,6 +462,7 @@
 		};
 		1418390E22F879E10086386E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0399749C37C46D6A7F641FF2 /* Pods-DYFStore.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
