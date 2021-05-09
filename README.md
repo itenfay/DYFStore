@@ -11,6 +11,16 @@ A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 [Chinese Instructions (中文说明)](README-zh.md)
 
 
+## Related Links
+
+- [DYFSwiftRuntimeProvider](https://github.com/dgynfi/DYFSwiftRuntimeProvider/)
+- [DYFSwiftKeychain](https://github.com/dgynfi/DYFSwiftKeychain/)
+- [DYFStoreReceiptVerifier_Swift](https://github.com/dgynfi/DYFStoreReceiptVerifier_Swift/)
+- [Unity-iOS-InAppPurchase](https://github.com/dgynfi/Unity-iOS-InAppPurchase/)
+- [https://dgynfi.github.io/2016/10/16/in-app-purchase-complete-programming-guide-for-iOS/](https://dgynfi.github.io/2016/10/16/in-app-purchase-complete-programming-guide-for-iOS/)
+- [https://dgynfi.github.io/2016/10/12/how-to-easily-complete-in-app-purchase-configuration-for-iOS/](https://dgynfi.github.io/2016/10/12/how-to-easily-complete-in-app-purchase-configuration-for-iOS/)
+
+
 ## Features
 
 - Super simple in-app purchases.
@@ -31,7 +41,7 @@ A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 Using [CocoaPods](https://cocoapods.org):
 
 ``` 
-pod 'DYFStore', '~> 1.1.5'
+pod 'DYFStore', '~> 1.2.0'
 ```
 
 Or
@@ -39,8 +49,6 @@ Or
 ```
 pod 'DYFStore'
 ```
-
-Or manually add the files from the [DYFStore](https://github.com/dgynfi/DYFStore/tree/master/DYFStore) directory.
 
 Check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Installation) for more options.
 
@@ -72,8 +80,6 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
     // Sets the delegate processes the purchase which was initiated by user from the App Store.
     DYFStore.default.delegate = self
 
-    DYFStore.default.keychainPersister = DYFStoreKeychainPersistence()
-
     return true
 }
 ```
@@ -103,12 +109,28 @@ func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayme
 
 ### Request products
 
-There are two strategies for retrieving information about the products from the App Store.
+You need to check whether the device is not able or allowed to make payments before requesting products.
 
-**Strategy 1:** To begin the purchase process, your app must know its product identifiers. Your app can uses a product identifier to fetch information about product available for sale in the App Store and to submit payment request directly.
+```
+if !DYFStore.canMakePayments() {
+    self.showTipsMessage("Your device is not able or allowed to make payments!")
+    return
+}
+```
+
+To begin the purchase process, your app must know its product identifiers. There are two strategies for retrieving information about the products from the App Store.
+
+**Strategy 1:** Your app can uses a product identifier to fetch information about product available for sale in the App Store and to submit payment request directly.
 
 ```
 @IBAction func fetchesProductAndSubmitsPayment(_ sender: Any) {
+    
+    // You need to check whether the device is not able or allowed to make payments before requesting product.
+    if !DYFStore.canMakePayments() {
+        self.showTipsMessage("Your device is not able or allowed to make payments!")
+        return
+    }
+
     self.showLoading("Loading...")
     
     let productId = "com.hncs.szj.coin42"
@@ -150,7 +172,7 @@ private func addPayment(_ productId: String) {
 }
 ```
 
-**Strategy 2:** To begin the purchase process, your app must know its product identifiers so it can retrieve information about the products from the App Store and present its store UI to the user. Every product sold in your app has a unique product identifier. Your app uses these product identifiers to fetch information about products available for sale in the App Store, such as pricing, and to submit payment requests when users purchase those products.
+**Strategy 2:** It can retrieve information about the products from the App Store and present its store UI to the user. Every product sold in your app has a unique product identifier. Your app uses these product identifiers to fetch information about products available for sale in the App Store, such as pricing, and to submit payment requests when users purchase those products.
 
 ```
 func fetchProductIdentifiersFromServer() -> [String] {
@@ -170,6 +192,13 @@ func fetchProductIdentifiersFromServer() -> [String] {
 }
 
 @IBAction func fetchesProductsFromAppStore(_ sender: Any) {
+
+    // You need to check whether the device is not able or allowed to make payments before requesting products.
+    if !DYFStore.canMakePayments() {
+        self.showTipsMessage("Your device is not able or allowed to make payments!")
+        return
+    }
+
     self.showLoading("Loading...")
     
     let productIds = fetchProductIdentifiersFromServer()
@@ -220,11 +249,6 @@ private func processData(_ products: [SKProduct]) {
 
 private func displayStoreUI(_ dataArray: [DYFStoreProduct]) {
     
-    if !DYFStore.canMakePayments() {
-        self.showTipsMessage("Your device is not able or allowed to make payments!")
-        return
-    }
-    
     let storeVC = DYFStoreViewController()
     storeVC.dataArray = dataArray
     self.navigationController?.pushViewController(storeVC, animated: true)
@@ -233,15 +257,6 @@ private func displayStoreUI(_ dataArray: [DYFStoreProduct]) {
 
 
 ### Add payment
-
-Whether the device is allowed to make payments.
-
-```
-if !DYFStore.canMakePayments() {
-    self.showTipsMessage("Your device is not able or allowed to make payments!")
-    return
-}
-```
 
 Requests payment of the product with the given product identifier.
 
@@ -466,7 +481,7 @@ DYFStore.default.finishTransaction(transaction)
 
 ## Transaction persistence
 
-`DYFStore` provides two optional reference implementations for storing transactions in the Keychain(`DYFStoreKeychainPersistence`) or in `NSUserDefaults`(`DYFStoreUserDefaultsPersistence`). 
+`DYFStore` provides an optional reference implementation for storing transactions in `NSUserDefaults`(`DYFStoreUserDefaultsPersistence`). 
 
 When the client crashes during the payment process, it is particularly important to store transaction information. When storekit notifies the uncompleted payment again, it takes the data directly from keychain and performs the receipt verification until the transaction is completed.
 
@@ -484,11 +499,9 @@ func storeReceipt() {
         let data = try Data(contentsOf: url)
         
         let info = self.purchaseInfo!
-        let store = DYFStore.default
-        let persister = store.keychainPersister!
+        let persister =  DYFStoreUserDefaultsPersistence()
         
         let transaction = DYFStoreTransaction()
-        
         if info.state! == .succeeded {
             transaction.state = DYFStoreTransactionState.purchased.rawValue
         } else if info.state! == .restored {
@@ -505,12 +518,6 @@ func storeReceipt() {
         transaction.transactionReceipt = data.base64EncodedString()
         persister.storeTransaction(transaction)
         
-        // Makes the backup data.
-        let uPersister = DYFStoreUserDefaultsPersistence()
-        if !uPersister.containsTransaction(info.transactionIdentifier!) {
-            uPersister.storeTransaction(transaction)
-        }
-        
         self.verifyReceipt(data)
     } catch let error {
         
@@ -525,28 +532,26 @@ func storeReceipt() {
 ### Remove transaction
 
 ```
-DispatchQueue.main.asyncAfter(delay: 1.5) {
-    let info = self.purchaseInfo!
-    let store = DYFStore.default
-    let persister = store.keychainPersister!
-    let identifier = info.transactionIdentifier!
-    
-    if info.state! == .restored {
-        
-        let transaction = store.extractRestoredTransaction(identifier)
-        store.finishTransaction(transaction)
-        
-    } else {
-        
-        let transaction = store.extractPurchasedTransaction(identifier)
-        // The transaction can be finished only after the client and server adopt secure communication and data encryption and the receipt verification is passed. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification, we want `StoreKit` to keep reminding us that there are still outstanding transactions.
-        store.finishTransaction(transaction)
-    }
-    
-    persister.removeTransaction(identifier)
-    if let id = info.originalTransactionIdentifier {
-        persister.removeTransaction(id)
-    }
+let info = self.purchaseInfo!
+let store = DYFStore.default
+let persister = DYFStoreUserDefaultsPersistence()
+let identifier = info.transactionIdentifier!
+
+if info.state! == .restored {
+
+    let transaction = store.extractRestoredTransaction(identifier)
+    store.finishTransaction(transaction)
+
+} else {
+
+    let transaction = store.extractPurchasedTransaction(identifier)
+    // The transaction can be finished only after the receipt verification passed under the client and the server can adopt the communication of security and data encryption. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification we want StoreKit to keep reminding us of the transaction.
+    store.finishTransaction(transaction)
+}
+
+persister.removeTransaction(identifier)
+if let id = info.originalTransactionIdentifier {
+    persister.removeTransaction(id)
 }
 ```
 
