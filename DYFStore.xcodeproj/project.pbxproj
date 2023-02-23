@@ -11,7 +11,6 @@
 		1418390522F879E10086386E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1418390422F879E10086386E /* Assets.xcassets */; };
 		1418390822F879E10086386E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1418390622F879E10086386E /* LaunchScreen.storyboard */; };
 		143A19B124868DA7005A22D5 /* DYFIndefiniteAnimatedSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143A19B024868DA6005A22D5 /* DYFIndefiniteAnimatedSpinner.swift */; };
-		148DF4A1236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */; };
 		148DF4A2236F3BCA0026DBB3 /* DYFStoreTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF49A236F3BCA0026DBB3 /* DYFStoreTransaction.swift */; };
 		148DF4A3236F3BCA0026DBB3 /* DYFStoreKeychainPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF49B236F3BCA0026DBB3 /* DYFStoreKeychainPersistence.swift */; };
 		148DF4A4236F3BCA0026DBB3 /* DYFStoreConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148DF49C236F3BCA0026DBB3 /* DYFStoreConverter.swift */; };
@@ -31,7 +30,6 @@
 		149E56AF235EF73B0011F030 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149E56AE235EF73B0011F030 /* UIKit.framework */; };
 		149E56B1235EF74D0011F030 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149E56B0235EF74D0011F030 /* Foundation.framework */; };
 		149E56B3235EF75A0011F030 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149E56B2235EF75A0011F030 /* CoreGraphics.framework */; };
-		14D39691236B003F006C2666 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14D39690236B003E006C2666 /* Security.framework */; };
 		1F30644F9B4000F6CF9C6759 /* Pods_DYFStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2381EE5D31812C8BFC40A09 /* Pods_DYFStore.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,7 +41,6 @@
 		1418390722F879E10086386E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1418390922F879E10086386E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		143A19B024868DA6005A22D5 /* DYFIndefiniteAnimatedSpinner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFIndefiniteAnimatedSpinner.swift; sourceTree = "<group>"; };
-		148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreReceiptVerifier.swift; sourceTree = "<group>"; };
 		148DF49A236F3BCA0026DBB3 /* DYFStoreTransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreTransaction.swift; sourceTree = "<group>"; };
 		148DF49B236F3BCA0026DBB3 /* DYFStoreKeychainPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreKeychainPersistence.swift; sourceTree = "<group>"; };
 		148DF49C236F3BCA0026DBB3 /* DYFStoreConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DYFStoreConverter.swift; sourceTree = "<group>"; };
@@ -74,7 +71,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				149E56AD235EF72A0011F030 /* StoreKit.framework in Frameworks */,
-				14D39691236B003F006C2666 /* Security.framework in Frameworks */,
 				149E56B3235EF75A0011F030 /* CoreGraphics.framework in Frameworks */,
 				149E56AF235EF73B0011F030 /* UIKit.framework in Frameworks */,
 				149E56B1235EF74D0011F030 /* Foundation.framework in Frameworks */,
@@ -88,7 +84,7 @@
 		141838F122F879CF0086386E = {
 			isa = PBXGroup;
 			children = (
-				149E56A0235EEE300011F030 /* DYFStore */,
+				149E56A0235EEE300011F030 /* Classes */,
 				141838FC22F879CF0086386E /* DYFStoreDemo */,
 				141838FB22F879CF0086386E /* Products */,
 				149E56AB235EF7290011F030 /* Frameworks */,
@@ -126,17 +122,16 @@
 			path = DYFStoreDemo;
 			sourceTree = "<group>";
 		};
-		149E56A0235EEE300011F030 /* DYFStore */ = {
+		149E56A0235EEE300011F030 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
 				148DF49E236F3BCA0026DBB3 /* DYFStore.swift */,
 				148DF49C236F3BCA0026DBB3 /* DYFStoreConverter.swift */,
 				148DF49B236F3BCA0026DBB3 /* DYFStoreKeychainPersistence.swift */,
-				148DF499236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift */,
 				148DF49D236F3BCA0026DBB3 /* DYFStoreUserDefaultsPersistence.swift */,
 				148DF49A236F3BCA0026DBB3 /* DYFStoreTransaction.swift */,
 			);
-			path = DYFStore;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		149E56AB235EF7290011F030 /* Frameworks */ = {
@@ -291,7 +286,6 @@
 				149DE09A23BE0CEA00DFC0A1 /* DYFExtensions.swift in Sources */,
 				149DE0A223BE0CEA00DFC0A1 /* DYFLoadingView.swift in Sources */,
 				143A19B124868DA7005A22D5 /* DYFIndefiniteAnimatedSpinner.swift in Sources */,
-				148DF4A1236F3BCA0026DBB3 /* DYFStoreReceiptVerifier.swift in Sources */,
 				149DE09E23BE0CEA00DFC0A1 /* DYFStoreViewController.swift in Sources */,
 				149DE09B23BE0CEA00DFC0A1 /* DYFStoreProduct.swift in Sources */,
 			);
@@ -442,7 +436,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = KCBQ48PTUV;
 				INFOPLIST_FILE = "$(SRCROOT)/DYFStoreDemo/Info.plist";
@@ -451,7 +445,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hncs.szj;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -467,7 +461,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = KCBQ48PTUV;
 				INFOPLIST_FILE = "$(SRCROOT)/DYFStoreDemo/Info.plist";
@@ -476,7 +470,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hncs.szj;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
