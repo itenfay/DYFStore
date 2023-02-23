@@ -1,8 +1,8 @@
 //
 //  DYFStoreTransaction.swift
 //
-//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
-//  Copyright © 2016 dyf. All rights reserved.
+//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
+//  Copyright © 2016 chenxing. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,9 @@
 
 import Foundation
 import DYFSwiftRuntimeProvider
+
+/// The key UserDefaults and Keychain used.
+public let DYFStoreTransactionsKey = "DYFStoreTransactions"
 
 open class DYFStoreTransaction: NSObject, NSCoding {
     
@@ -55,7 +58,7 @@ open class DYFStoreTransaction: NSObject, NSCoding {
     /// The receipt is a signed chunk of data that can be sent to the App Store to verify that the payment was successfully processed. This is most useful when designing a store that uses a server separate from the iPhone to verify that payment was processed. For more information on verifying receipts, see [Receipt Validation Programming Guide](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Introduction.html#//apple_ref/doc/uid/TP40010573).
     @objc open var transactionReceipt: String?
     
-    /// Instantiates a DYFStoreTransaction object.
+    /// Instantiates an `DYFStoreTransaction` object.
     public override init() {
         super.init()
     }
@@ -90,6 +93,3 @@ open class DYFStoreTransaction: NSObject, NSCoding {
     /// Indicates that the transaction has been restored.
     case restored
 }
-
-/// The key UserDefaults and Keychain used.
-public let DYFStoreTransactionsKey = "DYFStoreTransactions"

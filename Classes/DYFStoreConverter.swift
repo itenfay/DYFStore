@@ -1,8 +1,8 @@
 //
 //  DYFStoreTransaction.swift
 //
-//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
-//  Copyright © 2016 dyf. All rights reserved.
+//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
+//  Copyright © 2016 chenxing. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import Foundation
 /// convert an object and a data object to each other.
 public class DYFStoreConverter: NSObject {
     
-    /// Instantiates a DYFStoreConverter object.
+    /// Instantiates an `DYFStoreConverter` object.
     public override init() {
         super.init()
     }
@@ -39,13 +39,11 @@ public class DYFStoreConverter: NSObject {
     /// - Parameter object: An object you want to encode.
     /// - Returns: The data object into which the archive is written.
     @objc public static func encodeObject(_ object: Any?) -> Data? {
-        
         guard let obj = object else {
             return nil
         }
         
         if #available(iOS 11.0, *) {
-            
             let archiver = NSKeyedArchiver(requiringSecureCoding: false)
             archiver.encode(obj)
             return archiver.encodedData // archiver.finishEncoding() and return the data.
@@ -59,26 +57,21 @@ public class DYFStoreConverter: NSObject {
     /// - Parameter data: An archive previously encoded by NSKeyedArchiver.
     /// - Returns: An object initialized for decoding data.
     @objc public static func decodeObject(_ data: Data?) -> Any? {
-        
         guard let tData = data else {
             return nil
         }
         
         if #available(iOS 11.0, *) {
-            
             do {
                 let unarchiver = try NSKeyedUnarchiver(forReadingFrom: tData)
                 unarchiver.requiresSecureCoding = false
                 let object = unarchiver.decodeObject()
                 unarchiver.finishDecoding()
-                
                 return object
             } catch let error {
-                
                 #if DEBUG
                 print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
                 #endif
-                
                 return nil
             }
         }
@@ -101,22 +94,17 @@ public class DYFStoreConverter: NSObject {
     ///   - options: Options for writing JSON data. The default value is equivalent to kNilOptions in Objective-C.
     /// - Returns: JSON data for obj, or nil if an internal error occurs.
     @objc public static func json(withObject obj: Any?, options: JSONSerialization.WritingOptions = []) -> Data? {
-        
         guard let anObj = obj else { return nil }
-        
         do {
             // let encoder = JSONEncoder()
             // encoder.outputFormatting = .prettyPrinted /* The pretty output formatting. */
             // let data = try encoder.encode(obj) /* The object complies with the Codable protocol. */
             let data = try JSONSerialization.data(withJSONObject: anObj, options: options)
-            
             return data
         } catch let error {
-            
             #if DEBUG
             print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
             #endif
-            
             return nil
         }
     }
@@ -136,22 +124,17 @@ public class DYFStoreConverter: NSObject {
     ///   - options: Options for writing JSON data. The default value is equivalent to kNilOptions in Objective-C.
     /// - Returns: JSON string for obj, or nil if an internal error occurs.
     @objc public static func jsonString(withObject obj: Any?, options: JSONSerialization.WritingOptions = []) -> String? {
-        
         guard let anObj = obj else { return nil }
-        
         do {
             // let encoder = JSONEncoder()
             // encoder.outputFormatting = .prettyPrinted /* The pretty output formatting. */
             // let data = try encoder.encode(obj) /* The object complies with the Codable protocol. */
             let data = try JSONSerialization.data(withJSONObject: anObj, options: options)
-            
             return String(data: data, encoding: String.Encoding.utf8)
         } catch let error {
-            
             #if DEBUG
             print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
             #endif
-            
             return nil
         }
     }
@@ -171,9 +154,7 @@ public class DYFStoreConverter: NSObject {
     ///   - options: Options used when creating Foundation objects from JSON data. The default value is equivalent to kNilOptions in Objective-C.
     /// - Returns: A Foundation object from the JSON data in data, or nil if an error occurs.
     @objc public static func jsonObject(withData data: Data?, options: JSONSerialization.ReadingOptions = []) -> Any? {
-        
         guard let aData = data else { return nil }
-        
         do {
             // struct GroceryProduct: Codable {
             //     var name: String
@@ -192,14 +173,11 @@ public class DYFStoreConverter: NSObject {
             // let decoder = JSONDecoder()
             // let obj = try decoder.decode(GroceryProduct.self, from: json) /* The object complies with the Codable protocol. */
             let obj = try JSONSerialization.jsonObject(with: aData, options: options)
-            
             return obj
         } catch let error {
-            
             #if DEBUG
             print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
             #endif
-            
             return nil
         }
     }
@@ -219,21 +197,16 @@ public class DYFStoreConverter: NSObject {
     ///   - options: Options used when creating Foundation objects from JSON data. The default value is equivalent to kNilOptions in Objective-C.
     /// - Returns: A Foundation object from the JSON data in data, or nil if an error occurs.
     @objc public static func jsonObject(withJSON json: String?, options: JSONSerialization.ReadingOptions = []) -> Any? {
-        
         guard let data = json?.data(using: String.Encoding.utf8) else {
             return nil
         }
-        
         do {
             let obj = try JSONSerialization.jsonObject(with: data, options: options)
-            
             return obj
         } catch let error {
-            
             #if DEBUG
             print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error)")
             #endif
-            
             return nil
         }
     }

@@ -1,6 +1,0 @@
-framework module DYFSwiftRuntimeProvider {
-  umbrella header "DYFSwiftRuntimeProvider-umbrella.h"
-
-  export *
-  module * { export * }
-}
