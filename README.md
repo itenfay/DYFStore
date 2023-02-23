@@ -2,7 +2,7 @@
 
 A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 
-`DYFStore` uses blocks and [notifications](#Notifications) to wrap `StoreKit`, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). `DYFStore` doesn't require any external dependencies. 
+`DYFStore` uses blocks and [notifications](#Notifications) to wrap `StoreKit`, provides [receipt verification](#Receipt-verification) and [transaction persistence](#Transaction-persistence). 
 
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](LICENSE)&nbsp;
 [![CocoaPods](http://img.shields.io/cocoapods/v/DYFStore.svg?style=flat)](http://cocoapods.org/pods/DYFStore)&nbsp;
@@ -13,12 +13,12 @@ A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 
 ## Related Links
 
-- [DYFSwiftRuntimeProvider](https://github.com/dgynfi/DYFSwiftRuntimeProvider/)
-- [DYFSwiftKeychain](https://github.com/dgynfi/DYFSwiftKeychain/)
-- [DYFStoreReceiptVerifier_Swift](https://github.com/dgynfi/DYFStoreReceiptVerifier_Swift/)
-- [Unity-iOS-InAppPurchase](https://github.com/dgynfi/Unity-iOS-InAppPurchase/)
-- [https://dgynfi.github.io/2016/10/16/in-app-purchase-complete-programming-guide-for-iOS/](https://dgynfi.github.io/2016/10/16/in-app-purchase-complete-programming-guide-for-iOS/)
-- [https://dgynfi.github.io/2016/10/12/how-to-easily-complete-in-app-purchase-configuration-for-iOS/](https://dgynfi.github.io/2016/10/12/how-to-easily-complete-in-app-purchase-configuration-for-iOS/)
+- [DYFSwiftRuntimeProvider](https://github.com/chenxing640/DYFSwiftRuntimeProvider/)
+- [DYFSwiftKeychain](https://github.com/chenxing640/DYFSwiftKeychain/)
+- [DYFStoreReceiptVerifier_Swift](https://github.com/chenxing640/DYFStoreReceiptVerifier_Swift/)
+- [Unity-iOS-InAppPurchase](https://github.com/chenxing640/Unity-iOS-InAppPurchase/)
+- [in-app-purchase-complete-programming-guide-for-iOS](https://chenxing640.github.io/2016/10/16/in-app-purchase-complete-programming-guide-for-iOS/)
+- [how-to-easily-complete-in-app-purchase-configuration-for-iOS](https://chenxing640.github.io/2016/10/12/how-to-easily-complete-in-app-purchase-configuration-for-iOS/)
 
 
 ## Features
@@ -32,7 +32,7 @@ A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 ## Group (ID:614799921)
 
 <div align=left>
-&emsp; <img src="https://github.com/dgynfi/DYFStore/raw/master/images/g614799921.jpg" width="30%" />
+&emsp; <img src="https://github.com/chenxing640/DYFStore/raw/master/images/g614799921.jpg" width="30%" />
 </div>
 
 
@@ -41,16 +41,12 @@ A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)
 Using [CocoaPods](https://cocoapods.org):
 
 ``` 
-pod 'DYFStore', '~> 1.2.0'
-```
-
-Or
-
-```
 pod 'DYFStore'
+or
+pod 'DYFStore', '~> 2.0.1'
 ```
 
-Check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Installation) for more options.
+Check out the [wiki](https://github.com/chenxing640/DYFStore/wiki/Installation) for more options.
 
 
 ## Usage
@@ -69,18 +65,24 @@ The initialization is as follows.
 ```
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+    self.initIAPSDK()
+
+    return true
+}
+
+func initIAPSDK() {
+    DYFStoreManager.shared.addStoreObserver()
+    
     // Wether to allow the logs output to console.
     DYFStore.default.enableLog = true
-
+    
     // Adds an observer that responds to updated transactions to the payment queue.
     // If an application quits when transactions are still being processed, those transactions are not lost. The next time the application launches, the payment queue will resume processing the transactions. Your application should always expect to be notified of completed transactions.
     // If more than one transaction observer is attached to the payment queue, no guarantees are made as to the order they will be called in. It is recommended that you use a single observer to process and finish the transaction.
     DYFStore.default.addPaymentTransactionObserver()
-
+    
     // Sets the delegate processes the purchase which was initiated by user from the App Store.
     DYFStore.default.delegate = self
-
-    return true
 }
 ```
 
@@ -89,7 +91,6 @@ You can process the purchase which was initiated by user from the App Store and 
 ```
 // Processes the purchase which was initiated by user from the App Store.
 func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
-    
     if !DYFStore.canMakePayments() {
         self.showTipsMessage("Your device is not able or allowed to make payments!")
         return
@@ -97,12 +98,10 @@ func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayme
     
     // Get account name from your own user system.
     let accountName = "Handsome Jon"
-    
     // This algorithm is negotiated with server developer.
-    let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
+    let userIdentifier = DYFStore_supplySHA256(accountName) ?? ""
     DYFStoreLog("userIdentifier: \(userIdentifier)")
-    
-    DYFStore.default.purchaseProduct(product.productIdentifier, userIdentifier: userIdentifier)
+    DYFStoreManager.shared.addPayment(product.productIdentifier, userIdentifier: userIdentifier)
 }
 ```
 
@@ -124,35 +123,24 @@ To begin the purchase process, your app must know its product identifiers. There
 
 ```
 @IBAction func fetchesProductAndSubmitsPayment(_ sender: Any) {
-    
     // You need to check whether the device is not able or allowed to make payments before requesting product.
     if !DYFStore.canMakePayments() {
         self.showTipsMessage("Your device is not able or allowed to make payments!")
         return
     }
-
     self.showLoading("Loading...")
     
     let productId = "com.hncs.szj.coin42"
-    
     DYFStore.default.requestProduct(withIdentifier: productId, success: { (products, invalidIdentifiers) in
-        
         self.hideLoading()
-        
         if products.count == 1 {
-            
             let productId = products[0].productIdentifier
             self.addPayment(productId)
-            
         } else {
-            
             self.showTipsMessage("There is no this product for sale!")
         }
-        
     }) { (error) in
-        
         self.hideLoading()
-        
         let value = error.userInfo[NSLocalizedDescriptionKey] as? String
         let msg = value ?? "\(error.localizedDescription)"
         self.sendNotice("An error occurs, \(error.code), " + msg)
@@ -160,15 +148,12 @@ To begin the purchase process, your app must know its product identifiers. There
 }
 
 private func addPayment(_ productId: String) {
-    
     // Get account name from your own user system.
     let accountName = "Handsome Jon"
-    
     // This algorithm is negotiated with server developer.
-    let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
+    let userIdentifier = DYFStore_supplySHA256(accountName) ?? ""
     DYFStoreLog("userIdentifier: \(userIdentifier)")
-    
-    DYFStore.default.purchaseProduct(productId, userIdentifier: userIdentifier)
+    DYFStoreManager.shared.addPayment(productId, userIdentifier: userIdentifier)
 }
 ```
 
@@ -176,7 +161,6 @@ private func addPayment(_ productId: String) {
 
 ```
 func fetchProductIdentifiersFromServer() -> [String] {
-    
     let productIds = [
         "com.hncs.szj.coin42",   // 42 gold coins for ￥6.
         "com.hncs.szj.coin210",  // 210 gold coins for ￥30.
@@ -187,41 +171,29 @@ func fetchProductIdentifiersFromServer() -> [String] {
         "com.hncs.szj.vip1",     // non-renewable vip subscription for a month.
         "com.hncs.szj.vip2"      // Auto-renewable vip subscription for three months.
     ]
-    
     return productIds
 }
 
 @IBAction func fetchesProductsFromAppStore(_ sender: Any) {
-
     // You need to check whether the device is not able or allowed to make payments before requesting products.
     if !DYFStore.canMakePayments() {
         self.showTipsMessage("Your device is not able or allowed to make payments!")
         return
     }
-
     self.showLoading("Loading...")
     
     let productIds = fetchProductIdentifiersFromServer()
-    
     DYFStore.default.requestProduct(withIdentifiers: productIds, success: { (products, invalidIdentifiers) in
-        
         self.hideLoading()
-        
         if products.count > 0 {
-            
             self.processData(products)
-            
         } else if products.count == 0 &&
-            invalidIdentifiers.count > 0 {
-            
+                    invalidIdentifiers.count > 0 {
             // Please check the product information you set up.
             self.showTipsMessage("There are no products for sale!")
         }
-        
     }) { (error) in
-        
         self.hideLoading()
-        
         let value = error.userInfo[NSLocalizedDescriptionKey] as? String
         let msg = value ?? "\(error.localizedDescription)"
         self.sendNotice("An error occurs, \(error.code), " + msg)
@@ -229,26 +201,20 @@ func fetchProductIdentifiersFromServer() -> [String] {
 }
 
 private func processData(_ products: [SKProduct]) {
-    
     var modelArray = [DYFStoreProduct]()
-    
     for product in products {
-        
         let p = DYFStoreProduct()
         p.identifier = product.productIdentifier
         p.name = product.localizedTitle
         p.price = product.price.stringValue
         p.localePrice = DYFStore.default.localizedPrice(ofProduct: product)
         p.localizedDescription = product.localizedDescription
-        
         modelArray.append(p)
     }
-    
     self.displayStoreUI(modelArray)
 }
 
 private func displayStoreUI(_ dataArray: [DYFStoreProduct]) {
-    
     let storeVC = DYFStoreViewController()
     storeVC.dataArray = dataArray
     self.navigationController?.pushViewController(storeVC, animated: true)
@@ -269,37 +235,33 @@ If you need an opaque identifier for the user’s account on your system to add 
 Calculates the SHA256 hash function:
 
 ```
-public func DYF_SHA256_HashValue(_ s: String) -> String? {
-
+public func DYFStore_supplySHA256(_ s: String) -> String? {
+    guard let cStr = s.cString(using: String.Encoding.utf8) else {
+        return nil
+    }
     let digestLength = Int(CC_SHA256_DIGEST_LENGTH) // 32
-
-    let cStr = s.cString(using: String.Encoding.utf8)!
     let cStrLen = Int(s.lengthOfBytes(using: String.Encoding.utf8))
-
+    
     // Confirm that the length of C string is small enough
     // to be recast when calling the hash function.
     if cStrLen > UINT32_MAX {
         print("C string too long to hash: \(s)")
         return nil
     }
-
+    
     let md = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLength)
-
     CC_SHA256(cStr, CC_LONG(cStrLen), md)
-
     // Convert the array of bytes into a string showing its hex represention.
     let hash = NSMutableString()
     for i in 0..<digestLength {
-
         // Add a dash every four bytes, for readability.
         if i != 0 && i%4 == 0 {
             //hash.append("-")
         }
         hash.appendFormat("%02x", md[i])
     }
-
     md.deallocate()
-
+    
     return hash as String
 }
 ```
@@ -369,11 +331,8 @@ Payment transaction notifications are sent after a payment has been requested or
 
 ```
 @objc private func processPurchaseNotification(_ notification: Notification) {
-
     self.hideLoading()
-
     self.purchaseInfo = (notification.object as! DYFStore.NotificationInfo)
-
     switch self.purchaseInfo.state! {
     case .purchasing:
         self.showLoading("Purchasing...")
@@ -394,18 +353,14 @@ Payment transaction notifications are sent after a payment has been requested or
         DYFStoreLog("Deferred")
         break
     }
-
 }
-
 ```
 
 #### Download notifications
 
 ```
 @objc private func processDownloadNotification(_ notification: Notification) {
-
     self.downloadInfo = (notification.object as! DYFStore.NotificationInfo)
-
     switch self.downloadInfo.downloadState! {
     case .started:
         DYFStoreLog("The download started")
@@ -415,7 +370,7 @@ Payment transaction notifications are sent after a payment has been requested or
         break
     case .cancelled:
         DYFStoreLog("The download cancelled")
-        reak
+        break
     case .failed:
         DYFStoreLog("The download failed")
         break
@@ -431,7 +386,7 @@ Payment transaction notifications are sent after a payment has been requested or
 
 `DYFStore` doesn't perform receipt verification by default, but provides reference implementations. You can implement your own custom verification or use the reference verifier provided by the library.
 
-The reference verifier is outlined below. For more info, check out the [wiki](https://github.com/dgynfi/DYFStore/wiki/Receipt-verification).
+The reference verifier is outlined below. For more info, check out the [wiki](https://github.com/chenxing640/DYFStore/wiki/Receipt-verification).
 
 #### Reference verifier
 
@@ -448,9 +403,9 @@ lazy var receiptVerifier: DYFStoreReceiptVerifier = {
 The receipt verifier delegates receipt verification, enabling you to provide your own implementation using the `DYFStoreReceiptVerifierDelegate` protocol:
 
 ```
-@objc func verifyReceiptDidFinish(_ verifier: DYFStoreReceiptVerifier, didReceiveData data: [String : Any])
+public func verifyReceiptDidFinish(_ verifier: DYFStoreReceiptVerifier, didReceiveData data: [String : Any]) {}
 
-@objc func verifyReceipt(_ verifier: DYFStoreReceiptVerifier, didFailWithError error: NSError)
+public func verifyReceipt(_ verifier: DYFStoreReceiptVerifier, didFailWithError error: NSError) {}
 ```
 
 You can start verifying the in-app purchase receipt. 
@@ -458,6 +413,8 @@ You can start verifying the in-app purchase receipt.
 ```
 // Fetches the data of the bundle’s App Store receipt. 
 let data = receiptData
+or
+let data = try? Data(contentsOf: DYFStore.receiptURL())
 
 self.receiptVerifier.verifyReceipt(data)
 
@@ -489,15 +446,12 @@ When the client crashes during the payment process, it is particularly important
 
 ```
 func storeReceipt() {
-
     guard let url = DYFStore.receiptURL() else {
         self.refreshReceipt()
         return
     }
-    
     do {
         let data = try Data(contentsOf: url)
-        
         let info = self.purchaseInfo!
         let persister =  DYFStoreUserDefaultsPersistence()
         
@@ -520,10 +474,8 @@ func storeReceipt() {
         
         self.verifyReceipt(data)
     } catch let error {
-        
         DYFStoreLog("error: \(error.localizedDescription)")
         self.refreshReceipt()
-        
         return
     }
 }
@@ -538,18 +490,16 @@ let persister = DYFStoreUserDefaultsPersistence()
 let identifier = info.transactionIdentifier!
 
 if info.state! == .restored {
-
     let transaction = store.extractRestoredTransaction(identifier)
     store.finishTransaction(transaction)
-
 } else {
-
     let transaction = store.extractPurchasedTransaction(identifier)
     // The transaction can be finished only after the receipt verification passed under the client and the server can adopt the communication of security and data encryption. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification we want StoreKit to keep reminding us of the transaction.
     store.finishTransaction(transaction)
 }
 
 persister.removeTransaction(identifier)
+
 if let id = info.originalTransactionIdentifier {
     persister.removeTransaction(id)
 }
@@ -563,10 +513,9 @@ if let id = info.originalTransactionIdentifier {
 
 ## Demo
 
-To learn more, please clone this project (`git clone https://github.com/dgynfi/DYFStore.git`) to the local directory.
+To learn more, please clone this project (`git clone https://github.com/chenxing640/DYFStore.git`) to the local directory.
 
 
 ## Feedback is welcome
 
-If you notice any issue, got stuck or just want to chat feel free to create an issue. I will be happy to help you.
-
+If you notice any issue, got stuck to create an issue. I will be happy to help you.
