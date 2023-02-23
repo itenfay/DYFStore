@@ -32,9 +32,8 @@ Pod::Spec.new do |spec|
   spec.source = { :git => "https://github.com/chenxing640/DYFStore.git", :tag => spec.version.to_s }
 
   spec.source_files    = "Classes/*.swift"
-  # spec.exclude_files = "Classes/Exclude"
-
   # spec.public_header_files = "Classes/*.h"
+  # spec.exclude_files = "Classes/Exclude"
 
   # spec.resource  = "icon.png"
   # spec.resources = "Resources/*.png"
