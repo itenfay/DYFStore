@@ -1,16 +1,20 @@
 PODS:
-  - DYFSwiftRuntimeProvider (1.0.3)
+  - DYFStoreReceiptVerifier_Swift (1.1.0)
+  - DYFSwiftRuntimeProvider (2.0.1)
 
 DEPENDENCIES:
+  - DYFStoreReceiptVerifier_Swift
   - DYFSwiftRuntimeProvider
 
 SPEC REPOS:
-  trunk:
+  https://gitee.com/mirrors/CocoaPods-Specs.git:
+    - DYFStoreReceiptVerifier_Swift
     - DYFSwiftRuntimeProvider
 
 SPEC CHECKSUMS:
-  DYFSwiftRuntimeProvider: 40fd8c208b1c5f660363ef021f9271da04b2f423
+  DYFStoreReceiptVerifier_Swift: c8a0d56fb9b26b4e15e35a321722ffb173207d3b
+  DYFSwiftRuntimeProvider: 8d56049ee8ff251908c41d862710b40e07fd8111
 
-PODFILE CHECKSUM: 37530ebfa3e814cbcd00c58bd8521147dedd8f28
+PODFILE CHECKSUM: 9580cf657c1489480bc963fbb84d27727b08b5ff
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.11.3
