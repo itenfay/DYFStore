@@ -1,8 +1,8 @@
 //
 //  DYFStoreManager.swift
 //
-//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
-//  Copyright © 2016 dyf. All rights reserved.
+//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
+//  Copyright © 2016 chenxing. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,45 +24,7 @@
 //
 
 import Foundation
-import CommonCrypto
-
-/// Custom method to calculate the SHA-256 hash using Common Crypto.
-///
-/// - Parameter s: A string to calculate hash.
-/// - Returns: A SHA-256 hash value.
-public func DYF_SHA256_HashValue(_ s: String) -> String? {
-    
-    let digestLength = Int(CC_SHA256_DIGEST_LENGTH) // 32
-    
-    let cStr = s.cString(using: String.Encoding.utf8)!
-    let cStrLen = Int(s.lengthOfBytes(using: String.Encoding.utf8))
-    
-    // Confirm that the length of C string is small enough
-    // to be recast when calling the hash function.
-    if cStrLen > UINT32_MAX {
-        print("C string too long to hash: \(s)")
-        return nil
-    }
-    
-    let md = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLength)
-    
-    CC_SHA256(cStr, CC_LONG(cStrLen), md)
-    
-    // Convert the array of bytes into a string showing its hex represention.
-    let hash = NSMutableString()
-    for i in 0..<digestLength {
-        
-        // Add a dash every four bytes, for readability.
-        if i != 0 && i%4 == 0 {
-            //hash.append("-")
-        }
-        hash.appendFormat("%02x", md[i])
-    }
-    
-    md.deallocate()
-    
-    return hash as String
-}
+import DYFStoreReceiptVerifier_Swift
 
 open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
@@ -81,35 +43,15 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     /// Returns a store manager singleton.
     public static let shared = DYFStoreManager()
     
-    /// A struct named "Static".
-    // private struct Static {
-    //    static var instance: DYFStoreManager? = nil
-    // }
-    
-    /// Returns a store manager singleton.
-    // public class var shared: DYFStoreManager {
-    //
-    //    objc_sync_enter(self)
-    //    defer { objc_sync_exit(self) }
-    //
-    //    guard let instance = Static.instance else {
-    //        let storeManager = DYFStoreManager()
-    //        Static.instance = storeManager
-    //        return storeManager
-    //    }
-    //
-    //    return instance
-    // }
-    
     /// Overrides default constructor.
     public override init() {
         super.init()
-        self.addStoreObserver()
+        //self.addStoreObserver()
     }
     
     /// deinit
     deinit {
-        self.removeStoreObserver()
+        //self.removeStoreObserver()
     }
     
     /// Make sure the class has only one instance.
@@ -141,22 +83,19 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
         DYFStore.default.restoreTransactions(userIdentifier: userIdentifier)
     }
     
-    private func addStoreObserver() {
+    func addStoreObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(DYFStoreManager.processPurchaseNotification(_:)), name: DYFStore.purchasedNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(DYFStoreManager.processDownloadNotification(_:)), name: DYFStore.downloadedNotification, object: nil)
     }
     
-    private func removeStoreObserver() {
+    func removeStoreObserver() {
         NotificationCenter.default.removeObserver(self, name: DYFStore.purchasedNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: DYFStore.downloadedNotification, object: nil)
     }
     
     @objc private func processPurchaseNotification(_ notification: Notification) {
-        
         self.hideLoading()
-        
         self.purchaseInfo = (notification.object as! DYFStore.NotificationInfo)
-        
         switch self.purchaseInfo.state! {
         case .purchasing:
             self.showLoading("Purchasing...")
@@ -177,13 +116,10 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             DYFStoreLog("Deferred")
             break
         }
-        
     }
     
     @objc private func processDownloadNotification(_ notification: Notification) {
-        
         self.downloadInfo = (notification.object as! DYFStore.NotificationInfo)
-        
         switch self.downloadInfo.downloadState! {
         case .started:
             DYFStoreLog("The download started")
@@ -204,7 +140,6 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     }
     
     private func completePayment() {
-        
         let info = self.purchaseInfo!
         let persister = DYFStoreUserDefaultsPersistence()
         
@@ -223,26 +158,21 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             DYFStoreLog("transaction.transactionTimestamp: \(tx.transactionTimestamp!)")
             DYFStoreLog("transaction.originalTransactionIdentifier: \(tx.originalTransactionIdentifier ?? "null")")
             DYFStoreLog("transaction.originalTransactionTimestamp: \(tx.originalTransactionTimestamp ?? "null")")
-            
             if let receiptData = tx.transactionReceipt!.base64DecodedData() {
                 DYFStoreLog("transaction.transactionReceipt: \(receiptData)")
                 self.verifyReceipt(receiptData)
             }
         }
-        
     }
     
     private func storeReceipt() {
         DYFStoreLog()
-        
         guard let url = DYFStore.receiptURL() else {
             self.refreshReceipt()
             return
         }
-        
         do {
             let data = try Data(contentsOf: url)
-            
             let info = self.purchaseInfo!
             let persister = DYFStoreUserDefaultsPersistence()
             
@@ -265,10 +195,8 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             
             self.verifyReceipt(data)
         } catch let error {
-            
             DYFStoreLog("error: \(error.localizedDescription)")
             self.refreshReceipt()
-            
             return
         }
     }
@@ -276,7 +204,6 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     private func refreshReceipt() {
         DYFStoreLog()
         self.showLoading("Refresh receipt...")
-        
         DYFStore.default.refreshReceipt(onSuccess: {
             self.storeReceipt()
         }) { (error) in
@@ -287,7 +214,6 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     private func failToRefreshReceipt() {
         DYFStoreLog()
         self.hideLoading()
-        
         self.showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
                        message: "Fail to refresh receipt! Please check if your device can access the internet.",
                        cancelButtonTitle: "Cancel",
@@ -302,12 +228,10 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     // If the receipts are verified by your own server, the client needs to upload these parameters, such as: "transaction identifier, bundle identifier, product identifier, user identifier, shared sceret(Subscription), receipt(Safe URL Base64), original transaction identifier(Optional), original transaction time(Optional) and the device information, etc.".
     private func verifyReceipt(_ receiptData: Data?) {
         DYFStoreLog()
-        
         self.hideLoading()
         self.showLoading("Verify receipt...")
         
         var data: Data!
-        
         if let tempData = receiptData {
             data = tempData
         } else {
@@ -354,7 +278,6 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
     public func verifyReceiptDidFinish(_ verifier: DYFStoreReceiptVerifier, didReceiveData data: [String : Any]) {
         DYFStoreLog("data: \(data)")
-        
         self.hideLoading()
         self.showTipsMessage("Purchase Successfully")
         
@@ -365,34 +288,29 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let identifier = info.transactionIdentifier!
             
             if info.state! == .restored {
-                
                 let transaction = store.extractRestoredTransaction(identifier)
                 store.finishTransaction(transaction)
-                
             } else {
-                
                 let transaction = store.extractPurchasedTransaction(identifier)
                 // The transaction can be finished only after the client and server adopt secure communication and data encryption and the receipt verification is passed. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification, we want `StoreKit` to keep reminding us that there are still outstanding transactions.
                 store.finishTransaction(transaction)
             }
             
             persister.removeTransaction(identifier)
+            
             if let id = info.originalTransactionIdentifier {
                 persister.removeTransaction(id)
             }
         }
-        
     }
     
     public func verifyReceipt(_ verifier: DYFStoreReceiptVerifier, didFailWithError error: NSError) {
-        
         // Prints the reason of the error.
         DYFStoreLog("error: \(error.code), \(error.localizedDescription)")
         self.hideLoading()
         
         // An error occurs that has nothing to do with in-app purchase. Maybe it's the internet.
         if error.code < 21000 {
-            
             // After several attempts, you can cancel refreshing receipt.
             self.showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
                            message: "Fail to verify receipt! Please check if your device can access the internet.",
@@ -403,7 +321,6 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
                 DYFStoreLog("alert action title: \(action.title!)")
                 self.verifyReceipt(nil)
             }
-            
             return
         }
         
@@ -416,18 +333,16 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let identifier = info.transactionIdentifier!
             
             if info.state! == .restored {
-                
                 let transaction = store.extractRestoredTransaction(identifier)
                 store.finishTransaction(transaction)
-                
             } else {
-                
                 let transaction = store.extractPurchasedTransaction(identifier)
                 // The transaction can be finished only after the client and server adopt secure communication and data encryption and the receipt verification is passed. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification, we want `StoreKit` to keep reminding us that there are still outstanding transactions.
                 store.finishTransaction(transaction)
             }
             
             persister.removeTransaction(identifier)
+            
             if let id = info.originalTransactionIdentifier {
                 persister.removeTransaction(id)
             }

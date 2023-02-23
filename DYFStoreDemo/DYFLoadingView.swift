@@ -1,8 +1,8 @@
 //
 //  DYFLoadingView.swift
 //
-//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
-//  Copyright © 2016 dyf. All rights reserved.
+//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
+//  Copyright © 2016 chenxing. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -104,7 +104,6 @@ public class DYFLoadingView: UIView {
         get {
             return self.contentView.backgroundColor
         }
-        
         set {
             self.contentView.backgroundColor = newValue
         }
@@ -115,7 +114,6 @@ public class DYFLoadingView: UIView {
         get {
             return self.indicator.lineColor
         }
-        
         set {
             self.indicator.lineColor = newValue
         }
@@ -126,7 +124,6 @@ public class DYFLoadingView: UIView {
         get {
             return self.textLabel.textColor
         }
-        
         set (newColor) {
             self.textLabel.textColor = newColor
         }
@@ -159,13 +156,15 @@ public class DYFLoadingView: UIView {
     
     /// Configures properties for the widget used.
     private func configure(_ text: String) {
-        self.autoresizingMask = UIView.AutoresizingMask(rawValue: UIView.AutoresizingMask.flexibleLeftMargin.rawValue |
+        self.autoresizingMask = UIView.AutoresizingMask(rawValue:
+            UIView.AutoresizingMask.flexibleLeftMargin.rawValue |
             UIView.AutoresizingMask.flexibleTopMargin.rawValue  |
             UIView.AutoresizingMask.flexibleWidth.rawValue      |
             UIView.AutoresizingMask.flexibleHeight.rawValue
         )
         
-        self.maskPanel.autoresizingMask = UIView.AutoresizingMask(rawValue: UIView.AutoresizingMask.flexibleLeftMargin.rawValue |
+        self.maskPanel.autoresizingMask = UIView.AutoresizingMask(rawValue:
+            UIView.AutoresizingMask.flexibleLeftMargin.rawValue |
             UIView.AutoresizingMask.flexibleTopMargin.rawValue  |
             UIView.AutoresizingMask.flexibleWidth.rawValue      |
             UIView.AutoresizingMask.flexibleHeight.rawValue
@@ -194,19 +193,15 @@ public class DYFLoadingView: UIView {
     /// Addds the subviews to its corresponding superview.
     private func loadView() {
         if let vc = self.appCurrentViewController() {
-            
             vc.view.addSubview(self)
             vc.view.bringSubviewToFront(self)
-            
         } else {
-            
             let window = self.appWindow()
             window.addSubview(self)
             window.bringSubviewToFront(self)
         }
         
         self.addSubview(self.maskPanel)
-        
         self.addSubview(self.contentView)
         self.bringSubviewToFront(self.contentView)
         
@@ -217,7 +212,6 @@ public class DYFLoadingView: UIView {
     /// Prepares to begin animating.
     private func beginAnimating() {
         self.indicator.startAnimating()
-        
         self.alpha = 0.0
         UIView.animate(withDuration: 0.3) {
             self.alpha = 1.0
@@ -227,13 +221,9 @@ public class DYFLoadingView: UIView {
     /// Hides from its own superview.
     public func hide() {
         let opts = UIView.AnimationOptions.curveEaseInOut
-        
         UIView.animate(withDuration: 0.3, delay: 1.0, options: opts, animations: {
-            
             self.alpha = 0.0
-            
         }) { (finished) in
-            
             self.indicator.stopAnimating()
             self.removeAllViews()
         }
@@ -241,38 +231,31 @@ public class DYFLoadingView: UIView {
     
     /// Removes all views at the end of the hidden animation.
     private func removeAllViews() {
-        
         for view in self.subviews {
             view.removeFromSuperview()
         }
-        
         self.removeFromSuperview()
     }
     
     /// Finds out the current view controller.
     private func appCurrentViewController() -> UIViewController? {
-        
         guard var vc = self.appWindow().rootViewController else {
             return nil
         }
-        
         while true {
             if let tvc = vc.presentedViewController {
                 vc = tvc
             } else if vc.isKind(of: UITabBarController.self) {
-                
                 let tbc = vc as! UITabBarController
                 if let tvc = tbc.selectedViewController {
                     vc = tvc
                 }
             } else if vc.isKind(of: UINavigationController.self) {
-                
                 let nc = vc as! UINavigationController
                 if let tvc = nc.visibleViewController {
                     vc = tvc
                 }
             } else {
-                
                 if vc.children.count > 0 {
                     if let tvc = vc.children.last {
                         vc = tvc
@@ -281,7 +264,6 @@ public class DYFLoadingView: UIView {
                 break
             }
         }
-        
         return vc
     }
     
@@ -290,12 +272,9 @@ public class DYFLoadingView: UIView {
         var self_h: CGFloat = 0.0
         
         if let supv = self.superview {
-            
             self_w = supv.bounds.size.width
             self_h = supv.bounds.size.height
-            
         } else {
-            
             self_w = SCREEN_W
             self_h = SCREEN_H
         }
@@ -307,7 +286,7 @@ public class DYFLoadingView: UIView {
     
     deinit {
         #if DEBUG
-        print("[\((#file as NSString).lastPathComponent):\(#function)]")
+        print("\(type(of: self)) deinit.")
         #endif
     }
     

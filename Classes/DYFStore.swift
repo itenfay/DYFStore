@@ -64,16 +64,14 @@ public func DYFStore_supplySHA256(_ s: String) -> String? {
 /// Outputs log to the console.
 /// - Parameters:
 ///   - format: The format string.
-///   - args: The arguments for outputting to the console.
 ///   - funcName: The name of a function.
 ///   - lineNum: The number of a code line.
-public func DYFPrintLog(_ format: String, _ args: CVarArg..., funcName: String = #function, lineNum: Int = #line) {
+public func DYFPrintLog(_ format: String, funcName: String = #function, lineNum: Int = #line) {
     let dateFormatter = DateFormatter.init()
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSZ"
     let timeString = dateFormatter.string(from: Date.init())
     let fileName = (#file as NSString).lastPathComponent
-    let output = String(format: format, args)
-    print("\(timeString)" + " [F: \(fileName) M: \(funcName) L: \(lineNum)] " + output)
+    print("\(timeString)" + " [F: \(fileName) M: \(funcName) L: \(lineNum)] " + format)
 }
 
 /// Outputs log to the console in the process of purchasing the `SKProduct` product.
@@ -83,9 +81,11 @@ public func DYFPrintLog(_ format: String, _ args: CVarArg..., funcName: String =
 ///   - args: The arguments for outputting to the console.
 ///   - funcName: The name of a function.
 ///   - lineNum: The number of a code line.
-public func DYFStoreLog(_ format: String = "", _ args: CVarArg..., funcName: String = #function, lineNum: Int = #line) {
+///public func DYFStoreLog(_ format: String = "", _ args: CVarArg..., funcName: String = #function, lineNum: Int = #line) {
+public func DYFStoreLog(_ format: String = "", funcName: String = #function, lineNum: Int = #line) {
     if DYFStore.default.enableLog {
-        DYFPrintLog(" [DYFStore] " + format, args, funcName: funcName, lineNum: lineNum)
+        //let output = String(format: format, args)
+        DYFPrintLog("[DYFStore] " + format, funcName: funcName, lineNum: lineNum)
     }
 }
 

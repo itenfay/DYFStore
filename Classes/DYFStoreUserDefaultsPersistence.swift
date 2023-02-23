@@ -64,9 +64,7 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     /// - Parameter transaction: An `DYFStoreTransaction` object.
     public func storeTransaction(_ transaction: DYFStoreTransaction?) {
         let data = DYFStoreConverter.encodeObject(transaction)
-        guard let aData = data else {
-            return
-        }
+        guard let aData = data else { return }
         var transactions = loadDataFromUserDefaults() ?? [Data]()
         transactions.append(aData)
         
@@ -79,9 +77,7 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     /// - Returns: An array whose elements are the `DYFStoreTransaction` objects.
     public func retrieveTransactions() -> [DYFStoreTransaction]? {
         let array = loadDataFromUserDefaults()
-        guard let arr = array else {
-            return nil
-        }
+        guard let arr = array else { return nil }
         var transactions = [DYFStoreTransaction]()
         for item in arr {
             let obj = DYFStoreConverter.decodeObject(item)
@@ -98,9 +94,7 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     /// - Returns: An `DYFStoreTransaction` object from the shared preferences search list.
     public func retrieveTransaction(_ transactionIdentifier: String) -> DYFStoreTransaction? {
         let array = retrieveTransactions()
-        guard let arr = array else {
-            return nil
-        }
+        guard let arr = array else { return nil }
         for transaction in arr {
             let identifier = transaction.transactionIdentifier
             if identifier == transactionIdentifier {
@@ -115,9 +109,7 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     /// - Parameter transactionIdentifier: The unique server-provided identifier.
     public func removeTransaction(_ transactionIdentifier: String) {
         let array = loadDataFromUserDefaults()
-        guard var arr = array else {
-            return
-        }
+        guard var arr = array else { return }
         var index = -1
         for (idx, data) in arr.enumerated() {
             let obj = DYFStoreConverter.decodeObject(data)

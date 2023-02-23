@@ -69,9 +69,7 @@ public class DYFStoreConverter: NSObject {
                 unarchiver.finishDecoding()
                 return object
             } catch let error {
-                #if DEBUG
-                print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
-                #endif
+                DYFPrintLog("error: \(error.localizedDescription)")
                 return nil
             }
         }
@@ -102,9 +100,7 @@ public class DYFStoreConverter: NSObject {
             let data = try JSONSerialization.data(withJSONObject: anObj, options: options)
             return data
         } catch let error {
-            #if DEBUG
-            print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
-            #endif
+            DYFPrintLog("error: \(error.localizedDescription)")
             return nil
         }
     }
@@ -132,9 +128,7 @@ public class DYFStoreConverter: NSObject {
             let data = try JSONSerialization.data(withJSONObject: anObj, options: options)
             return String(data: data, encoding: String.Encoding.utf8)
         } catch let error {
-            #if DEBUG
-            print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
-            #endif
+            DYFPrintLog("error: \(error.localizedDescription)")
             return nil
         }
     }
@@ -175,9 +169,7 @@ public class DYFStoreConverter: NSObject {
             let obj = try JSONSerialization.jsonObject(with: aData, options: options)
             return obj
         } catch let error {
-            #if DEBUG
-            print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error.localizedDescription)")
-            #endif
+            DYFPrintLog("error: \(error.localizedDescription)")
             return nil
         }
     }
@@ -204,9 +196,7 @@ public class DYFStoreConverter: NSObject {
             let obj = try JSONSerialization.jsonObject(with: data, options: options)
             return obj
         } catch let error {
-            #if DEBUG
-            print("\((#file as NSString).lastPathComponent):\(#function):\(#line) error: \(error)")
-            #endif
+            DYFPrintLog("error: \(error.localizedDescription)")
             return nil
         }
     }

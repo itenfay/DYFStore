@@ -1,8 +1,8 @@
 //
 //  DYFIndefiniteAnimatedSpinner.swift
 //
-//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
-//  Copyright © 2016 dyf. All rights reserved.
+//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
+//  Copyright © 2016 chenxing. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,11 +45,9 @@ public class DYFIndefiniteAnimatedSpinner: UIView {
     /// A layer that draws a arc progress in its coordinate space.
     private lazy var progressLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        
         layer.strokeColor = nil
         layer.fillColor   = nil
         layer.lineWidth   = 1.0
-        
         return layer
     }()
     
@@ -58,7 +56,6 @@ public class DYFIndefiniteAnimatedSpinner: UIView {
         get {
             return self.progressLayer.lineWidth
         }
-        
         set {
             self.progressLayer.lineWidth = newValue
             self.updatePath()
@@ -71,10 +68,8 @@ public class DYFIndefiniteAnimatedSpinner: UIView {
             guard let color = self.progressLayer.strokeColor else {
                 return nil
             }
-            
             return UIColor.init(cgColor: color)
         }
-        
         set (newColor) {
             self.progressLayer.strokeColor = newColor?.cgColor
         }
@@ -97,7 +92,6 @@ public class DYFIndefiniteAnimatedSpinner: UIView {
     
     private func setup() {
         self.layer.addSublayer(self.progressLayer)
-        
         let selector = #selector(DYFIndefiniteAnimatedSpinner.resetAnimations)
         let name = UIApplication.didBecomeActiveNotification
         NotificationCenter.default.addObserver(self, selector: selector, name: name, object: nil)
@@ -108,7 +102,6 @@ public class DYFIndefiniteAnimatedSpinner: UIView {
         if self.isAnimating {
             return
         }
-        
         self.isAnimating = true
         self.addLayerAnimations()
         self.isHidden = false
@@ -119,9 +112,7 @@ public class DYFIndefiniteAnimatedSpinner: UIView {
         if !self.isAnimating {
             return
         }
-        
         self.isAnimating = false
-        
         self.progressLayer.removeAnimation(forKey: AnimationKey.rotation)
         self.progressLayer.removeAnimation(forKey: AnimationKey.stroke)
         
@@ -218,14 +209,13 @@ public class DYFIndefiniteAnimatedSpinner: UIView {
     
     private func executeWhenReleasing() {
         self.stopAnimating()
-        
         let name = UIApplication.didBecomeActiveNotification
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
     
     deinit {
         #if DEBUG
-        print("[\((#file as NSString).lastPathComponent):\(#function)]")
+        print("\(type(of: self)) deinit.")
         #endif
         self.executeWhenReleasing()
     }

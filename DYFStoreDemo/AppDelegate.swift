@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
 //
-//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
-//  Copyright © 2016 dyf. All rights reserved.
+//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
+//  Copyright © 2016 chenxing. All rights reserved.
 //
 
 import UIKit
@@ -16,6 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDe
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         self.displayStartupPage()
+        self.initIAPSDK()
+        
+        return true
+    }
+    
+    func displayStartupPage() {
+        Thread.sleep(forTimeInterval: 2.0)
+    }
+    
+    func initIAPSDK() {
+        DYFStoreManager.shared.addStoreObserver()
         
         // Wether to allow the logs output to console.
         DYFStore.default.enableLog = true
@@ -27,17 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDe
         
         // Sets the delegate processes the purchase which was initiated by user from the App Store.
         DYFStore.default.delegate = self
-        
-        return true
-    }
-    
-    func displayStartupPage() {
-        Thread.sleep(forTimeInterval: 2.0)
     }
     
     // Processes the purchase which was initiated by user from the App Store.
     func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
-        
         if !DYFStore.canMakePayments() {
             self.showTipsMessage("Your device is not able or allowed to make payments!")
             return
@@ -45,11 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDe
         
         // Get account name from your own user system.
         let accountName = "Handsome Jon"
-        
         // This algorithm is negotiated with server developer.
-        let userIdentifier = DYF_SHA256_HashValue(accountName) ?? ""
+        let userIdentifier = DYFStore_supplySHA256(accountName) ?? ""
         DYFStoreLog("userIdentifier: \(userIdentifier)")
-        
         DYFStoreManager.shared.addPayment(product.productIdentifier, userIdentifier: userIdentifier)
     }
     
@@ -73,6 +75,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDe
     
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        DYFStoreManager.shared.removeStoreObserver()
+        DYFStore.default.removePaymentTransactionObserver()
     }
     
 }

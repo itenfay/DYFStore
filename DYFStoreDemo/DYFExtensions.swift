@@ -1,8 +1,8 @@
 //
 //  DYFExtensions.swift
 //
-//  Created by dyf on 2016/11/28. ( https://github.com/dgynfi/DYFStore )
-//  Copyright © 2016 dyf. All rights reserved.
+//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
+//  Copyright © 2016 chenxing. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,24 +30,33 @@ fileprivate var LoadingViewKey = "LoadingViewKey"
 
 extension NSObject {
     
+    /// The app's key window.
+    public var dx_keyWindow: UIWindow? {
+        var keyWindow: UIWindow?
+        if #available(iOS 13.0, *) {
+            keyWindow = UIApplication.shared.connectedScenes
+                .filter({ $0.activationState == .foregroundActive })
+                .map({ $0 as? UIWindowScene })
+                .compactMap({ $0 })
+                .first?.windows
+                .filter({ $0.isKeyWindow }).first
+        } else {
+            keyWindow = UIApplication.shared.windows
+                .filter({ $0.isKeyWindow }).first
+        }
+        return keyWindow
+    }
+    
     /// Returns The view controller associated with the currently visible view.
     ///
     /// - Returns: The view controller associated with the currently visible view.
     public func currentViewController() -> UIViewController? {
-        let sharedApp = UIApplication.shared
-        
-        let window = sharedApp.keyWindow ?? sharedApp.windows[0]
-        let viewController = window.rootViewController
-        
+        let viewController = dx_keyWindow?.rootViewController
         return findCurrentViewController(from: viewController)
     }
     
     private func findCurrentViewController(from viewController: UIViewController?) -> UIViewController? {
-        
-        guard var vc = viewController else {
-            return nil
-        }
-        
+        guard var vc = viewController else { return nil }
         while true {
             if let tvc = vc.presentedViewController {
                 vc = tvc
@@ -70,17 +79,14 @@ extension NSObject {
                 break
             }
         }
-        
         return vc
     }
     
     /// Shows the tips for user.
     public func showTipsMessage(_ message: String) -> Void {
-        
         guard let vc = self.currentViewController(), !vc.isKind(of: UIAlertController.self) else {
             return
         }
-        
         let alertController = UIAlertController(title: message, message: nil, preferredStyle: UIAlertController.Style.alert)
         
         vc.present(alertController, animated: true, completion: nil)
@@ -97,11 +103,9 @@ extension NSObject {
                           cancel cancelHandler: ((UIAlertAction) -> Void)? = nil,
                           confirmButtonTitle: String?,
                           execute executableHandler: ((UIAlertAction) -> Void)? = nil) {
-        
         guard let vc = self.currentViewController() else {
             return
         }
-        
         let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         
         if let t = cancelButtonTitle, t.count > 0 {
@@ -119,31 +123,25 @@ extension NSObject {
     
     /// Shows a loading panel.
     public func showLoading(_ text: String) {
-        
         let value = objc_getAssociatedObject(self, &LoadingViewKey)
         if value != nil {
             return
         }
-        
         let loadingView = DYFLoadingView()
         loadingView.show(text)
         loadingView.color = COLOR_RGBA(10, 10, 10, 0.75)
         loadingView.indicatorColor = COLOR_RGB(54, 205, 64)
         loadingView.textColor = COLOR_RGB(248, 248, 248)
-        
         objc_setAssociatedObject(self, &LoadingViewKey, loadingView, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
     /// Hides a loading panel.
     public func hideLoading() {
-        
         let value = objc_getAssociatedObject(self, &LoadingViewKey)
         guard let loadingView = value as? DYFLoadingView else {
             return
         }
-        
         loadingView.hide()
-        
         objc_setAssociatedObject(self, &LoadingViewKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
@@ -157,7 +155,6 @@ extension UIView {
     ///   - rectCorner: The corners of a rectangle.
     ///   - radius: The radius of each corner.
     public func setCorner(rectCorner: UIRectCorner = UIRectCorner.allCorners, radius: CGFloat) {
-        
         let maskLayer = CAShapeLayer()
         let w = self.bounds.size.width
         let h = self.bounds.size.height
@@ -177,7 +174,6 @@ extension UIView {
     ///   - lineWidth: Specifies the line width of the shape’s path.
     ///   - color: The color used to stroke the shape’s path.
     public func setBorder(rectCorner: UIRectCorner = UIRectCorner.allCorners, radius: CGFloat, lineWidth: CGFloat, color: UIColor?) {
-        
         let maskLayer = CAShapeLayer()
         let w = self.bounds.size.width
         let h = self.bounds.size.height
