@@ -43,7 +43,7 @@ Using [CocoaPods](https://cocoapods.org):
 ``` 
 pod 'DYFStore'
 or
-pod 'DYFStore', '~> 2.0.1'
+pod 'DYFStore', '~> 2.0.2'
 ```
 
 Check out the [wiki](https://github.com/chenxing640/DYFStore/wiki/Installation) for more options.

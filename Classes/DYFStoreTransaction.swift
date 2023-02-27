@@ -82,6 +82,7 @@ open class DYFStoreTransaction: NSObject, NSCoding {
     public func encode(with aCoder: NSCoder) {
         DYFSwiftRuntimeProvider.encode(aCoder, forObject: self)
     }
+    
 }
 
 /// Used to represent the state of a transaction.

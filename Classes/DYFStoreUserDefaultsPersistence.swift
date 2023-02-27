@@ -129,7 +129,7 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     
     /// Removes all transactions from the shared preferences search list.
     public func removeTransactions() {
-        kUserDefaults.removeObject(forKey: DYFStoreTransactionsKey);
+        kUserDefaults.removeObject(forKey: DYFStoreTransactionsKey)
         kUserDefaults.synchronize()
     }
     

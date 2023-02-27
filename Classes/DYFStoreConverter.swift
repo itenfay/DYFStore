@@ -42,13 +42,11 @@ public class DYFStoreConverter: NSObject {
         guard let obj = object else {
             return nil
         }
-        
         if #available(iOS 11.0, *) {
             let archiver = NSKeyedArchiver(requiringSecureCoding: false)
             archiver.encode(obj)
             return archiver.encodedData // archiver.finishEncoding() and return the data.
         }
-        
         return NSKeyedArchiver.archivedData(withRootObject: obj);
     }
     
@@ -60,7 +58,6 @@ public class DYFStoreConverter: NSObject {
         guard let tData = data else {
             return nil
         }
-        
         if #available(iOS 11.0, *) {
             do {
                 let unarchiver = try NSKeyedUnarchiver(forReadingFrom: tData)
@@ -73,7 +70,6 @@ public class DYFStoreConverter: NSObject {
                 return nil
             }
         }
-        
         return NSKeyedUnarchiver.unarchiveObject(with: tData)
     }
     
