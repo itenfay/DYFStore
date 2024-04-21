@@ -11,7 +11,7 @@ class SKStoreViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     @IBOutlet weak var storeTableView: UITableView!
     
-    public var dataArray: [DYFStoreProduct]?
+    public var dataArray: [SKStoreProduct]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +20,7 @@ class SKStoreViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func addRightBarButtonItem() {
-        let item = UIBarButtonItem(title: "Restore", style: UIBarButtonItem.Style.plain, target: self, action: #selector(DYFStoreViewController.restore))
+        let item = UIBarButtonItem(title: "Restore", style: UIBarButtonItem.Style.plain, target: self, action: #selector(restore))
         self.navigationItem.rightBarButtonItem = item
     }
     
@@ -44,11 +44,11 @@ class SKStoreViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier = "StoreTableViewCell"
         
-        var cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? DYFStoreTableViewCell
+        var cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? SKStoreTableViewCell
         if cell == nil {
-            let nib = UINib(nibName: "DYFStoreTableViewCell", bundle: nil)
+            let nib = UINib(nibName: "SKStoreTableViewCell", bundle: nil)
             let objects = nib.instantiate(withOwner: nil, options: nil)
-            cell = objects[0] as? DYFStoreTableViewCell
+            cell = objects[0] as? SKStoreTableViewCell
         }
         
         let product = self.dataArray![indexPath.row]

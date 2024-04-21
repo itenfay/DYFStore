@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="C0g-QW-Gkn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="C0g-QW-Gkn">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -31,16 +32,16 @@
                                                     <constraint firstAttribute="height" constant="20" id="lVq-Wo-CYn"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" systemColor="systemRedColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Nk-bG-pD0">
-                                                <rect key="frame" x="10" y="40" width="280" height="50"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Nk-bG-pD0">
+                                                <rect key="frame" x="5" y="40" width="290" height="50"/>
                                                 <color key="backgroundColor" red="0.92006528379999997" green="0.57349437479999998" blue="0.032923910770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="50" id="q23-Pz-P3u"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
                                                 <state key="normal" title="Fetches product and Submits payment">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
@@ -59,9 +60,9 @@
                                             <constraint firstItem="Xul-qK-Lei" firstAttribute="top" secondItem="t63-a3-Pb1" secondAttribute="top" constant="10" id="4s4-SH-GfY"/>
                                             <constraint firstAttribute="width" constant="300" id="8yF-5v-tWw"/>
                                             <constraint firstItem="Xul-qK-Lei" firstAttribute="leading" secondItem="t63-a3-Pb1" secondAttribute="leading" constant="10" id="OTe-tF-KK9"/>
-                                            <constraint firstItem="0Nk-bG-pD0" firstAttribute="leading" secondItem="t63-a3-Pb1" secondAttribute="leading" constant="10" id="OiA-vb-YHC"/>
+                                            <constraint firstItem="0Nk-bG-pD0" firstAttribute="leading" secondItem="t63-a3-Pb1" secondAttribute="leading" constant="5" id="OiA-vb-YHC"/>
                                             <constraint firstItem="0Nk-bG-pD0" firstAttribute="top" secondItem="Xul-qK-Lei" secondAttribute="bottom" constant="10" id="XOh-bw-fut"/>
-                                            <constraint firstAttribute="trailing" secondItem="0Nk-bG-pD0" secondAttribute="trailing" constant="10" id="d5s-CD-PGN"/>
+                                            <constraint firstAttribute="trailing" secondItem="0Nk-bG-pD0" secondAttribute="trailing" constant="5" id="d5s-CD-PGN"/>
                                             <constraint firstAttribute="height" constant="100" id="s9b-aC-0Q5"/>
                                             <constraint firstAttribute="trailing" secondItem="Xul-qK-Lei" secondAttribute="trailing" constant="10" id="yro-GB-yA0"/>
                                         </constraints>
@@ -75,16 +76,16 @@
                                                     <constraint firstAttribute="height" constant="20" id="soO-ss-ZuW"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" systemColor="systemRedColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bCU-SE-TT4">
-                                                <rect key="frame" x="10" y="40" width="280" height="50"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bCU-SE-TT4">
+                                                <rect key="frame" x="5" y="40" width="290" height="50"/>
                                                 <color key="backgroundColor" red="0.92006528379999997" green="0.57349437479999998" blue="0.032923910770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="50" id="eZj-I0-XYd"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
                                                 <state key="normal" title="Fetches products and Displays store UI">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
@@ -98,10 +99,10 @@
                                             <constraint firstItem="B68-7U-CpF" firstAttribute="leading" secondItem="CPG-cm-PgU" secondAttribute="leading" constant="10" id="Dlo-Bq-WKN"/>
                                             <constraint firstAttribute="trailing" secondItem="B68-7U-CpF" secondAttribute="trailing" constant="10" id="Iea-7S-thA"/>
                                             <constraint firstItem="bCU-SE-TT4" firstAttribute="top" secondItem="B68-7U-CpF" secondAttribute="bottom" constant="10" id="O0X-1f-4IX"/>
-                                            <constraint firstAttribute="trailing" secondItem="bCU-SE-TT4" secondAttribute="trailing" constant="10" id="Q7G-Mg-riJ"/>
+                                            <constraint firstAttribute="trailing" secondItem="bCU-SE-TT4" secondAttribute="trailing" constant="5" id="Q7G-Mg-riJ"/>
                                             <constraint firstItem="B68-7U-CpF" firstAttribute="top" secondItem="CPG-cm-PgU" secondAttribute="top" constant="10" id="aCA-RT-5Wv"/>
                                             <constraint firstAttribute="height" constant="100" id="kgW-pn-NAW"/>
-                                            <constraint firstItem="bCU-SE-TT4" firstAttribute="leading" secondItem="CPG-cm-PgU" secondAttribute="leading" constant="10" id="mJV-36-8Qb"/>
+                                            <constraint firstItem="bCU-SE-TT4" firstAttribute="leading" secondItem="CPG-cm-PgU" secondAttribute="leading" constant="5" id="mJV-36-8Qb"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -137,7 +138,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="C0g-QW-Gkn" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="vbg-at-dIr">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="48" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -150,4 +151,9 @@
             <point key="canvasLocation" x="131.8840579710145" y="742.63392857142856"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

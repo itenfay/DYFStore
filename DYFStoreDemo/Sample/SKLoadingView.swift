@@ -1,8 +1,8 @@
 //
-//  DYFLoadingView.swift
+//  SKLoadingView.swift
 //
-//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
-//  Copyright © 2016 chenxing. All rights reserved.
+//  Created by Teng Fei on 2016/11/28.
+//  Copyright © 2016 Teng Fei. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@ public let SCREEN_W = UIScreen.main.bounds.size.width
 /// Returns the height of the screen for the device.
 public let SCREEN_H = UIScreen.main.bounds.size.height
 
-public class DYFLoadingView: UIView {
+public class SKLoadingView: UIView {
     
     /// It is used to act as background mask panel.
     private lazy var maskPanel: UIView = {
@@ -78,8 +78,8 @@ public class DYFLoadingView: UIView {
     }()
     
     /// The spinner is used to provide an indefinite animation.
-    private lazy var indicator: DYFIndefiniteAnimatedSpinner = {
-        let spinner = DYFIndefiniteAnimatedSpinner()
+    private lazy var indicator: SKIndefiniteAnimatedSpinner = {
+        let spinner = SKIndefiniteAnimatedSpinner()
         spinner.backgroundColor = UIColor.clear
         spinner.lineColor = COLOR_RGB(100, 100, 100)
         return spinner
@@ -170,24 +170,34 @@ public class DYFLoadingView: UIView {
             UIView.AutoresizingMask.flexibleHeight.rawValue
         )
         
-        let cw = 200.0
-        self.contentView.frame = CGRect(x: 0, y: 0, width: cw, height: 0.6*cw)
-        self.contentView.setCorner(radius: 10.0)
+        var cW: CGFloat = 0.0
+        var cH: CGFloat = 0.0
+        let iW: CGFloat = 36.0
+        let offset: CGFloat = 15.0
         
-        let offset = 10.0
-        let iw = 60.0
-        let ix = cw/2 - iw/2
-        let iy = 1.5*offset
-        self.indicator.frame = CGRect(x: ix, y: iy, width: iw, height: iw)
-        self.indicator.lineWidth = 2.0
-        
-        let lh = 20.0
-        self.textLabel.center = CGPoint(x: cw/2, y: 0.6*cw - lh/2 - 1.5*offset)
-        self.textLabel.bounds = CGRect(x: 0, y: 0, width: cw - 2*offset, height: lh)
         self.textLabel.text = text
-        self.textLabel.font = UIFont.boldSystemFont(ofSize: 16.0)
+        self.textLabel.font = UIFont.boldSystemFont(ofSize: 14.0)
         self.textLabel.textAlignment = NSTextAlignment.center
         self.textLabel.numberOfLines = 1
+        self.textLabel.sizeToFit()
+        let textSize = self.textLabel.bounds.size
+        
+        cW = textSize.width + 2*offset
+        cW = cW > (SCREEN_W - 40) ? (SCREEN_W - 40) : cW
+        cW = cW < (iW + 4*offset) ? (iW + 4*offset) : cW
+        cH = textSize.height + iW + 3*offset
+        self.contentView.frame = CGRect(x: 0, y: 0, width: cW, height: cH)
+        self.contentView.sk_setCorner(radius: 10.0)
+        
+        let iX: CGFloat = cW/2 - iW/2
+        var iY: CGFloat = cH/2 - iW + 5.0
+        if self.textLabel.text?.isEmpty == true {
+            iY = cH/2 - iW/2
+        }
+        self.indicator.frame = CGRect(x: iX, y: iY, width: iW, height: iW)
+        self.indicator.lineWidth = 2.0
+        
+        self.textLabel.frame = CGRect(x: offset, y: CGRectGetMaxY(self.indicator.frame) + offset, width: cW - 2*offset, height: textSize.height)
     }
     
     /// Addds the subviews to its corresponding superview.
@@ -268,20 +278,20 @@ public class DYFLoadingView: UIView {
     }
     
     public override func layoutSubviews() {
-        var self_w: CGFloat = 0.0
-        var self_h: CGFloat = 0.0
+        var sW: CGFloat = 0.0
+        var sH: CGFloat = 0.0
         
         if let supv = self.superview {
-            self_w = supv.bounds.size.width
-            self_h = supv.bounds.size.height
+            sW = supv.bounds.size.width
+            sH = supv.bounds.size.height
         } else {
-            self_w = SCREEN_W
-            self_h = SCREEN_H
+            sW = SCREEN_W
+            sH = SCREEN_H
         }
-        self.frame = CGRect(x: 0, y: 0, width: self_w, height: self_h)
+        self.frame = CGRect(x: 0, y: 0, width: sW, height: sH)
         
-        self.maskPanel.frame = CGRect(x: 0, y: 0, width: self_w, height: self_h)
-        self.contentView.center = CGPoint(x: self_w/2, y: self_h/2)
+        self.maskPanel.frame = CGRect(x: 0, y: 0, width: sW, height: sH)
+        self.contentView.center = CGPoint(x: sW/2, y: sH/2)
     }
     
     deinit {

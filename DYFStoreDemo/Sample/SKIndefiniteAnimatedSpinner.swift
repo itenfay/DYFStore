@@ -1,8 +1,8 @@
 //
-//  DYFIndefiniteAnimatedSpinner.swift
+//  SKIndefiniteAnimatedSpinner.swift
 //
-//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
-//  Copyright © 2016 chenxing. All rights reserved.
+//  Created by Teng Fei on 2016/11/28.
+//  Copyright © 2016 Teng Fei. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 
 import UIKit
 
-public class DYFIndefiniteAnimatedSpinner: UIView {
+public class SKIndefiniteAnimatedSpinner: UIView {
     
     /// A structure is named "AnimationKey".
     private struct AnimationKey {
@@ -92,7 +92,7 @@ public class DYFIndefiniteAnimatedSpinner: UIView {
     
     private func setup() {
         self.layer.addSublayer(self.progressLayer)
-        let selector = #selector(DYFIndefiniteAnimatedSpinner.resetAnimations)
+        let selector = #selector(resetAnimations)
         let name = UIApplication.didBecomeActiveNotification
         NotificationCenter.default.addObserver(self, selector: selector, name: name, object: nil)
     }

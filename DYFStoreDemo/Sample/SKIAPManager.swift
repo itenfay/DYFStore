@@ -1,8 +1,8 @@
 //
-//  DYFStoreManager.swift
+//  SKIAPManager.swift
 //
-//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
-//  Copyright © 2016 chenxing. All rights reserved.
+//  Created by Teng Fei on 2016/11/28.
+//  Copyright © 2016 Teng Fei. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 import Foundation
 import DYFStoreReceiptVerifier_Swift
 
-open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
+open class SKIAPManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
     /// The property contains the purchase information.
     private var purchaseInfo: DYFStore.NotificationInfo!
@@ -41,7 +41,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     }()
     
     /// Returns a store manager singleton.
-    public static let shared = DYFStoreManager()
+    public static let shared = SKIAPManager()
     
     /// Overrides default constructor.
     public override init() {
@@ -70,7 +70,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     ///   - productIdentifier: A given product identifier.
     ///   - userIdentifier: An opaque identifier for the user’s account on your system.
     public func addPayment(_ productIdentifier: String?, userIdentifier: String? = nil) {
-        self.showLoading("Waiting...") // Initiate purchase request.
+        self.sk_showLoading("Waiting...") // Initiate purchase request.
         DYFStore.default.purchaseProduct(productIdentifier, userIdentifier: userIdentifier)
     }
     
@@ -79,13 +79,13 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     /// - Parameter userIdentifier: An opaque identifier for the user’s account on your system.
     public func restorePurchases(_ userIdentifier: String? = nil) {
         DYFStoreLog("userIdentifier: \(userIdentifier ?? "")")
-        self.showLoading("Restoring...")
+        self.sk_showLoading("Restoring...")
         DYFStore.default.restoreTransactions(userIdentifier: userIdentifier)
     }
     
     func addStoreObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(DYFStoreManager.processPurchaseNotification(_:)), name: DYFStore.purchasedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(DYFStoreManager.processDownloadNotification(_:)), name: DYFStore.downloadedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(processPurchaseNotification(_:)), name: DYFStore.purchasedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(processDownloadNotification(_:)), name: DYFStore.downloadedNotification, object: nil)
     }
     
     func removeStoreObserver() {
@@ -94,11 +94,11 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     }
     
     @objc private func processPurchaseNotification(_ notification: Notification) {
-        self.hideLoading()
+        self.sk_hideLoading()
         self.purchaseInfo = (notification.object as! DYFStore.NotificationInfo)
         switch self.purchaseInfo.state! {
         case .purchasing:
-            self.showLoading("Purchasing...")
+            self.sk_showLoading("Purchasing...")
             break
         case .cancelled:
             self.sendNotice("You cancel the purchase")
@@ -203,7 +203,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
     private func refreshReceipt() {
         DYFStoreLog()
-        self.showLoading("Refresh receipt...")
+        self.sk_showLoading("Refresh receipt...")
         DYFStore.default.refreshReceipt(onSuccess: {
             self.storeReceipt()
         }) { (error) in
@@ -213,8 +213,8 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
     private func failToRefreshReceipt() {
         DYFStoreLog()
-        self.hideLoading()
-        self.showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
+        self.sk_hideLoading()
+        self.sk_showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
                        message: "Fail to refresh receipt! Please check if your device can access the internet.",
                        cancelButtonTitle: "Cancel",
                        cancel: { (cancelAction) in },
@@ -228,8 +228,8 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     // If the receipts are verified by your own server, the client needs to upload these parameters, such as: "transaction identifier, bundle identifier, product identifier, user identifier, shared sceret(Subscription), receipt(Safe URL Base64), original transaction identifier(Optional), original transaction time(Optional) and the device information, etc.".
     private func verifyReceipt(_ receiptData: Data?) {
         DYFStoreLog()
-        self.hideLoading()
-        self.showLoading("Verify receipt...")
+        self.sk_hideLoading()
+        self.sk_showLoading("Verify receipt...")
         
         var data: Data!
         if let tempData = receiptData {
@@ -264,7 +264,7 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     }
     
     private func sendNotice(_ message: String) {
-        self.showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
+        self.sk_showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
                        message: message,
                        cancelButtonTitle: nil,
                        cancel: nil,
@@ -278,10 +278,10 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
     public func verifyReceiptDidFinish(_ verifier: DYFStoreReceiptVerifier, didReceiveData data: [String : Any]) {
         DYFStoreLog("data: \(data)")
-        self.hideLoading()
-        self.showTipsMessage("Purchase Successfully")
+        self.sk_hideLoading()
+        self.sk_showTipsMessage("Purchase Successfully")
         
-        DispatchQueue.main.asyncAfter(delay: 1.5) {
+        DispatchQueue.main.asyncAfter(delay: 1.2) {
             let info = self.purchaseInfo!
             let store = DYFStore.default
             let persister = DYFStoreUserDefaultsPersistence()
@@ -307,12 +307,12 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
     public func verifyReceipt(_ verifier: DYFStoreReceiptVerifier, didFailWithError error: NSError) {
         // Prints the reason of the error.
         DYFStoreLog("error: \(error.code), \(error.localizedDescription)")
-        self.hideLoading()
+        self.sk_hideLoading()
         
         // An error occurs that has nothing to do with in-app purchase. Maybe it's the internet.
         if error.code < 21000 {
             // After several attempts, you can cancel refreshing receipt.
-            self.showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
+            self.sk_showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
                            message: "Fail to verify receipt! Please check if your device can access the internet.",
                            cancelButtonTitle: "Cancel",
                            cancel: nil,
@@ -324,9 +324,9 @@ open class DYFStoreManager: NSObject, DYFStoreReceiptVerifierDelegate {
             return
         }
         
-        self.showTipsMessage("Fail to purchase product!")
+        self.sk_showTipsMessage("Fail to purchase product!")
         
-        DispatchQueue.main.asyncAfter(delay: 1.5) {
+        DispatchQueue.main.asyncAfter(delay: 1.2) {
             let info = self.purchaseInfo!
             let store = DYFStore.default
             let persister = DYFStoreUserDefaultsPersistence()

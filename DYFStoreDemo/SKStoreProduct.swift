@@ -1,13 +1,13 @@
 //
-//  DYFStoreProduct.swift
+//  SKStoreProduct.swift
 //
-//  Created by Teng Fei on 2016/11/28. ( https://github.com/Teng Fei640/DYFStore )
+//  Created by Teng Fei on 2016/11/28.
 //  Copyright © 2016 Teng Fei. All rights reserved.
 //
 
 import Foundation
 
-open class DYFStoreProduct: NSObject {
+open class SKStoreProduct: NSObject {
     
     /// The string that identifies the product.
     public var identifier: String?
