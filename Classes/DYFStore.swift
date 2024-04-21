@@ -1,8 +1,8 @@
 //
 //  DYFStore.swift
 //
-//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
-//  Copyright © 2016 chenxing. All rights reserved.
+//  Created by Teng Fei on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
+//  Copyright © 2016 Teng Fei. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import StoreKit
 ///
 /// - Parameter s: A string to calculate hash.
 /// - Returns: A SHA-256 hash value string.
-public func DYFStore_supplySHA256(_ s: String) -> String? {
+public func DYFStoreCryptoSHA256(_ s: String) -> String? {
     guard let cStr = s.cString(using: String.Encoding.utf8) else {
         return nil
     }
