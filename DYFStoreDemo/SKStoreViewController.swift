@@ -1,13 +1,13 @@
 //
-//  DDYFStoreViewController.swift
+//  SKStoreViewController.swift
 //
-//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
-//  Copyright © 2016 chenxing. All rights reserved.
+//  Created by Teng Fei on 2016/11/28.
+//  Copyright © 2016 Teng Fei. All rights reserved.
 //
 
 import UIKit
 
-class DYFStoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SKStoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var storeTableView: UITableView!
     
@@ -28,9 +28,9 @@ class DYFStoreViewController: UIViewController, UITableViewDelegate, UITableView
         // Get account name from your own user system.
         let accountName = "Handsome Jon"
         // This algorithm is negotiated with server developer.
-        let userIdentifier = DYFStore_supplySHA256(accountName) ?? ""
+        let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
         DYFStoreLog("userIdentifier: \(userIdentifier)")
-        DYFStoreManager.shared.restorePurchases(userIdentifier)
+        SKIAPManager.shared.restorePurchases(userIdentifier)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -70,9 +70,9 @@ class DYFStoreViewController: UIViewController, UITableViewDelegate, UITableView
         // Get account name from your own user system.
         let accountName = "Handsome Jon"
         // This algorithm is negotiated with server developer.
-        let userIdentifier = DYFStore_supplySHA256(accountName) ?? ""
+        let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
         DYFStoreLog("userIdentifier: \(userIdentifier)")
-        DYFStoreManager.shared.addPayment(productIdentifier, userIdentifier: userIdentifier)
+        SKIAPManager.shared.addPayment(productIdentifier, userIdentifier: userIdentifier)
     }
     
 }

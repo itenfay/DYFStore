@@ -1,8 +1,8 @@
 //
 //  DYFStoreProduct.swift
 //
-//  Created by chenxing on 2016/11/28. ( https://github.com/chenxing640/DYFStore )
-//  Copyright © 2016 chenxing. All rights reserved.
+//  Created by Teng Fei on 2016/11/28. ( https://github.com/Teng Fei640/DYFStore )
+//  Copyright © 2016 Teng Fei. All rights reserved.
 //
 
 import Foundation

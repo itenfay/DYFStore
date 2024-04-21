@@ -41,8 +41,11 @@ Using [CocoaPods](https://cocoapods.org):
 
 ``` 
 pod 'DYFStore'
-or
-pod 'DYFStore', '~> 2.0.2'
+```
+`OR`
+
+```
+pod 'DYFStore', '~> 2.1.0'
 ```
 
 Check out the [wiki](https://github.com/chenxing640/DYFStore/wiki/Installation) for more options.
@@ -70,7 +73,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 }
 
 func initIAPSDK() {
-    DYFStoreManager.shared.addStoreObserver()
+    SKIAPManager.shared.addStoreObserver()
     
     // Wether to allow the logs output to console.
     DYFStore.default.enableLog = true
@@ -91,16 +94,16 @@ You can process the purchase which was initiated by user from the App Store and 
 // Processes the purchase which was initiated by user from the App Store.
 func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
     if !DYFStore.canMakePayments() {
-        self.showTipsMessage("Your device is not able or allowed to make payments!")
+        self.sk_showTipsMessage("Your device is not able or allowed to make payments!")
         return
     }
     
     // Get account name from your own user system.
     let accountName = "Handsome Jon"
     // This algorithm is negotiated with server developer.
-    let userIdentifier = DYFStore_supplySHA256(accountName) ?? ""
+    let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
     DYFStoreLog("userIdentifier: \(userIdentifier)")
-    DYFStoreManager.shared.addPayment(product.productIdentifier, userIdentifier: userIdentifier)
+    SKIAPManager.shared.addPayment(product.productIdentifier, userIdentifier: userIdentifier)
 }
 ```
 
@@ -111,7 +114,7 @@ You need to check whether the device is not able or allowed to make payments bef
 
 ```
 if !DYFStore.canMakePayments() {
-    self.showTipsMessage("Your device is not able or allowed to make payments!")
+    self.sk_showTipsMessage("Your device is not able or allowed to make payments!")
     return
 }
 ```
@@ -124,22 +127,22 @@ To begin the purchase process, your app must know its product identifiers. There
 @IBAction func fetchesProductAndSubmitsPayment(_ sender: Any) {
     // You need to check whether the device is not able or allowed to make payments before requesting product.
     if !DYFStore.canMakePayments() {
-        self.showTipsMessage("Your device is not able or allowed to make payments!")
+        self.sk_showTipsMessage("Your device is not able or allowed to make payments!")
         return
     }
-    self.showLoading("Loading...")
+    self.sk_showLoading("Loading...")
     
     let productId = "com.hncs.szj.coin42"
     DYFStore.default.requestProduct(withIdentifier: productId, success: { (products, invalidIdentifiers) in
-        self.hideLoading()
+        self.sk_hideLoading()
         if products.count == 1 {
             let productId = products[0].productIdentifier
             self.addPayment(productId)
         } else {
-            self.showTipsMessage("There is no this product for sale!")
+            self.sk_showTipsMessage("There is no this product for sale!")
         }
     }) { (error) in
-        self.hideLoading()
+        self.sk_hideLoading()
         let value = error.userInfo[NSLocalizedDescriptionKey] as? String
         let msg = value ?? "\(error.localizedDescription)"
         self.sendNotice("An error occurs, \(error.code), " + msg)
@@ -150,9 +153,9 @@ private func addPayment(_ productId: String) {
     // Get account name from your own user system.
     let accountName = "Handsome Jon"
     // This algorithm is negotiated with server developer.
-    let userIdentifier = DYFStore_supplySHA256(accountName) ?? ""
+    let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
     DYFStoreLog("userIdentifier: \(userIdentifier)")
-    DYFStoreManager.shared.addPayment(productId, userIdentifier: userIdentifier)
+    SKIAPManager.shared.addPayment(productId, userIdentifier: userIdentifier)
 }
 ```
 
@@ -176,23 +179,23 @@ func fetchProductIdentifiersFromServer() -> [String] {
 @IBAction func fetchesProductsFromAppStore(_ sender: Any) {
     // You need to check whether the device is not able or allowed to make payments before requesting products.
     if !DYFStore.canMakePayments() {
-        self.showTipsMessage("Your device is not able or allowed to make payments!")
+        self.sk_showTipsMessage("Your device is not able or allowed to make payments!")
         return
     }
-    self.showLoading("Loading...")
+    self.sk_showLoading("Loading...")
     
     let productIds = fetchProductIdentifiersFromServer()
     DYFStore.default.requestProduct(withIdentifiers: productIds, success: { (products, invalidIdentifiers) in
-        self.hideLoading()
+        self.sk_hideLoading()
         if products.count > 0 {
             self.processData(products)
         } else if products.count == 0 &&
                     invalidIdentifiers.count > 0 {
             // Please check the product information you set up.
-            self.showTipsMessage("There are no products for sale!")
+            self.sk_showTipsMessage("There are no products for sale!")
         }
     }) { (error) in
-        self.hideLoading()
+        self.sk_hideLoading()
         let value = error.userInfo[NSLocalizedDescriptionKey] as? String
         let msg = value ?? "\(error.localizedDescription)"
         self.sendNotice("An error occurs, \(error.code), " + msg)
@@ -200,9 +203,9 @@ func fetchProductIdentifiersFromServer() -> [String] {
 }
 
 private func processData(_ products: [SKProduct]) {
-    var modelArray = [DYFStoreProduct]()
+    var modelArray = [SKStoreProduct]()
     for product in products {
-        let p = DYFStoreProduct()
+        let p = SKStoreProduct()
         p.identifier = product.productIdentifier
         p.name = product.localizedTitle
         p.price = product.price.stringValue
@@ -213,7 +216,7 @@ private func processData(_ products: [SKProduct]) {
     self.displayStoreUI(modelArray)
 }
 
-private func displayStoreUI(_ dataArray: [DYFStoreProduct]) {
+private func displayStoreUI(_ dataArray: [SKStoreProduct]) {
     let storeVC = DYFStoreViewController()
     storeVC.dataArray = dataArray
     self.navigationController?.pushViewController(storeVC, animated: true)
@@ -234,7 +237,7 @@ If you need an opaque identifier for the user’s account on your system to add 
 Calculates the SHA256 hash function:
 
 ```
-public func DYFStore_supplySHA256(_ s: String) -> String? {
+public func DYFStoreCryptoSHA256(_ s: String) -> String? {
     guard let cStr = s.cString(using: String.Encoding.utf8) else {
         return nil
     }
@@ -308,8 +311,8 @@ DYFStore.default.refreshReceipt(onSuccess: {
 
 ```
 func addStoreObserver() {
-    NotificationCenter.default.addObserver(self, selector: #selector(DYFStoreManager.processPurchaseNotification(_:)), name: DYFStore.purchasedNotification, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(DYFStoreManager.processDownloadNotification(_:)), name: DYFStore.downloadedNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(processPurchaseNotification(_:)), name: DYFStore.purchasedNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(processDownloadNotification(_:)), name: DYFStore.downloadedNotification, object: nil)
 }
 ```
 
@@ -330,11 +333,11 @@ Payment transaction notifications are sent after a payment has been requested or
 
 ```
 @objc private func processPurchaseNotification(_ notification: Notification) {
-    self.hideLoading()
+    self.sk_hideLoading()
     self.purchaseInfo = (notification.object as! DYFStore.NotificationInfo)
     switch self.purchaseInfo.state! {
     case .purchasing:
-        self.showLoading("Purchasing...")
+        self.sk_showLoading("Purchasing...")
         break
     case .cancelled:
         self.sendNotice("You cancel the purchase")
@@ -452,7 +455,7 @@ func storeReceipt() {
     do {
         let data = try Data(contentsOf: url)
         let info = self.purchaseInfo!
-        let persister =  DYFStoreUserDefaultsPersistence()
+        let persister = DYFStoreUserDefaultsPersistence()
         
         let transaction = DYFStoreTransaction()
         if info.state! == .succeeded {
