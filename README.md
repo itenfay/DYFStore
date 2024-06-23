@@ -44,10 +44,11 @@
 ``` 
 pod 'DYFStore'
 ```
-`OR`
+
+Or
 
 ```
-pod 'DYFStore', '~> 2.1.0'
+pod 'DYFStore', '~> 2.2.0'
 ```
 
 查看 [wiki](https://github.com/itenfay/DYFStore/wiki/Installation) 以获取更多选项。
