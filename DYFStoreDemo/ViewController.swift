@@ -144,7 +144,7 @@ class ViewController: UIViewController {
         p1.identifier = "com.hncs.szj.coin42"
         p1.name = "42 gold coins"
         p1.price = "￥6"
-        p1.localePrice = "---"
+        p1.localePrice = "LocalePrice: ---"
         p1.localizedDescription = "42 gold coins for ￥6"
         prodArray.append(p1)
         
@@ -152,7 +152,7 @@ class ViewController: UIViewController {
         p2.identifier = "com.hncs.szj.coin210"
         p2.name = "210 gold coins"
         p2.price = "￥30"
-        p2.localePrice = "---"
+        p2.localePrice = "LocalePrice: ---"
         p2.localizedDescription = "210 gold coins for ￥30"
         prodArray.append(p2)
         
@@ -160,7 +160,7 @@ class ViewController: UIViewController {
         p3.identifier = "com.hncs.szj.coin686"
         p3.name = "686 gold coins"
         p3.price = "￥98"
-        p3.localePrice = "---"
+        p3.localePrice = "LocalePrice: ---"
         p3.localizedDescription = "686 gold coins for ￥98"
         prodArray.append(p3)
         
@@ -168,7 +168,7 @@ class ViewController: UIViewController {
         p4.identifier = "com.hncs.szj.coin1386"
         p4.name = "1386 gold coins"
         p4.price = "￥198"
-        p4.localePrice = "---"
+        p4.localePrice = "LocalePrice: ---"
         p4.localizedDescription = "1386 gold coins for ￥198"
         prodArray.append(p4)
         
@@ -176,7 +176,7 @@ class ViewController: UIViewController {
         p5.identifier = "com.hncs.szj.coin4886"
         p5.name = "4886 gold coins"
         p5.price = "￥698"
-        p5.localePrice = "---"
+        p5.localePrice = "LocalePrice: ---"
         p5.localizedDescription = "4886 gold coins for ￥698"
         prodArray.append(p5)
         
@@ -184,7 +184,7 @@ class ViewController: UIViewController {
         p6.identifier = "com.hncs.szj.vip1"
         p6.name = "VIP1"
         p6.price = "￥299"
-        p6.localePrice = "---"
+        p6.localePrice = "LocalePrice: ---"
         p6.localizedDescription = "Non-renewable vip subscription for a month"
         prodArray.append(p6)
         
@@ -192,7 +192,7 @@ class ViewController: UIViewController {
         p7.identifier = "com.hncs.szj.vip2"
         p7.name = "VIP2"
         p7.price = "￥699"
-        p7.localePrice = "---"
+        p7.localePrice = "LocalePrice: ---"
         p7.localizedDescription = "Auto-renewable vip subscription for three months"
         prodArray.append(p7)
         return prodArray
