@@ -1,8 +1,8 @@
 //
 //  ViewController.swift
 //
-//  Created by Teng Fei on 2016/11/28.
-//  Copyright © 2016 Teng Fei. All rights reserved.
+//  Created by Tenfay on 2016/11/28.
+//  Copyright © 2016 Tenfay. All rights reserved.
 //
 
 import UIKit

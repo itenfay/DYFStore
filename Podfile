@@ -9,6 +9,7 @@ target 'DYFStore' do
 
   # Pods for DYFStore
   pod 'DYFSwiftRuntimeProvider'
+  # The receipt verifier(Optional).
   pod 'DYFStoreReceiptVerifier_Swift'
   
 end

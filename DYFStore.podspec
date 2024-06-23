@@ -1,23 +1,23 @@
 Pod::Spec.new do |s|
     s.name         = "DYFStore"
-    s.version      = "2.1.0"
-    s.summary      = "A lightweight and easy-to-use iOS library for In-App Purchases. (Swift)"
+    s.version      = "2.2.0"
+    s.summary      = "[Swift] A lightweight and easy-to-use iOS library for In-App Purchases."
     
     s.description  = <<-DESC
-    TODU: A lightweight and easy-to-use iOS library for In-App Purchases. DYFStore uses blocks and notifications to wrap StoreKit, provides receipt verification and transaction persistence.
+    TODU: [Swift] A lightweight and easy-to-use iOS library for In-App Purchases. DYFStore uses blocks and notifications to wrap StoreKit, provides receipt verification and transaction persistence.
     DESC
     
-    s.homepage = "https://github.com/chenxing640/DYFStore"
+    s.homepage = "https://github.com/itenfay/DYFStore"
     # s.screenshots = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
-    s.source = { :git => "https://github.com/chenxing640/DYFStore.git", :tag => s.version.to_s }
+    s.source = { :git => "https://github.com/itenfay/DYFStore.git", :tag => s.version.to_s }
     
     # s.license = "MIT (example)"
     s.license = { :type => "MIT", :file => "LICENSE" }
     
-    s.author             = { "Teng Fei" => "hansen981@126.com" }
-    # Or just: s.author  = "Teng Fei"
-    # s.authors          = { "Teng Fei" => "hansen981@126.com" }
-    # s.social_media_url = "https://twitter.com/tengfei"
+    s.author             = { "Tenfay" => "itenfay@163.com" }
+    # Or just: s.author  = "Tenfay"
+    # s.authors          = { "Tenfay" => "itenfay@163.com" }
+    # s.social_media_url = "https://twitter.com/Tenfay"
     
     s.platform     = :ios
     # s.platform   = :ios, "5.0"
@@ -26,8 +26,8 @@ Pod::Spec.new do |s|
     # s.watchos.deployment_target = "3.0"
     # s.tvos.deployment_target    = "9.0"
     
-    s.swift_versions = ['4.2', '5.0']
-    
+    #s.swift_versions = ['4.2', '5.0']
+    s.swift_version = '5.0'
     s.requires_arc = true
     
     s.source_files    = "Classes/*.swift"
@@ -48,5 +48,4 @@ Pod::Spec.new do |s|
     # s.dependency "JSONKit", "~> 1.4"
     # s.dependency 'DYFStoreReceiptVerifier_Swift'
     s.dependency 'DYFSwiftRuntimeProvider'
-    
 end
