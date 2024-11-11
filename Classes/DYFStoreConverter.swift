@@ -27,18 +27,16 @@ import Foundation
 
 /// The converter is used to convert json and json object to each other,
 /// convert an object and a data object to each other.
-public class DYFStoreConverter: NSObject {
+public class DYFStoreConverter {
     
     /// Instantiates an `DYFStoreConverter` object.
-    public override init() {
-        super.init()
-    }
+    public init() {}
     
     /// Encodes an object.
     ///
     /// - Parameter object: An object you want to encode.
     /// - Returns: The data object into which the archive is written.
-    @objc public static func encodeObject(_ object: Any?) -> Data? {
+    public static func encodeObject(_ object: Any?) -> Data? {
         guard let obj = object else {
             return nil
         }
@@ -54,7 +52,7 @@ public class DYFStoreConverter: NSObject {
     ///
     /// - Parameter data: An archive previously encoded by NSKeyedArchiver.
     /// - Returns: An object initialized for decoding data.
-    @objc public static func decodeObject(_ data: Data?) -> Any? {
+    public static func decodeObject(_ data: Data?) -> Any? {
         guard let tData = data else {
             return nil
         }
@@ -77,7 +75,7 @@ public class DYFStoreConverter: NSObject {
     ///
     /// - Parameter obj: The object from which to generate JSON data.
     /// - Returns: JSON data for obj, or nil if an internal error occurs.
-    @objc public static func json(withObject obj: Any?) -> Data? {
+    public static func json(withObject obj: Any?) -> Data? {
         return json(withObject: obj, options: [])
     }
     
@@ -87,7 +85,7 @@ public class DYFStoreConverter: NSObject {
     ///   - obj: The object from which to generate JSON data.
     ///   - options: Options for writing JSON data. The default value is equivalent to kNilOptions in Objective-C.
     /// - Returns: JSON data for obj, or nil if an internal error occurs.
-    @objc public static func json(withObject obj: Any?, options: JSONSerialization.WritingOptions = []) -> Data? {
+    public static func json(withObject obj: Any?, options: JSONSerialization.WritingOptions = []) -> Data? {
         guard let anObj = obj else { return nil }
         do {
             // let encoder = JSONEncoder()
@@ -105,7 +103,7 @@ public class DYFStoreConverter: NSObject {
     ///
     /// - Parameter obj: The object from which to generate JSON string.
     /// - Returns: JSON string for obj, or nil if an internal error occurs.
-    @objc public static func jsonString(withObject obj: Any?) -> String? {
+    public static func jsonString(withObject obj: Any?) -> String? {
         return jsonString(withObject: obj, options: [])
     }
     
@@ -115,7 +113,7 @@ public class DYFStoreConverter: NSObject {
     ///   - obj: The object from which to generate JSON string.
     ///   - options: Options for writing JSON data. The default value is equivalent to kNilOptions in Objective-C.
     /// - Returns: JSON string for obj, or nil if an internal error occurs.
-    @objc public static func jsonString(withObject obj: Any?, options: JSONSerialization.WritingOptions = []) -> String? {
+    public static func jsonString(withObject obj: Any?, options: JSONSerialization.WritingOptions = []) -> String? {
         guard let anObj = obj else { return nil }
         do {
             // let encoder = JSONEncoder()
@@ -133,7 +131,7 @@ public class DYFStoreConverter: NSObject {
     ///
     /// - Parameter data: A data object containing JSON data.
     /// - Returns: A Foundation object from the JSON data in data, or nil if an error occurs.
-    @objc public static func jsonObject(withData data: Data?) -> Any? {
+    public static func jsonObject(withData data: Data?) -> Any? {
         return jsonObject(withData: data, options: [])
     }
     
@@ -143,7 +141,7 @@ public class DYFStoreConverter: NSObject {
     ///   - data: A data object containing JSON data.
     ///   - options: Options used when creating Foundation objects from JSON data. The default value is equivalent to kNilOptions in Objective-C.
     /// - Returns: A Foundation object from the JSON data in data, or nil if an error occurs.
-    @objc public static func jsonObject(withData data: Data?, options: JSONSerialization.ReadingOptions = []) -> Any? {
+    public static func jsonObject(withData data: Data?, options: JSONSerialization.ReadingOptions = []) -> Any? {
         guard let aData = data else { return nil }
         do {
             // struct GroceryProduct: Codable {
@@ -174,7 +172,7 @@ public class DYFStoreConverter: NSObject {
     ///
     /// - Parameter json: A string object containing JSON string.
     /// - Returns: A Foundation object from the JSON data in data, or nil if an error occurs.
-    @objc public static func jsonObject(withJSON json: String?) -> Any? {
+    public static func jsonObject(withJSON json: String?) -> Any? {
         return jsonObject(withJSON: json, options: [])
     }
     
@@ -184,7 +182,7 @@ public class DYFStoreConverter: NSObject {
     ///   - json: A string object containing JSON string.
     ///   - options: Options used when creating Foundation objects from JSON data. The default value is equivalent to kNilOptions in Objective-C.
     /// - Returns: A Foundation object from the JSON data in data, or nil if an error occurs.
-    @objc public static func jsonObject(withJSON json: String?, options: JSONSerialization.ReadingOptions = []) -> Any? {
+    public static func jsonObject(withJSON json: String?, options: JSONSerialization.ReadingOptions = []) -> Any? {
         guard let data = json?.data(using: String.Encoding.utf8) else {
             return nil
         }

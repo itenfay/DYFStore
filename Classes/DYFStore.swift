@@ -1185,8 +1185,7 @@ extension DYFStore {
 }
 
 /// Processes the purchase which was initiated by user from the App Store.
-@objc public protocol DYFStoreAppStorePaymentDelegate: NSObjectProtocol {
-    
+public protocol DYFStoreAppStorePaymentDelegate: AnyObject {
     /// A user initiated an in-app purchase from the App Store.
     ///
     /// - Parameters:
