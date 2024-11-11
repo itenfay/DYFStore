@@ -41,18 +41,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DYFStoreAppStorePaymentDe
     }
     
     // Processes the purchase which was initiated by user from the App Store.
-    func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
+    func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) -> Bool {
         if !DYFStore.canMakePayments() {
             self.sk_showTipsMessage("Your device is not able or allowed to make payments!")
-            return
+            return false
         }
         
         // Get account name from your own user system.
         let accountName = "Handsome Jon"
         // This algorithm is negotiated with server developer.
-        let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
+        let userIdentifier = accountName.tx_sha256 ?? ""
         DYFStoreLog("userIdentifier: \(userIdentifier)")
         SKIAPManager.shared.addPayment(product.productIdentifier, userIdentifier: userIdentifier)
+        return true
     }
     
     func applicationWillResignActive(_ application: UIApplication) {

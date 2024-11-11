@@ -28,7 +28,7 @@ class SKStoreViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Get account name from your own user system.
         let accountName = "Handsome Jon"
         // This algorithm is negotiated with server developer.
-        let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
+        let userIdentifier = accountName.tx_sha256 ?? ""
         DYFStoreLog("userIdentifier: \(userIdentifier)")
         SKIAPManager.shared.restorePurchases(userIdentifier)
     }
@@ -70,7 +70,7 @@ class SKStoreViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Get account name from your own user system.
         let accountName = "Handsome Jon"
         // This algorithm is negotiated with server developer.
-        let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
+        let userIdentifier = accountName.tx_sha256 ?? ""
         DYFStoreLog("userIdentifier: \(userIdentifier)")
         SKIAPManager.shared.addPayment(productIdentifier, userIdentifier: userIdentifier)
     }

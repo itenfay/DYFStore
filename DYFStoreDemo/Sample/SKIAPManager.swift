@@ -149,17 +149,16 @@ open class SKIAPManager: NSObject, DYFStoreReceiptVerifierDelegate {
             return
         }
         
-        let transaction = persister.retrieveTransaction(identifier)
-        if let tx = transaction {
-            DYFStoreLog("transaction.state: \(tx.state)")
-            DYFStoreLog("transaction.productIdentifier: \(tx.productIdentifier!)")
-            DYFStoreLog("transaction.userIdentifier: \(tx.userIdentifier ?? "null")")
-            DYFStoreLog("transaction.transactionIdentifier: \(tx.transactionIdentifier!)")
-            DYFStoreLog("transaction.transactionTimestamp: \(tx.transactionTimestamp!)")
-            DYFStoreLog("transaction.originalTransactionIdentifier: \(tx.originalTransactionIdentifier ?? "null")")
-            DYFStoreLog("transaction.originalTransactionTimestamp: \(tx.originalTransactionTimestamp ?? "null")")
+        if let tx = persister.retrieveTransaction(identifier) {
+            DYFStoreLog("tx.state: \(tx.state)")
+            DYFStoreLog("tx.productIdentifier: \(tx.productIdentifier!)")
+            DYFStoreLog("tx.userIdentifier: \(tx.userIdentifier ?? "null")")
+            DYFStoreLog("tx.transactionIdentifier: \(tx.transactionIdentifier!)")
+            DYFStoreLog("tx.transactionTimestamp: \(tx.transactionTimestamp!)")
+            DYFStoreLog("tx.originalTransactionIdentifier: \(tx.originalTransactionIdentifier ?? "null")")
+            DYFStoreLog("tx.originalTransactionTimestamp: \(tx.originalTransactionTimestamp ?? "null")")
             if let receiptData = tx.transactionReceipt!.base64DecodedData() {
-                DYFStoreLog("transaction.transactionReceipt: \(receiptData)")
+                DYFStoreLog("tx.transactionReceipt: \(receiptData)")
                 self.verifyReceipt(receiptData)
             }
         }
@@ -176,22 +175,22 @@ open class SKIAPManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let info = self.purchaseInfo!
             let persister = DYFStoreUserDefaultsPersistence()
             
-            let transaction = DYFStoreTransaction()
+            let tx = DYFStoreTransaction()
             if info.state! == .succeeded {
-                transaction.state = DYFStoreTransactionState.purchased.rawValue
+                tx.state = DYFStoreTransactionState.purchased.rawValue
             } else if info.state! == .restored {
-                transaction.state = DYFStoreTransactionState.restored.rawValue
+                tx.state = DYFStoreTransactionState.restored.rawValue
             }
             
-            transaction.productIdentifier = info.productIdentifier
-            transaction.userIdentifier = info.userIdentifier
-            transaction.transactionTimestamp = info.transactionDate?.timestamp()
-            transaction.transactionIdentifier = info.transactionIdentifier
-            transaction.originalTransactionTimestamp = info.originalTransactionDate?.timestamp()
-            transaction.originalTransactionIdentifier = info.originalTransactionIdentifier
+            tx.productIdentifier = info.productIdentifier
+            tx.userIdentifier = info.userIdentifier
+            tx.transactionTimestamp = info.transactionDate?.timestamp()
+            tx.transactionIdentifier = info.transactionIdentifier
+            tx.originalTransactionTimestamp = info.originalTransactionDate?.timestamp()
+            tx.originalTransactionIdentifier = info.originalTransactionIdentifier
             
-            transaction.transactionReceipt = data.base64EncodedString()
-            persister.storeTransaction(transaction)
+            tx.transactionReceipt = data.base64EncodedString()
+            persister.storeTransaction(tx)
             
             self.verifyReceipt(data)
         } catch let error {
@@ -215,10 +214,10 @@ open class SKIAPManager: NSObject, DYFStoreReceiptVerifierDelegate {
         DYFStoreLog()
         self.sk_hideLoading()
         self.sk_showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
-                       message: "Fail to refresh receipt! Please check if your device can access the internet.",
-                       cancelButtonTitle: "Cancel",
-                       cancel: { (cancelAction) in },
-                       confirmButtonTitle: NSLocalizedString("Retry", tableName: nil, comment: ""))
+                          message: "Fail to refresh receipt! Please check if your device can access the internet.",
+                          cancelButtonTitle: "Cancel",
+                          cancel: { (cancelAction) in },
+                          confirmButtonTitle: NSLocalizedString("Retry", tableName: nil, comment: ""))
         { (action) in
             self.refreshReceipt()
         }
@@ -265,10 +264,10 @@ open class SKIAPManager: NSObject, DYFStoreReceiptVerifierDelegate {
     
     private func sendNotice(_ message: String) {
         self.sk_showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
-                       message: message,
-                       cancelButtonTitle: nil,
-                       cancel: nil,
-                       confirmButtonTitle: NSLocalizedString("I see!", tableName: nil, comment: ""))
+                          message: message,
+                          cancelButtonTitle: nil,
+                          cancel: nil,
+                          confirmButtonTitle: NSLocalizedString("I see!", tableName: nil, comment: ""))
         { (action) in
             DYFStoreLog("alert action title: \(action.title!)")
         }
@@ -288,12 +287,12 @@ open class SKIAPManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let identifier = info.transactionIdentifier!
             
             if info.state! == .restored {
-                let transaction = store.extractRestoredTransaction(identifier)
-                store.finishTransaction(transaction)
+                let tx = store.extractRestoredTransaction(identifier)
+                store.finishTransaction(tx)
             } else {
-                let transaction = store.extractPurchasedTransaction(identifier)
+                let tx = store.extractPurchasedTransaction(identifier)
                 // The transaction can be finished only after the client and server adopt secure communication and data encryption and the receipt verification is passed. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification, we want `StoreKit` to keep reminding us that there are still outstanding transactions.
-                store.finishTransaction(transaction)
+                store.finishTransaction(tx)
             }
             
             persister.removeTransaction(identifier)
@@ -313,10 +312,10 @@ open class SKIAPManager: NSObject, DYFStoreReceiptVerifierDelegate {
         if error.code < 21000 {
             // After several attempts, you can cancel refreshing receipt.
             self.sk_showAlert(withTitle: NSLocalizedString("Notification", tableName: nil, comment: ""),
-                           message: "Fail to verify receipt! Please check if your device can access the internet.",
-                           cancelButtonTitle: "Cancel",
-                           cancel: nil,
-                           confirmButtonTitle: NSLocalizedString("Retry", tableName: nil, comment: ""))
+                              message: "Fail to verify receipt! Please check if your device can access the internet.",
+                              cancelButtonTitle: "Cancel",
+                              cancel: nil,
+                              confirmButtonTitle: NSLocalizedString("Retry", tableName: nil, comment: ""))
             { (action) in
                 DYFStoreLog("alert action title: \(action.title!)")
                 self.verifyReceipt(nil)
@@ -333,12 +332,12 @@ open class SKIAPManager: NSObject, DYFStoreReceiptVerifierDelegate {
             let identifier = info.transactionIdentifier!
             
             if info.state! == .restored {
-                let transaction = store.extractRestoredTransaction(identifier)
-                store.finishTransaction(transaction)
+                let tx = store.extractRestoredTransaction(identifier)
+                store.finishTransaction(tx)
             } else {
-                let transaction = store.extractPurchasedTransaction(identifier)
+                let tx = store.extractPurchasedTransaction(identifier)
                 // The transaction can be finished only after the client and server adopt secure communication and data encryption and the receipt verification is passed. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification, we want `StoreKit` to keep reminding us that there are still outstanding transactions.
-                store.finishTransaction(transaction)
+                store.finishTransaction(tx)
             }
             
             persister.removeTransaction(identifier)
