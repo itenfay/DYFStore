@@ -27,51 +27,17 @@ import Foundation
 import CommonCrypto
 import StoreKit
 
-/// Custom method to calculate the SHA-256 hash using Common Crypto.
-///
-/// - Parameter s: A string to calculate hash.
-/// - Returns: A SHA-256 hash value string.
-public func DYFStoreCryptoSHA256(_ s: String) -> String? {
-    guard let cStr = s.cString(using: String.Encoding.utf8) else {
-        return nil
-    }
-    let digestLength = Int(CC_SHA256_DIGEST_LENGTH) // 32
-    let cStrLen = Int(s.lengthOfBytes(using: String.Encoding.utf8))
-    
-    // Confirm that the length of C string is small enough
-    // to be recast when calling the hash function.
-    if cStrLen > UINT32_MAX {
-        print("C string too long to hash: \(s)")
-        return nil
-    }
-    
-    let md = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLength)
-    CC_SHA256(cStr, CC_LONG(cStrLen), md)
-    // Convert the array of bytes into a string showing its hex represention.
-    let hash = NSMutableString()
-    for i in 0..<digestLength {
-        // Add a dash every four bytes, for readability.
-        if i != 0 && i%4 == 0 {
-            //hash.append("-")
-        }
-        hash.appendFormat("%02x", md[i])
-    }
-    md.deallocate()
-    
-    return hash as String
-}
-
 /// Outputs log to the console.
 /// - Parameters:
 ///   - format: The format string.
 ///   - funcName: The name of a function.
 ///   - lineNum: The number of a code line.
-public func DYFPrintLog(_ format: String, funcName: String = #function, lineNum: Int = #line) {
+public func DYFPrintLog(_ format: String, prefix: String = "", funcName: String = #function, lineNum: Int = #line) {
     let dateFormatter = DateFormatter.init()
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSZ"
     let timeString = dateFormatter.string(from: Date.init())
     let fileName = (#file as NSString).lastPathComponent
-    print("\(timeString)" + " [F: \(fileName) M: \(funcName) L: \(lineNum)] " + format)
+    print("\(timeString)" + "\(prefix)" + " [F: \(fileName) M: \(funcName) L: \(lineNum)] " + format)
 }
 
 /// Outputs log to the console in the process of purchasing the `SKProduct` product.
@@ -85,7 +51,7 @@ public func DYFPrintLog(_ format: String, funcName: String = #function, lineNum:
 public func DYFStoreLog(_ format: String = "", funcName: String = #function, lineNum: Int = #line) {
     if DYFStore.default.enableLog {
         //let output = String(format: format, args)
-        DYFPrintLog("[DYFStore] " + format, funcName: funcName, lineNum: lineNum)
+        DYFPrintLog(format, prefix: " [D] [IAP]", funcName: funcName, lineNum: lineNum)
     }
 }
 
@@ -96,14 +62,14 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public var enableLog: Bool = false
     
     /// The valid products that were available for sale in the App Store.
-    public var availableProducts: NSMutableArray!
+    public var availableProducts: Array<SKProduct>!
     /// The product identifiers were invalid.
-    public var invalidIdentifiers: NSMutableArray!
+    public var invalidIdentifiers: Array<String>!
     
     /// Records those transcations that have been purchased.
-    public var purchasedTranscations: NSMutableArray!
+    public var purchasedTranscations: Array<SKPaymentTransaction>!
     /// Records those transcations that have been restored.
-    public var restoredTranscations: NSMutableArray!
+    public var restoredTranscations: Array<SKPaymentTransaction>!
     
     /// The delegate processes the purchase which was initiated by user from the App Store.
     public weak var delegate: DYFStoreAppStorePaymentDelegate?
@@ -154,10 +120,10 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// Overrides default constructor.
     private override init() {
         super.init()
-        self.availableProducts  = NSMutableArray(capacity: 0)
-        self.invalidIdentifiers = NSMutableArray(capacity: 0)
-        self.purchasedTranscations = NSMutableArray(capacity: 0)
-        self.restoredTranscations  = NSMutableArray(capacity: 0)
+        self.availableProducts  = []
+        self.invalidIdentifiers = []
+        self.purchasedTranscations = []
+        self.restoredTranscations  = []
         self.hostedContentSupported = false
     }
     
@@ -272,16 +238,10 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// - Parameter product: An `SKProduct` object.
     /// - Returns: True if it is contained, otherwise, false.
     public func containsProduct(_ product: SKProduct) -> Bool {
-        var contained: Bool = false
-        for e in self.availableProducts {
-            let aProduct = e as! SKProduct
-            let id = aProduct.productIdentifier
-            if id == product.productIdentifier {
-                contained = true
-                break
-            }
+        let prod = availableProducts.first { aProduct in
+            return aProduct.productIdentifier == product.productIdentifier
         }
-        return contained
+        return prod != nil;
     }
     
     /// Fetches the product by matching a given product identifier.
@@ -289,16 +249,9 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// - Parameter productIdentifier: A given product identifier.
     /// - Returns: An `SKProduct` object.
     public func product(forIdentifier productIdentifier: String) -> SKProduct? {
-        var product: SKProduct? = nil
-        for e in self.availableProducts {
-            let aProduct = e as! SKProduct
-            let id = aProduct.productIdentifier
-            if id == productIdentifier {
-                product = aProduct
-                break
-            }
+        return availableProducts.first { product in
+            return product.productIdentifier == productIdentifier
         }
-        return product
     }
     
     /// Fetches the localized price of a given product.
@@ -306,15 +259,15 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// - Parameter product: A given product.
     /// - Returns: The localized price of a given product.
     public func localizedPrice(ofProduct product: SKProduct?) -> String? {
-        if let p = product {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.formatterBehavior = NumberFormatter.Behavior.behavior10_4
-            numberFormatter.numberStyle = NumberFormatter.Style.currency
-            numberFormatter.locale = product!.priceLocale
-            let formattedString = numberFormatter.string(from: p.price)
-            return formattedString
+        guard let prod = product else {
+            return nil
         }
-        return nil
+        let numberFormatter = NumberFormatter()
+        numberFormatter.formatterBehavior = NumberFormatter.Behavior.behavior10_4
+        numberFormatter.numberStyle = NumberFormatter.Style.currency
+        numberFormatter.locale = prod.priceLocale
+        let formattedString = numberFormatter.string(from: prod.price)
+        return formattedString
     }
     
     // MARK: - SKProductsRequestDelegate
@@ -327,17 +280,17 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
         /// The array contains all product identifiers have not been recognized by the App Store.
         let invalidProductIdentifiers = response.invalidProductIdentifiers
         
-        for product in products {
+        products.forEach { product in
             DYFStoreLog("received product with id: \(product.productIdentifier)")
             if !self.containsProduct(product) {
-                self.availableProducts.add(product)
+                self.availableProducts.append(product)
             }
         }
         
-        for (idx, value) in invalidProductIdentifiers.enumerated() {
-            DYFStoreLog("invalid product with id: \(value), index: \(idx)")
+        invalidProductIdentifiers.forEach { value in
+            DYFStoreLog("invalid product with id: \(value)");
             if !self.invalidIdentifiers.contains(value) {
-                self.invalidIdentifiers.add(value)
+                self.invalidIdentifiers.append(value)
             }
         }
         
@@ -404,14 +357,14 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///
     /// - Returns: YES if it contains some items and NO, otherwise.
     public func hasPurchasedTransactions() -> Bool {
-        return self.purchasedTranscations.count > 0
+        return purchasedTranscations.count > 0
     }
     
     /// Whether there are restored purchases.
     ///
     /// - Returns: YES if it contains some items and NO, otherwise.
     public func hasRestoredTransactions() -> Bool {
-        return self.restoredTranscations.count > 0
+        return restoredTranscations.count > 0
     }
     
     /// Extracts a purchased transaction with a given transaction identifier.
@@ -419,22 +372,15 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// - Parameter transactionIdentifier: The unique server-provided identifier.
     /// - Returns: A purchased `SKPaymentTransaction` object.
     public func extractPurchasedTransaction(_ transactionIdentifier: String?) -> SKPaymentTransaction? {
-        var transaction: SKPaymentTransaction? = nil
-        guard let transactionId = transactionIdentifier,
-              !transactionId.isEmpty else {
-            return transaction
+        guard let txId = transactionIdentifier, !txId.isEmpty else {
+            return nil
         }
-        
-        self.purchasedTranscations.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-            let tempTransaction = obj as! SKPaymentTransaction
-            let id = tempTransaction.transactionIdentifier ?? ""
-            DYFStoreLog("index: \(idx), transactionId: \(id)")
-            if id == transactionId {
-                transaction = tempTransaction
-            }
+        return purchasedTranscations.first { tx in
+            let id = tx.transactionIdentifier ?? ""
+            let originalId = tx.original?.transactionIdentifier ?? ""
+            DYFStoreLog("txId: \(id), originalTxId: \(originalId)")
+            return id == txId || originalId == txId
         }
-        
-        return transaction
     }
     
     /// Extracts a restored transaction with a given transaction identifier.
@@ -442,23 +388,34 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// - Parameter transactionIdentifier: The unique server-provided identifier.
     /// - Returns: A restored `SKPaymentTransaction` object.
     public func extractRestoredTransaction(_ transactionIdentifier: String?) -> SKPaymentTransaction? {
-        var transaction: SKPaymentTransaction? = nil
-        guard let transactionId = transactionIdentifier,
-              !transactionId.isEmpty else {
-            return transaction
+        guard let txId = transactionIdentifier, !txId.isEmpty else {
+            return nil
         }
-        
-        self.restoredTranscations.enumerateObjects { (obj: Any, idx: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-            let tempTransaction = obj as! SKPaymentTransaction
-            let id = tempTransaction.transactionIdentifier ?? ""
-            let originalId = tempTransaction.original?.transactionIdentifier ?? ""
-            DYFStoreLog("index: \(idx), transactionId: \(id), originalTransactionId: \(originalId)")
-            if id == transactionId {
-                transaction = tempTransaction
-            }
+        return restoredTranscations.first { tx in
+            let id = tx.transactionIdentifier ?? ""
+            let originalId = tx.original?.transactionIdentifier ?? ""
+            DYFStoreLog("txId: \(id), originalTxId: \(originalId)")
+            return id == txId || originalId == txId
         }
-        
-        return transaction
+    }
+    
+    /// Removes those transactions with a given transaction identifier.
+    private func removeTransaction(_ transactionIdentifier: String?) {
+        guard let txId = transactionIdentifier, !txId.isEmpty else {
+            return
+        }
+        purchasedTranscations.removeAll { tx in
+            let id = tx.transactionIdentifier ?? ""
+            let originalId = tx.original?.transactionIdentifier ?? ""
+            DYFStoreLog("txId: \(id), originalTxId: \(originalId)")
+            return id == txId || originalId == txId
+        }
+        restoredTranscations.removeAll { tx in
+            let id = tx.transactionIdentifier ?? ""
+            let originalId = tx.original?.transactionIdentifier ?? ""
+            DYFStoreLog("txId: \(id), originalTxId: \(originalId)")
+            return id == txId || originalId == txId
+        }
     }
     
     /// The number of items the user wants to purchase. It must be greater than 0, the default value is 1.
@@ -521,7 +478,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///
     /// - Parameter userIdentifier: An opaque identifier for the user’s account on your system.
     public func restoreTransactions(userIdentifier: String? = nil) {
-        self.restoredTranscations = NSMutableArray(capacity: 0)
+        self.restoredTranscations.removeAll()
         if let identifier = userIdentifier, !identifier.isEmpty {
             assert(SKPaymentQueue.default().responds(to: #selector(SKPaymentQueue.restoreCompletedTransactions(withApplicationUsername:))), "restoreCompletedTransactions(withApplicationUsername:) not supported in this iOS version. Use restoreCompletedTransactions() instead.")
             if #available(iOS 7.0, *) {
@@ -542,8 +499,12 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     /// - Parameter transaction: The transaction to finish.
     public func finishTransaction(_ transaction: SKPaymentTransaction?) {
         if let tx = transaction {
-            DYFStoreLog("transactionIdentifier: \(tx.transactionIdentifier ?? "")")
             SKPaymentQueue.default().finishTransaction(tx)
+            let txId = tx.transactionIdentifier ?? ""
+            let originalTxId = tx.original?.transactionIdentifier ?? ""
+            DYFStoreLog("txId: \(txId), originalTxId: \(originalTxId)")
+            removeTransaction(txId);
+            removeTransaction(originalTxId);
         }
     }
     
@@ -664,9 +625,9 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     
     // Tells an observer that one or more transactions have been removed from the queue.
     public func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
-        for transaction in transactions {
+        transactions.forEach { tx in
             // Logs all transactions that have been removed from the payment queue.
-            let productId = transaction.payment.productIdentifier
+            let productId = tx.payment.productIdentifier
             DYFStoreLog("\(productId) has been removed from the payment queue")
         }
     }
@@ -675,10 +636,10 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     public func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
         if #available(iOS 11.0, *) {
             if !containsProduct(product) {
-                self.availableProducts.add(product)
+                availableProducts.append(product)
             }
-            self.delegate?.didReceiveAppStorePurchaseRequest(queue, payment: payment, forProduct: product)
-        } else { /* Fallback on earlier versions. Never execute. */ }
+            return self.delegate?.didReceiveAppStorePurchaseRequest(queue, payment: payment, forProduct: product) ?? false
+        }
         return false
     }
     
@@ -703,7 +664,8 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     ///   - queue: The payment queue that updated the transactions.
     private func didPurchaseTransaction(_ transaction: SKPaymentTransaction, queue: SKPaymentQueue) {
         DYFStoreLog("The transaction purchased. Deliver the content for \(transaction.payment.productIdentifier)")
-        self.purchasedTranscations.add(transaction)
+        
+        purchasedTranscations.append(transaction)
         // Checks whether the purchased product has content hosted with Apple.
         if hostedContentSupported && transaction.downloads.count > 0 {
             // Starts the download process and send a DYFStoreDownload.State.started notification.
@@ -748,7 +710,7 @@ open class DYFStore: NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
     private func didRestoreTransaction(_ transaction: SKPaymentTransaction, queue: SKPaymentQueue) {
         DYFStoreLog("The transaction restored. Restore the content for \(transaction.payment.productIdentifier)")
         
-        self.restoredTranscations.add(transaction)
+        restoredTranscations.append(transaction)
         // Sends a DYFStoreDownload.State.started notification if it has.
         if hostedContentSupported && transaction.downloads.count > 0 {
             queue.start(transaction.downloads)
@@ -1193,8 +1155,7 @@ public protocol DYFStoreAppStorePaymentDelegate: AnyObject {
     ///   - payment: The payment request.
     ///   - product: The in-app purchase product.
     @available(iOS 11.0, *)
-    @objc func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct)
-    
+    func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) -> Bool
 }
 
 // MARK: - Extends the properties and method for the dispatch queue.
@@ -1236,4 +1197,40 @@ extension DispatchQueue {
         self.asyncAfter(deadline: .now() + time, execute: block)
     }
     
+}
+
+extension String {
+    /// Custom method to calculate the SHA-256 hash using Common Crypto.
+    ///
+    /// - Parameter s: A string to calculate hash.
+    /// - Returns: A SHA-256 hash value string.
+    public var tx_sha256 : String? {
+        guard let cStr = cString(using: String.Encoding.utf8) else {
+            return nil
+        }
+        let digestLength = Int(CC_SHA256_DIGEST_LENGTH) // 32
+        let cStrLen = Int(lengthOfBytes(using: String.Encoding.utf8))
+        
+        // Confirm that the length of C string is small enough
+        // to be recast when calling the hash function.
+        if cStrLen > UINT32_MAX {
+            print("C string too long to hash: \(self)")
+            return nil
+        }
+        
+        let md = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLength)
+        CC_SHA256(cStr, CC_LONG(cStrLen), md)
+        // Convert the array of bytes into a string showing its hex represention.
+        let hash = NSMutableString()
+        for i in 0..<digestLength {
+            // Add a dash every four bytes, for readability.
+            if i != 0 && i%4 == 0 {
+                //hash.append("-")
+            }
+            hash.appendFormat("%02x", md[i])
+        }
+        md.deallocate()
+        
+        return hash as String
+    }
 }
