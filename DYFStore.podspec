@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = "DYFStore"
-    s.version      = "2.2.0"
+    s.version      = "2.3.0"
     s.summary      = "[Swift] A lightweight and easy-to-use iOS library for In-App Purchases."
     
     s.description  = <<-DESC
