@@ -29,7 +29,7 @@ import Foundation
 fileprivate let kUserDefaults = UserDefaults.standard
 
 /// The transaction persistence using the UserDefaults.
-open class DYFStoreUserDefaultsPersistence: NSObject {
+open class DYFStoreUserDefaultsPersistence {
     
     /// Loads an array whose elements are the `Data` objects from the shared preferences search list.
     ///
@@ -48,15 +48,13 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
         guard let arr = array, arr.count > 0 else {
             return false
         }
-        for data in arr {
-            let obj = DYFStoreConverter.decodeObject(data)
-            let transaction = obj as? DYFStoreTransaction
-            let identifier = transaction?.transactionIdentifier
-            if let id = identifier, id == transactionIdentifier {
-                return true
-            }
+        let tx = arr.compactMap { data in
+            return DYFStoreConverter.decodeObject(data) as? DYFStoreTransaction
+        }.first { tx in
+            let id = tx.transactionIdentifier
+            return id == transactionIdentifier
         }
-        return false
+        return tx != nil
     }
     
     /// Stores an `DYFStoreTransaction` object in the shared preferences search list.
@@ -78,12 +76,8 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     public func retrieveTransactions() -> [DYFStoreTransaction]? {
         let array = loadDataFromUserDefaults()
         guard let arr = array else { return nil }
-        var transactions = [DYFStoreTransaction]()
-        for item in arr {
-            let obj = DYFStoreConverter.decodeObject(item)
-            if let transaction = obj as? DYFStoreTransaction {
-                transactions.append(transaction)
-            }
+        let transactions = arr.compactMap { data in
+            return DYFStoreConverter.decodeObject(data) as? DYFStoreTransaction
         }
         return transactions
     }
@@ -95,13 +89,12 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     public func retrieveTransaction(_ transactionIdentifier: String) -> DYFStoreTransaction? {
         let array = retrieveTransactions()
         guard let arr = array else { return nil }
-        for transaction in arr {
-            let identifier = transaction.transactionIdentifier
-            if identifier == transactionIdentifier {
-                return transaction
-            }
+        let tx = arr.first { tx in
+            let id = tx.transactionIdentifier
+            let originalId = tx.originalTransactionIdentifier
+            return id == transactionIdentifier || originalId == transactionIdentifier
         }
-        return nil
+        return tx
     }
     
     /// Removes an `DYFStoreTransaction` object from the shared preferences search list with a given transaction ientifier.
@@ -110,19 +103,12 @@ open class DYFStoreUserDefaultsPersistence: NSObject {
     public func removeTransaction(_ transactionIdentifier: String) {
         let array = loadDataFromUserDefaults()
         guard var arr = array else { return }
-        var index = -1
-        for (idx, data) in arr.enumerated() {
-            let obj = DYFStoreConverter.decodeObject(data)
-            let transaction = obj as? DYFStoreTransaction
-            let identifier = transaction?.transactionIdentifier
-            if let id = identifier, id == transactionIdentifier {
-                index = idx
-                break
-            }
+        arr.removeAll { data in
+            let tx = DYFStoreConverter.decodeObject(data) as? DYFStoreTransaction
+            let id = tx?.transactionIdentifier
+            let originalId = tx?.originalTransactionIdentifier
+            return id == transactionIdentifier || originalId == transactionIdentifier
         }
-        guard index >= 0 else { return }
-        arr.remove(at: index)
-        
         kUserDefaults.setValue(arr, forKey: DYFStoreTransactionsKey)
         kUserDefaults.synchronize()
     }
