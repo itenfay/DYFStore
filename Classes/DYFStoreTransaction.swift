@@ -32,31 +32,31 @@ public let DYFStoreTransactionsKey = "DYFStoreTransactions"
 open class DYFStoreTransaction: NSObject, NSCoding {
     
     /// The state of this transaction. 0: purchased, 1: restored.
-    @objc open var state: UInt8 = 0
+    open var state: UInt8 = 0
     
     /// A string used to identify a product that can be purchased from within your app.
-    @objc open var productIdentifier: String?
+    open var productIdentifier: String?
     
     /// An opaque identifier for the user’s account on your system.
-    @objc open var userIdentifier: String?
+    open var userIdentifier: String?
     
     /// When a transaction is restored, the current transaction holds a new transaction timestamp. Your app will read this property to retrieve the restored transaction timestamp.
-    @objc open var originalTransactionTimestamp: String?
+    open var originalTransactionTimestamp: String?
     
     /// When a transaction is restored, the current transaction holds a new transaction identifier. Your app will read this property to retrieve the restored transaction identifier.
-    @objc open var originalTransactionIdentifier: String?
+    open var originalTransactionIdentifier: String?
     
     /// The timestamp when the transaction was added to the server queue. Only valid if state is purchased or restored.
-    @objc open var transactionTimestamp: String?
+    open var transactionTimestamp: String?
     
     /// The unique server-provided identifier. Only valid if state is purchased or restored.
-    @objc open var transactionIdentifier: String?
+    open var transactionIdentifier: String?
     
     /// A base64 signed receipt that records all information about a successful payment transaction.
     ///
     /// The contents of this property are undefined except when transactionState is set to purchased.
     /// The receipt is a signed chunk of data that can be sent to the App Store to verify that the payment was successfully processed. This is most useful when designing a store that uses a server separate from the iPhone to verify that payment was processed. For more information on verifying receipts, see [Receipt Validation Programming Guide](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Introduction.html#//apple_ref/doc/uid/TP40010573).
-    @objc open var transactionReceipt: String?
+    open var transactionReceipt: String?
     
     /// Instantiates an `DYFStoreTransaction` object.
     public override init() {
@@ -86,7 +86,7 @@ open class DYFStoreTransaction: NSObject, NSCoding {
 }
 
 /// Used to represent the state of a transaction.
-@objc public enum DYFStoreTransactionState: UInt8 {
+public enum DYFStoreTransactionState: UInt8 {
     
     /// Indicates that the transaction has been purchased.
     case purchased
