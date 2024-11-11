@@ -48,7 +48,7 @@ pod 'DYFStore'
 Or
 
 ```
-pod 'DYFStore', '~> 2.2.0'
+pod 'DYFStore', '~> 2.3.0'
 ```
 
 Check out the [wiki](https://github.com/itenfay/DYFStore/wiki/Installation) for more options.
@@ -95,18 +95,19 @@ You can process the purchase which was initiated by user from the App Store and 
 
 ```
 // Processes the purchase which was initiated by user from the App Store.
-func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) {
+func didReceiveAppStorePurchaseRequest(_ queue: SKPaymentQueue, payment: SKPayment, forProduct product: SKProduct) -> Bool {
     if !DYFStore.canMakePayments() {
         self.sk_showTipsMessage("Your device is not able or allowed to make payments!")
-        return
+        return false
     }
     
     // Get account name from your own user system.
     let accountName = "Handsome Jon"
     // This algorithm is negotiated with server developer.
-    let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
+    let userIdentifier = accountName.tx_sha256 ?? ""
     DYFStoreLog("userIdentifier: \(userIdentifier)")
     SKIAPManager.shared.addPayment(product.productIdentifier, userIdentifier: userIdentifier)
+    return true
 }
 ```
 
@@ -155,7 +156,7 @@ private func addPayment(_ productId: String) {
     // Get account name from your own user system.
     let accountName = "Handsome Jon"
     // This algorithm is negotiated with server developer.
-    let userIdentifier = DYFStoreCryptoSHA256(accountName) ?? ""
+    let userIdentifier = accountName.tx_sha256 ?? ""
     DYFStoreLog("userIdentifier: \(userIdentifier)")
     SKIAPManager.shared.addPayment(productId, userIdentifier: userIdentifier)
 }
@@ -238,34 +239,40 @@ If you need an opaque identifier for the user’s account on your system to add 
 Calculates the SHA256 hash function:
 
 ```
-public func DYFStoreCryptoSHA256(_ s: String) -> String? {
-    guard let cStr = s.cString(using: String.Encoding.utf8) else {
-        return nil
-    }
-    let digestLength = Int(CC_SHA256_DIGEST_LENGTH) // 32
-    let cStrLen = Int(s.lengthOfBytes(using: String.Encoding.utf8))
-    
-    // Confirm that the length of C string is small enough
-    // to be recast when calling the hash function.
-    if cStrLen > UINT32_MAX {
-        print("C string too long to hash: \(s)")
-        return nil
-    }
-    
-    let md = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLength)
-    CC_SHA256(cStr, CC_LONG(cStrLen), md)
-    // Convert the array of bytes into a string showing its hex represention.
-    let hash = NSMutableString()
-    for i in 0..<digestLength {
-        // Add a dash every four bytes, for readability.
-        if i != 0 && i%4 == 0 {
-            //hash.append("-")
+extension String {
+    /// Custom method to calculate the SHA-256 hash using Common Crypto.
+    ///
+    /// - Parameter s: A string to calculate hash.
+    /// - Returns: A SHA-256 hash value string.
+    public var tx_sha256 : String? {
+        guard let cStr = cString(using: String.Encoding.utf8) else {
+            return nil
         }
-        hash.appendFormat("%02x", md[i])
+        let digestLength = Int(CC_SHA256_DIGEST_LENGTH) // 32
+        let cStrLen = Int(lengthOfBytes(using: String.Encoding.utf8))
+        
+        // Confirm that the length of C string is small enough
+        // to be recast when calling the hash function.
+        if cStrLen > UINT32_MAX {
+            print("C string too long to hash: \(self)")
+            return nil
+        }
+        
+        let md = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLength)
+        CC_SHA256(cStr, CC_LONG(cStrLen), md)
+        // Convert the array of bytes into a string showing its hex represention.
+        let hash = NSMutableString()
+        for i in 0..<digestLength {
+            // Add a dash every four bytes, for readability.
+            if i != 0 && i%4 == 0 {
+                //hash.append("-")
+            }
+            hash.appendFormat("%02x", md[i])
+        }
+        md.deallocate()
+        
+        return hash as String
     }
-    md.deallocate()
-    
-    return hash as String
 }
 ```
 
@@ -453,22 +460,22 @@ func storeReceipt() {
         let info = self.purchaseInfo!
         let persister = DYFStoreUserDefaultsPersistence()
         
-        let transaction = DYFStoreTransaction()
+        let tx = DYFStoreTransaction()
         if info.state! == .succeeded {
-            transaction.state = DYFStoreTransactionState.purchased.rawValue
+            tx.state = DYFStoreTransactionState.purchased.rawValue
         } else if info.state! == .restored {
-            transaction.state = DYFStoreTransactionState.restored.rawValue
+            tx.state = DYFStoreTransactionState.restored.rawValue
         }
         
-        transaction.productIdentifier = info.productIdentifier
-        transaction.userIdentifier = info.userIdentifier
-        transaction.transactionTimestamp = info.transactionDate?.timestamp()
-        transaction.transactionIdentifier = info.transactionIdentifier
-        transaction.originalTransactionTimestamp = info.originalTransactionDate?.timestamp()
-        transaction.originalTransactionIdentifier = info.originalTransactionIdentifier
+        tx.productIdentifier = info.productIdentifier
+        tx.userIdentifier = info.userIdentifier
+        tx.transactionTimestamp = info.transactionDate?.timestamp()
+        tx.transactionIdentifier = info.transactionIdentifier
+        tx.originalTransactionTimestamp = info.originalTransactionDate?.timestamp()
+        tx.originalTransactionIdentifier = info.originalTransactionIdentifier
         
-        transaction.transactionReceipt = data.base64EncodedString()
-        persister.storeTransaction(transaction)
+        tx.transactionReceipt = data.base64EncodedString()
+        persister.storeTransaction(tx)
         
         self.verifyReceipt(data)
     } catch let error {
@@ -488,12 +495,12 @@ let persister = DYFStoreUserDefaultsPersistence()
 let identifier = info.transactionIdentifier!
 
 if info.state! == .restored {
-    let transaction = store.extractRestoredTransaction(identifier)
-    store.finishTransaction(transaction)
+    let tx = store.extractRestoredTransaction(identifier)
+    store.finishTransaction(tx)
 } else {
-    let transaction = store.extractPurchasedTransaction(identifier)
+    let tx = store.extractPurchasedTransaction(identifier)
     // The transaction can be finished only after the receipt verification passed under the client and the server can adopt the communication of security and data encryption. In this way, we can avoid refreshing orders and cracking in-app purchase. If we were unable to complete the verification we want StoreKit to keep reminding us of the transaction.
-    store.finishTransaction(transaction)
+    store.finishTransaction(tx)
 }
 
 persister.removeTransaction(identifier)
